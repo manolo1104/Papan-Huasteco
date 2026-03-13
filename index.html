@@ -15,7 +15,7 @@
   "name":"El Papán Huasteco",
   "description":"Restaurante de cocina huasteca auténtica en Xilitla, San Luis Potosí. A minutos del Castillo de Edward James.",
   "url":"https://papan-huasteco-production.up.railway.app",
-  "telephone":"+52-489-100-7679",
+  "telephone":"+52-489-125-5181",
   "servesCuisine":["Mexican","Huasteca"],
   "priceRange":"$$",
   "address":{"@type":"PostalAddress","streetAddress":"Camino La Conchita – Las Pozas Núm. 10","addressLocality":"Xilitla","addressRegion":"San Luis Potosí","postalCode":"79910","addressCountry":"MX"},
@@ -1546,7 +1546,7 @@ body { cursor: default; }
 @media (max-width: 768px) {
   .nav-links, .nav-tel { display: none; }
   .nav-hamburger { display: flex; }
-  .hero-content { grid-template-columns: 1fr; }
+  .hero-content { grid-template-columns: 1fr; padding: 0 1.5rem 3rem; }
   .hero-stats { display: none; }
   .strip-inner { flex-direction: column; }
   .strip-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
@@ -1555,13 +1555,30 @@ body { cursor: default; }
   .reviews-grid { grid-template-columns: 1fr; }
   .galeria-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
   .gal { grid-column: unset !important; grid-row: unset !important; aspect-ratio: 4/3; }
-  .experiencia-content { margin-left: 1.5rem; }
+  .experiencia-content { margin-left: 0; padding: 0 1.5rem; }
   .footer-inner { flex-direction: column; text-align: center; }
   .footer-links-row { justify-content: center; flex-wrap: wrap; gap: 1rem; }
+  /* Menu tabs scroll horizontal */
+  .menu-tabs-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .menu-tabs-bar::-webkit-scrollbar { display: none; }
+  .menu-tab { white-space: nowrap; flex-shrink: 0; }
+  /* Laspozas distance stacked */
+  .laspozas-distance { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
+  /* Hero buttons full width on small */
+  .hero-btns { flex-direction: column; align-items: flex-start; }
+  .hero-btns .btn { width: 100%; justify-content: center; }
 }
 @media (max-width: 480px) {
   section { padding: 4rem 1.2rem; }
   .intro-features { grid-template-columns: 1fr; }
+  .hero-content { padding: 0 1.2rem 2.5rem; }
+  .plato-body { padding: 1.2rem 1.4rem 1.5rem; }
+  .menu-note { font-size: 0.72rem; text-align: center; }
+  .menu-cta-row { flex-direction: column; align-items: center; gap: 1.2rem; }
+  .wfloat { width: 48px; height: 48px; font-size: 1.25rem; bottom: 1.2rem; right: 1.2rem; }
+  .laspozas-dist-num { font-size: 3rem; }
+  .info-contact-item { flex-direction: row; align-items: flex-start; }
+  .container, .container--narrow { padding: 0 1.2rem; }
 }
 </style>
 </head>
@@ -1575,7 +1592,7 @@ body { cursor: default; }
   <a href="#laspozas" onclick="closeDrawer()">Ubicación</a>
   <a href="#galeria" onclick="closeDrawer()">Galería</a>
   <a href="#info" onclick="closeDrawer()">Contacto</a>
-  <a href="https://wa.link/3ekj6y" target="_blank" rel="noopener noreferrer" class="btn btn--tierra" style="margin-top:1rem;">Reservar</a>
+  <a href="https://wa.me/524891255181" target="_blank" rel="noopener noreferrer" class="btn btn--tierra" style="margin-top:1rem;">Reservar</a>
 </div>
 
 <!-- ══════════════ NAV ══════════════ -->
@@ -1601,8 +1618,8 @@ body { cursor: default; }
   </ul>
 
   <div class="nav-cta-wrap">
-    <a href="tel:4891007679" class="nav-tel" aria-label="Llamar al restaurante">(489) 100-7679</a>
-    <a href="https://wa.link/3ekj6y" target="_blank" rel="noopener" class="btn btn--filled" style="font-size:0.72rem;padding:0.7rem 1.3rem;" aria-label="Reservar por WhatsApp">Reservar</a>
+    <a href="tel:4891255181" class="nav-tel" aria-label="Llamar al restaurante">(489) 125-5181</a>
+    <a href="https://wa.me/524891255181" target="_blank" rel="noopener" class="btn btn--filled" style="font-size:0.72rem;padding:0.7rem 1.3rem;" aria-label="Reservar por WhatsApp">Reservar</a>
     <button class="nav-hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -1634,7 +1651,7 @@ body { cursor: default; }
 
       <div class="hero-btns">
         <a href="#menu-section" class="btn btn--outline-light" aria-label="Ver el menú completo">Ver el Menú</a>
-        <a href="https://wa.link/3ekj6y" target="_blank" rel="noopener" class="btn btn--tierra" aria-label="Reservar por WhatsApp">
+        <a href="https://wa.me/524891255181" target="_blank" rel="noopener" class="btn btn--tierra" aria-label="Reservar por WhatsApp">
           Reservar Mesa →
         </a>
       </div>
@@ -2106,7 +2123,7 @@ body { cursor: default; }
 
     <div class="menu-cta-row reveal">
       <p class="menu-note">Precios en pesos mexicanos · Sujeto a disponibilidad · Todo preparado al momento</p>
-      <a href="https://wa.link/3ekj6y" target="_blank" rel="noopener" class="btn btn--filled" aria-label="Reservar mesa por WhatsApp">Reservar Mesa →</a>
+      <a href="https://wa.me/524891255181" target="_blank" rel="noopener" class="btn btn--filled" aria-label="Reservar mesa por WhatsApp">Reservar Mesa →</a>
     </div>
   </div>
 </section>
@@ -2159,8 +2176,8 @@ body { cursor: default; }
         <a href="https://maps.google.com/?q=El+Papán+Huasteco+Xilitla" target="_blank" rel="noopener noreferrer" class="btn btn--filled" aria-label="Abrir ubicación en Google Maps">
           Cómo Llegar →
         </a>
-        <a href="tel:4891007679" class="btn btn--outline" aria-label="Llamar al restaurante">
-          (489) 100-7679
+        <a href="tel:4891255181" class="btn btn--outline" aria-label="Llamar al restaurante">
+          (489) 125-5181
         </a>
       </div>
     </div>
@@ -2338,14 +2355,14 @@ body { cursor: default; }
           <div class="info-contact-icon" aria-hidden="true">📞</div>
           <div>
             <div class="info-contact-lbl">Teléfono</div>
-            <div class="info-contact-val"><a href="tel:4891007679">(489) 100-7679</a></div>
+            <div class="info-contact-val"><a href="tel:4891255181">(489) 125-5181</a></div>
           </div>
         </div>
         <div class="info-contact-item reveal">
           <div class="info-contact-icon" aria-hidden="true">💬</div>
           <div>
             <div class="info-contact-lbl">WhatsApp</div>
-            <div class="info-contact-val"><a href="https://wa.link/3ekj6y" target="_blank" rel="noopener noreferrer">Escríbenos ahora →</a></div>
+            <div class="info-contact-val"><a href="https://wa.me/524891255181" target="_blank" rel="noopener noreferrer">Escríbenos ahora →</a></div>
           </div>
         </div>
         <div class="info-contact-item reveal">
@@ -2425,7 +2442,7 @@ body { cursor: default; }
       Castillo de Edward James.
     </p>
     <div class="cta-btns">
-      <a href="https://wa.link/3ekj6y" target="_blank" rel="noopener" class="btn btn--tierra" aria-label="Reservar por WhatsApp">
+      <a href="https://wa.me/524891255181" target="_blank" rel="noopener" class="btn btn--tierra" aria-label="Reservar por WhatsApp">
         💬 Reservar por WhatsApp
       </a>
       <a href="https://maps.google.com/?q=El+Papán+Huasteco+Xilitla" target="_blank" rel="noopener noreferrer" class="btn btn--outline-light" aria-label="Cómo llegar en Google Maps">
@@ -2441,7 +2458,7 @@ body { cursor: default; }
   <div class="footer-inner">
     <p class="footer-copy">
       © 2025 El Papán Huasteco · Hotel Paraíso Encantado · Xilitla, SLP, México<br/>
-      <span style="font-size:0.68rem;opacity:0.6;">Camino La Conchita – Las Pozas Núm. 10 · (489) 100-7679</span>
+      <span style="font-size:0.68rem;opacity:0.6;">Camino La Conchita – Las Pozas Núm. 10 · (489) 125-5181</span>
     </p>
     <ul class="footer-links-row" role="list">
       <li><a href="#nosotros">Nosotros</a></li>
@@ -2456,7 +2473,7 @@ body { cursor: default; }
 
 
 <!-- WhatsApp flotante -->
-<a href="https://wa.link/3ekj6y" target="_blank" rel="noopener noreferrer"
+<a href="https://wa.me/524891255181" target="_blank" rel="noopener noreferrer"
    class="wfloat" aria-label="Contactar por WhatsApp">💬</a>
 
 
