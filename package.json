@@ -1,0 +1,12 @@
+{
+  "name": "papan-huasteco-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sitio estático El Papán Huasteco",
+  "scripts": {
+    "start": "serve . -l $PORT"
+  },
+  "dependencies": {
+    "serve": "^14.2.4"
+  }
+}
