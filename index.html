@@ -1998,6 +1998,51 @@ body { transition: background-color 0.5s ease, color 0.5s ease; }
   font-family: var(--font-body); font-size: 0.98rem; color: var(--gris-2);
   line-height: 1.75; padding: 0 2.2rem 1.4rem 0; margin: 0;
 }
+
+/* ════════════ ANIMACIONES (recomendaciones, 6ª tanda) ════════════ */
+
+/* Platillos: el precio reacciona al hover de la tarjeta */
+.plato-price { transition: transform 0.25s ease, color 0.25s ease; }
+.plato-card:hover .plato-price { transform: translateY(-2px); color: var(--tierra-dark); }
+
+/* Platillos: overlay con vidrio esmerilado */
+.plato-overlay { backdrop-filter: blur(0px); transition: opacity 0.3s, backdrop-filter 0.4s; }
+.plato-card:hover .plato-overlay { backdrop-filter: blur(3px); }
+
+/* Platillos: brillo recorriendo el badge "El Más Pedido" */
+.plato-category--star { position: relative; overflow: hidden; display: inline-block; }
+.plato-category--star::after {
+  content: ""; position: absolute; top: 0; left: -120%; width: 55%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(196,149,106,0.5), transparent);
+  animation: shimmer 5s ease-in-out 2s infinite;
+}
+
+/* Las Pozas: los 4 bullets entran escalonados */
+.laspozas-perks.visible .laspozas-perk { animation: heroIn 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+.laspozas-perks.visible .laspozas-perk:nth-child(1) { animation-delay: 0.05s; }
+.laspozas-perks.visible .laspozas-perk:nth-child(2) { animation-delay: 0.15s; }
+.laspozas-perks.visible .laspozas-perk:nth-child(3) { animation-delay: 0.25s; }
+.laspozas-perks.visible .laspozas-perk:nth-child(4) { animation-delay: 0.35s; }
+
+/* FAQ: las preguntas entran escalonadas */
+.faq-list.visible .faq-item { animation: heroIn 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+.faq-list.visible .faq-item:nth-child(1) { animation-delay: 0.05s; }
+.faq-list.visible .faq-item:nth-child(2) { animation-delay: 0.13s; }
+.faq-list.visible .faq-item:nth-child(3) { animation-delay: 0.21s; }
+.faq-list.visible .faq-item:nth-child(4) { animation-delay: 0.29s; }
+.faq-list.visible .faq-item:nth-child(5) { animation-delay: 0.37s; }
+
+/* CTA final: botones entran escalonados (primero el principal) */
+.cta-content.visible .cta-btns .btn { animation: heroIn 0.55s cubic-bezier(0.16,1,0.3,1) both; }
+.cta-content.visible .cta-btns .btn:nth-child(1) { animation-delay: 0.15s; }
+.cta-content.visible .cta-btns .btn:nth-child(2) { animation-delay: 0.28s; }
+
+/* Lightbox: el botón de cerrar hace pop al abrir */
+.lightbox.open .lightbox-close { animation: pop 0.4s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+
+/* Dark mode: la luna gira al cambiar de tema */
+.theme-toggle.spin svg { animation: moonSpin 0.6s ease both; }
+@keyframes moonSpin { from { transform: rotate(0) scale(0.6); } to { transform: rotate(360deg) scale(1); } }
 </style>
 </head>
 <body>
@@ -2317,7 +2362,7 @@ body { transition: background-color 0.5s ease, color 0.5s ease; }
         <div class="plato-overlay"><span class="plato-overlay-text">El más pedido</span></div>
       </div>
       <div class="plato-body">
-        <p class="plato-category"><svg class="ic"><use href="#ic-star"/></svg> El Más Pedido</p>
+        <p class="plato-category plato-category--star"><svg class="ic"><use href="#ic-star"/></svg> El Más Pedido</p>
         <h3 class="plato-name">Huevos Ahogados</h3>
         <p class="plato-desc">En salsa ranchera con rajas poblanas, queso y aguacate, servidos en cazuela de barro. Con frijoles y tortillas del comal.</p>
         <span class="plato-price">$150</span>
@@ -3157,6 +3202,8 @@ drawerClose.addEventListener('click', closeDrawer);
     if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'dark');
     try { localStorage.setItem('papan-theme', dark ? 'light' : 'dark'); } catch (e) {}
     syncLabel();
+    toggle.classList.add('spin');
+    setTimeout(() => toggle.classList.remove('spin'), 650);
   });
 })();
 
@@ -3360,6 +3407,26 @@ document.querySelectorAll('[data-count]').forEach(el => statObs.observe(el));
     marquee.querySelectorAll('.marquee-track span:not(.sep)').forEach(scramble);
     setTimeout(() => { running = false; }, 750);
   });
+})();
+
+// ── Parallax sutil del hero al mover el mouse (escritorio) ──
+(function () {
+  if (reduceMotion || !window.matchMedia('(pointer: fine)').matches) return;
+  const heroBg = document.querySelector('.hero-bg');
+  const hero = document.getElementById('inicio');
+  if (!heroBg || !hero) return;
+  let tx = 0, ty = 0, raf = false;
+  function apply() { heroBg.style.transform = 'scale(1.04) translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px)'; raf = false; }
+  function onMove(e) {
+    tx = (e.clientX / window.innerWidth - 0.5) * 16;
+    ty = (e.clientY / window.innerHeight - 0.5) * 10;
+    if (!raf) { requestAnimationFrame(apply); raf = true; }
+  }
+  // Esperar a que termine el zoom inicial (heroZoom ~12s) para no interrumpirlo
+  setTimeout(() => {
+    heroBg.style.transition = 'transform 0.3s ease-out';
+    hero.addEventListener('mousemove', onMove, { passive: true });
+  }, 12500);
 })();
 </script>
 
