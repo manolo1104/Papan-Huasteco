@@ -1,12 +1,41 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-MX">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="index, follow, max-image-preview:large"/>
+<meta name="theme-color" content="#3a5c3e"/>
+<meta name="author" content="El Papán Huasteco"/>
+<meta name="geo.region" content="MX-SLP"/>
+<meta name="geo.placename" content="Xilitla"/>
+<meta name="geo.position" content="21.3845;-98.9967"/>
+<link rel="preload" as="image" href="Images/hero-bg.jpg" fetchpriority="high"/>
 <title>El Papán Huasteco – Restaurante en Xilitla · Cocina Huasteca Auténtica</title>
 <meta name="description" content="Restaurante de cocina huasteca auténtica en Xilitla, SLP. A minutos del Castillo de Edward James. Ingredientes frescos, platillos regionales tradicionales. Visítanos."/>
 <meta name="keywords" content="restaurante Xilitla, comida huasteca, restaurante cerca castillo Edward James Las Pozas, dónde comer Xilitla, El Papán Huasteco"/>
 <link rel="canonical" href="https://papan-huasteco-production.up.railway.app"/>
+
+<link rel="icon" type="image/png" href="favicon.png"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+
+<!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="El Papán Huasteco"/>
+<meta property="og:title" content="El Papán Huasteco – Cocina Huasteca Auténtica en Xilitla"/>
+<meta property="og:description" content="Restaurante de cocina huasteca auténtica en Xilitla, SLP, a minutos del Castillo de Edward James (Las Pozas). Abierto todos los días."/>
+<meta property="og:url" content="https://papan-huasteco-production.up.railway.app"/>
+<meta property="og:image" content="https://papan-huasteco-production.up.railway.app/Images/og-image.jpg"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="Terraza del restaurante El Papán Huasteco en Xilitla rodeada de selva huasteca"/>
+<meta property="og:locale" content="es_MX"/>
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="El Papán Huasteco – Cocina Huasteca Auténtica en Xilitla"/>
+<meta name="twitter:description" content="Restaurante de cocina huasteca auténtica en Xilitla, SLP, a minutos del Castillo de Edward James (Las Pozas). Abierto todos los días."/>
+<meta name="twitter:image" content="https://papan-huasteco-production.up.railway.app/Images/og-image.jpg"/>
+<meta name="twitter:image:alt" content="Terraza del restaurante El Papán Huasteco en Xilitla rodeada de selva huasteca"/>
 
 <script type="application/ld+json">
 {
@@ -16,12 +45,24 @@
   "description":"Restaurante de cocina huasteca auténtica en Xilitla, San Luis Potosí. A minutos del Castillo de Edward James.",
   "url":"https://papan-huasteco-production.up.railway.app",
   "telephone":"+52-489-125-5181",
-  "servesCuisine":["Mexican","Huasteca"],
+  "image":"https://papan-huasteco-production.up.railway.app/Images/og-image.jpg",
+  "logo":"https://papan-huasteco-production.up.railway.app/Images/LOGO RESTAURANT PAPAN.png",
+  "servesCuisine":["Mexican","Huasteca","Cocina Huasteca Potosina"],
   "priceRange":"$$",
+  "acceptsReservations":true,
+  "paymentAccepted":"Efectivo, Tarjeta de crédito y débito",
+  "currenciesAccepted":"MXN",
+  "hasMenu":"https://img1.wsimg.com/blobby/go/a8c05a84-4571-4c63-88c9-26db66fe3d5d/Men%C3%BA%20Papan%20Huasteco.pdf",
+  "areaServed":"Xilitla, Huasteca Potosina, San Luis Potosí",
   "address":{"@type":"PostalAddress","streetAddress":"Camino La Conchita – Las Pozas Núm. 10","addressLocality":"Xilitla","addressRegion":"San Luis Potosí","postalCode":"79910","addressCountry":"MX"},
   "geo":{"@type":"GeoCoordinates","latitude":21.3845,"longitude":-98.9967},
   "openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"07:30","closes":"21:00"}],
-  "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"87","bestRating":"5"}
+  "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"87","bestRating":"5"},
+  "sameAs":[
+    "https://www.instagram.com/restaurante_papan_huasteco/",
+    "https://www.facebook.com/profile.php?id=61567130595236",
+    "https://www.tripadvisor.com.mx/Restaurant_Review-g635968-d27771889-Reviews-El_Papan_Huasteco_Restaurante-Xilitla_Central_Mexico_and_Gulf_Coast.html"
+  ]
 }
 </script>
 
@@ -334,6 +375,19 @@ body { cursor: default; }
 .nav:not(.scrolled) .nav-tel { color: rgba(255,255,255,0.75); }
 .nav.scrolled .nav-tel { color: var(--gris-2); }
 
+/* social icons */
+.nav-social { display: flex; align-items: center; gap: 0.55rem; }
+.social-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  transition: opacity 0.3s, color 0.4s;
+  opacity: 0.85;
+}
+.social-link:hover { opacity: 1; }
+.social-link svg { width: 17px; height: 17px; display: block; }
+.nav:not(.scrolled) .social-link { color: rgba(255,255,255,0.9); }
+.nav.scrolled .social-link { color: var(--gris-1); }
+
 /* hamburger */
 .nav-hamburger {
   display: none;
@@ -397,7 +451,7 @@ body { cursor: default; }
 .hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1800&q=90&fit=crop');
+  background-image: url('Images/hero-bg.jpg');
   background-size: cover;
   background-position: center 40%;
   transform: scale(1.06);
@@ -777,7 +831,7 @@ body { cursor: default; }
 .experiencia-bg {
   position: absolute;
   inset: 0;
-  background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&q=85&fit=crop');
+  background-image: url('Images/terraza-web.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -1275,6 +1329,9 @@ body { cursor: default; }
   flex-wrap: wrap;
 }
 .rating-item { text-align: center; }
+a.rating-item { display: block; transition: transform 0.3s; }
+a.rating-item:hover { transform: translateY(-3px); }
+a.rating-item:hover .rating-platform { color: var(--tierra); }
 .rating-num {
   font-family: var(--font-display);
   font-size: 2.8rem;
@@ -1447,7 +1504,7 @@ body { cursor: default; }
 }
 .cta-bg {
   position: absolute; inset: 0;
-  background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=85&fit=crop');
+  background-image: url('Images/fogon-web.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -1502,6 +1559,17 @@ body { cursor: default; }
   transition: color 0.2s;
 }
 .footer-links-row a:hover { color: rgba(255,255,255,0.7); }
+.footer-social {
+  max-width: var(--max-w);
+  margin: 1.5rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.footer-social .social-link { color: rgba(255,255,255,0.45); }
+.footer-social .social-link:hover { color: rgba(255,255,255,0.9); }
 
 /* ── WhatsApp float ── */
 .wfloat {
@@ -1580,9 +1648,379 @@ body { cursor: default; }
   .info-contact-item { flex-direction: row; align-items: flex-start; }
   .container, .container--narrow { padding: 0 1.2rem; }
 }
+
+/* ════════════ RESERVAR (formulario) ════════════ */
+.reservar { padding: var(--section-pad) 0; background: var(--crema-1); }
+.reservar-grid {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 2rem;
+  display: grid; grid-template-columns: 1fr 1.1fr;
+  gap: clamp(2rem, 5vw, 5rem); align-items: start;
+}
+.reservar-form-wrap {
+  background: var(--blanco); border: 1px solid var(--crema-2);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+.reservar-form { display: flex; flex-direction: column; gap: 1.1rem; }
+.form-row--2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-row--3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-field > span {
+  font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gris-2);
+}
+.form-field input, .form-field textarea {
+  font-family: var(--font-ui); font-size: 0.92rem; padding: 0.75rem 0.85rem;
+  border: 1px solid var(--crema-2); background: var(--crema-0); color: var(--negro);
+  transition: border-color 0.2s; width: 100%;
+}
+.form-field input:focus, .form-field textarea:focus { outline: none; border-color: var(--tierra); }
+.form-field textarea { resize: vertical; }
+.reservar-legal {
+  font-family: var(--font-ui); font-size: 0.72rem; color: var(--gris-3);
+  line-height: 1.5; margin-top: 0.2rem;
+}
+.reservar-legal a { color: var(--tierra); text-decoration: underline; }
+.reservar-ok { text-align: center; padding: 2.5rem 1rem; }
+.reservar-ok-icon {
+  width: 54px; height: 54px; border-radius: 50%; background: var(--verde); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 1rem;
+}
+.reservar-ok h3 {
+  font-family: var(--font-display); font-size: 1.6rem; font-weight: 400;
+  color: var(--negro); margin-bottom: 0.5rem;
+}
+.reservar-ok p { font-family: var(--font-ui); font-size: 0.92rem; color: var(--gris-2); }
+@media (max-width: 820px) {
+  .reservar-grid { grid-template-columns: 1fr; }
+  .form-row--3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px) {
+  .form-row--2, .form-row--3 { grid-template-columns: 1fr; }
+}
+
+/* ════════════ Miniaturas de platillos (pendiente de fotos) ════════════ */
+/* Cuando haya fotos, envolver el contenido del .menu-row así:
+   <div class="menu-row">
+     <img class="menu-row-thumb" src="Images/platillos/xxx.jpg" alt="..." loading="lazy"/>
+     <div class="menu-row-left">...</div>
+     <div class="menu-row-price">$00</div>
+   </div>
+*/
+.menu-row-thumb {
+  width: 56px; height: 56px; object-fit: cover; border-radius: 4px;
+  flex-shrink: 0; margin-right: 0.9rem; border: 1px solid var(--crema-2);
+}
+
+/* ════════════ ANIMACIONES + ACCESIBILIDAD ════════════ */
+
+/* Barra de progreso de scroll */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 200;
+  background: var(--tierra); transform: scaleX(0); transform-origin: 0 50%;
+}
+
+/* Entrada del hero al cargar (fade-up escalonado) */
+@keyframes heroIn { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+.hero-tag      { animation: heroIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+.hero-desc     { animation: heroIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.28s both; }
+.hero-btns     { animation: heroIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.40s both; }
+.hero-stats    { animation: heroIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.52s both; }
+
+/* Fade suave al cambiar pestañas del menú */
+.menu-panel.active { animation: fadeIn 0.4s ease both; }
+
+/* Pop del check "reserva enviada" */
+@keyframes pop { 0% { transform: scale(0); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+.reservar-ok-icon { animation: pop 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+
+/* Foco visible para navegación con teclado (a11y) */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible,
+.social-link:focus-visible, .menu-tab:focus-visible {
+  outline: 2px solid var(--tierra);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Respeto a "reducir movimiento" (a11y) — neutraliza toda animación */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .hero-bg { animation: none !important; transform: none !important; }
+  .scroll-progress { display: none !important; }
+  .marquee-track { animation: none !important; }
+}
+
+/* ════════════ ANIMACIONES CREATIVAS (2ª tanda) ════════════ */
+
+/* Hero H1: reveal de líneas tipo máscara (el texto sube desde abajo) */
+@keyframes lineRise { from { transform: translateY(105%); } to { transform: translateY(0); } }
+.hero-h1 .h1-line { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.hero-h1 .h1-line > span { display: block; transform: translateY(105%); animation: lineRise 0.9s cubic-bezier(0.16,1,0.3,1) both; }
+.hero-h1 .h1-line:nth-child(1) > span { animation-delay: 0.18s; }
+.hero-h1 .h1-line:nth-child(2) > span { animation-delay: 0.32s; }
+
+/* Reveal direccional (entra desde un lado) */
+.reveal-left  { transform: translateX(-42px); }
+.reveal-right { transform: translateX(42px); }
+.reveal-left.visible, .reveal-right.visible { transform: none; }
+
+/* Indicador deslizante de pestañas del menú */
+.menu-tabs-bar { position: relative; }
+.menu-tab.active { border-bottom-color: transparent; }
+.menu-tab:hover { border-bottom-color: transparent; }
+.menu-tab-indicator {
+  position: absolute; bottom: -1px; left: 0; height: 2px; width: 0;
+  background: var(--tierra); pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), width 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* Marquee de especialidades (una sola en la página) */
+.specialties-marquee { overflow: hidden; background: var(--verde-dark); padding: 0.9rem 0; white-space: nowrap; }
+.marquee-track { display: inline-flex; align-items: center; animation: marquee 36s linear infinite; }
+.marquee-track span { font-family: var(--font-display); font-style: italic; font-size: 1.45rem; color: rgba(255,255,255,0.88); padding: 0 1.4rem; }
+.marquee-track .sep { color: var(--tierra-claro); font-style: normal; font-size: 0.65rem; padding: 0 0.2rem; }
+.specialties-marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* Botones: elevación al hover + sensación de pulsado */
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(0.98); }
+
+/* WhatsApp flotante: anillo de atención */
+.wfloat::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid var(--verde); pointer-events: none;
+  animation: wring 2.6s ease-out infinite;
+}
+@keyframes wring { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(1.8); opacity: 0; } }
+
+/* ════════════ ANIMACIONES (recomendaciones, 4ª tanda) ════════════ */
+
+/* Tabs del menú: el contenido entra con leve subida */
+.menu-panel.active { animation: tabPanelIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+@keyframes tabPanelIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Filas del menú: avanzan ligeramente al hover */
+.menu-row { transition: border-color 0.2s, transform 0.2s ease; }
+.menu-row:hover { transform: translateX(5px); }
+
+/* Strip: el icono "salta" al hover */
+.strip-item:hover .strip-icon { animation: stripIconBounce 0.5s cubic-bezier(0.36,0.07,0.19,0.97); }
+@keyframes stripIconBounce {
+  0%,100% { transform: scale(1) rotate(0); }
+  30% { transform: scale(1.35) rotate(-8deg); }
+  70% { transform: scale(1.18) rotate(5deg); }
+}
+
+/* Nosotros: la imagen flotante se endereza al entrar */
+.intro-img-float { transition: transform 0.9s cubic-bezier(0.16,1,0.3,1), opacity 0.7s ease; }
+.intro-visual .intro-img-float { transform: rotate(4deg) translateY(22px); opacity: 0; }
+.intro-visual.visible .intro-img-float { transform: rotate(0) translateY(0); opacity: 1; transition-delay: 0.25s; }
+
+/* Nosotros: la línea lateral de la cita "crece" */
+.intro-pull { position: relative; border-left-color: transparent; }
+.intro-pull::before {
+  content: ""; position: absolute; left: -2px; top: 0; bottom: 0; width: 2px;
+  background: var(--tierra-claro); transform: scaleY(0); transform-origin: bottom;
+  transition: transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s;
+}
+.intro-pull.visible::before { transform: scaleY(1); }
+
+/* Galería: entrada en cascada + zoom-in de lightbox */
+.galeria-mosaic .gal:nth-child(1) { transition-delay: 0.05s; }
+.galeria-mosaic .gal:nth-child(2) { transition-delay: 0.13s; }
+.galeria-mosaic .gal:nth-child(3) { transition-delay: 0.21s; }
+.galeria-mosaic .gal:nth-child(4) { transition-delay: 0.29s; }
+.galeria-mosaic .gal:nth-child(5) { transition-delay: 0.37s; }
+.lightbox {
+  position: fixed; inset: 0; z-index: 300; background: rgba(10,8,5,0.92);
+  display: flex; align-items: center; justify-content: center; padding: 5vw;
+  opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s;
+}
+.lightbox.open { opacity: 1; visibility: visible; }
+.lightbox img { max-width: 92vw; max-height: 88vh; object-fit: contain; box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.85); transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+.lightbox.open img { transform: scale(1); }
+.lightbox-close {
+  position: absolute; top: 1.5rem; right: 1.5rem; width: 44px; height: 44px;
+  border: none; border-radius: 50%; background: rgba(255,255,255,0.12); color: #fff;
+  font-size: 1.4rem; cursor: pointer; transition: background 0.2s;
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.25); }
+
+/* Platillos: brillo recorriendo el badge destacado */
+.menu-feat-badge { position: relative; overflow: hidden; }
+.menu-feat-badge::after {
+  content: ""; position: absolute; top: 0; left: -120%; width: 55%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+  animation: shimmer 5s ease-in-out 2s infinite;
+}
+@keyframes shimmer { 0% { left: -120%; } 18% { left: 170%; } 100% { left: 170%; } }
+
+/* Testimonios: las estrellas se iluminan una a una */
+.review-stars span { display: inline-block; }
+.review-card.visible .review-stars span { animation: pop 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+.review-card.visible .review-stars span:nth-child(1) { animation-delay: 0.10s; }
+.review-card.visible .review-stars span:nth-child(2) { animation-delay: 0.18s; }
+.review-card.visible .review-stars span:nth-child(3) { animation-delay: 0.26s; }
+.review-card.visible .review-stars span:nth-child(4) { animation-delay: 0.34s; }
+.review-card.visible .review-stars span:nth-child(5) { animation-delay: 0.42s; }
+
+/* Reserva: formulario en cascada + foco + éxito */
+.reservar-form-wrap.visible .form-row { animation: heroIn 0.55s cubic-bezier(0.16,1,0.3,1) both; }
+.reservar-form-wrap.visible .form-row:nth-of-type(1) { animation-delay: 0.10s; }
+.reservar-form-wrap.visible .form-row:nth-of-type(2) { animation-delay: 0.18s; }
+.reservar-form-wrap.visible .form-row:nth-of-type(3) { animation-delay: 0.26s; }
+.reservar-form-wrap.visible .form-row:nth-of-type(4) { animation-delay: 0.34s; }
+.form-field { position: relative; }
+.form-field::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%;
+  background: var(--verde); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.form-field:focus-within::after { transform: scaleX(1); }
+.reservar-ok:not([hidden]) { animation: heroIn 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+
+/* Info: amenidades entran como badges */
+.amenities-grid.visible .amenity { animation: pop 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+.amenities-grid.visible .amenity:nth-child(1) { animation-delay: 0.05s; }
+.amenities-grid.visible .amenity:nth-child(2) { animation-delay: 0.12s; }
+.amenities-grid.visible .amenity:nth-child(3) { animation-delay: 0.19s; }
+.amenities-grid.visible .amenity:nth-child(4) { animation-delay: 0.26s; }
+.amenities-grid.visible .amenity:nth-child(5) { animation-delay: 0.33s; }
+.amenities-grid.visible .amenity:nth-child(6) { animation-delay: 0.40s; }
+
+/* Strip: entrada en cascada */
+.strip-inner .strip-item:nth-child(1) { transition-delay: 0.05s; }
+.strip-inner .strip-item:nth-child(2) { transition-delay: 0.13s; }
+.strip-inner .strip-item:nth-child(3) { transition-delay: 0.21s; }
+.strip-inner .strip-item:nth-child(4) { transition-delay: 0.29s; }
+
+/* ════════════ EFECTOS PREMIUM (5ª tanda) ════════════ */
+
+/* Transición suave de tema */
+body { transition: background-color 0.5s ease, color 0.5s ease; }
+
+/* Modo noche (opt-in con botón; mantiene --blanco para texto claro) */
+[data-theme="dark"] {
+  --crema-0: #15120e;
+  --crema-1: #1c1813;
+  --crema-2: #2c2620;
+  --negro:   #f2ebdf;
+  --gris-1:  #d9d0c3;
+  --gris-2:  #b1a596;
+  --gris-3:  #8c8276;
+  --gris-4:  #463f37;
+}
+[data-theme="dark"] .nav.scrolled { background: rgba(21,18,14,0.94); box-shadow: 0 2px 20px rgba(0,0,0,0.45); }
+[data-theme="dark"] .plato-card:hover { background: #221d17; }
+[data-theme="dark"] .reservar-form-wrap { background: #1c1813; }
+[data-theme="dark"] .btn--outline-light:hover { color: #15120e; }
+[data-theme="dark"] .form-field input, [data-theme="dark"] .form-field textarea { background: #15120e; }
+
+/* Botón de modo noche */
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; cursor: pointer; background: none; border: none;
+  color: inherit; opacity: 0.85; transition: opacity 0.3s, color 0.4s;
+}
+.theme-toggle:hover { opacity: 1; }
+.theme-toggle svg { width: 17px; height: 17px; }
+.nav:not(.scrolled) .theme-toggle { color: rgba(255,255,255,0.9); }
+.nav.scrolled .theme-toggle { color: var(--gris-1); }
+
+/* Hojas flotantes en el hero */
+.hero-leaves { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+.leaf {
+  position: absolute; bottom: -20px; width: 13px; height: 13px;
+  background: var(--verde-light); border-radius: 0 100% 0 100%;
+  opacity: 0; animation: leafFloat linear infinite;
+}
+@keyframes leafFloat {
+  0%   { transform: translateY(0) rotate(0); opacity: 0; }
+  10%  { opacity: 0.45; }
+  90%  { opacity: 0.45; }
+  100% { transform: translateY(-92vh) rotate(240deg); opacity: 0; }
+}
+
+/* Vapor sobre el café (sección Nosotros) */
+.steam { position: absolute; top: 4px; left: 0; right: 0; height: 40px; display: flex; justify-content: center; gap: 16px; pointer-events: none; z-index: 3; }
+.steam-p { width: 7px; height: 34px; background: linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,0.55)); filter: blur(4px); border-radius: 50%; opacity: 0; animation: steamRise 4s ease-in infinite; }
+.steam-p:nth-child(2) { animation-delay: 1.3s; }
+.steam-p:nth-child(3) { animation-delay: 2.6s; }
+@keyframes steamRise { 0% { transform: translateY(8px) scaleX(1); opacity: 0; } 25% { opacity: 0.55; } 100% { transform: translateY(-34px) scaleX(1.7); opacity: 0; } }
+
+/* Cita: parpadeo sutil de luz de vela */
+.amlo-quote { animation: candle 7s ease-in-out infinite; }
+@keyframes candle { 0%,100% { opacity: 1; } 18% { opacity: 0.93; } 32% { opacity: 0.99; } 50% { opacity: 0.9; } 66% { opacity: 0.98; } 82% { opacity: 0.94; } }
+
+/* Estela del cursor (color tierra) */
+.cursor-dot {
+  position: fixed; top: 0; left: 0; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--tierra); pointer-events: none; z-index: 400;
+  transform: translate(-50%,-50%); opacity: 0.7;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Iconos SVG a medida (reemplazan emojis) */
+.ic {
+  width: 1em; height: 1em; display: inline-block; vertical-align: -0.14em;
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.ic-fill { fill: currentColor; stroke: none; }
+
+/* ════════════ FAQ (SEO) ════════════ */
+.faq { padding: var(--section-pad) 0; background: var(--crema-1); }
+.faq-inner { max-width: var(--content-w); margin: 0 auto; padding: 0 2rem; }
+.faq-head { text-align: center; margin-bottom: 2.5rem; }
+.faq-item { border-bottom: 1px solid var(--crema-2); }
+.faq-item summary {
+  list-style: none; cursor: pointer; padding: 1.25rem 2.2rem 1.25rem 0; position: relative;
+  font-family: var(--font-display); font-size: 1.25rem; font-weight: 500; color: var(--negro);
+  transition: color 0.2s;
+}
+.faq-item summary:hover { color: var(--tierra); }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+"; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  font-family: var(--font-ui); font-size: 1.5rem; font-weight: 300; color: var(--tierra);
+}
+.faq-item[open] summary::after { content: "\2212"; }
+.faq-item p {
+  font-family: var(--font-body); font-size: 0.98rem; color: var(--gris-2);
+  line-height: 1.75; padding: 0 2.2rem 1.4rem 0; margin: 0;
+}
 </style>
 </head>
 <body>
+
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<!-- ══════════════ SPRITE DE ICONOS (a medida) ══════════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="ic-leaf" viewBox="0 0 24 24"><path d="M4 20c0-8 6-14.5 16-15-1 10.5-7 16-16 15Z"/><path d="M5 19c4-5 8-8 12-9"/></symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M12 21c4.5-5 6.5-8.5 6.5-12a6.5 6.5 0 1 0-13 0c0 3.5 2 7 6.5 12Z"/><circle cx="12" cy="9" r="2.4"/></symbol>
+  <symbol id="ic-car" viewBox="0 0 24 24"><path d="M4 15v-2.5l2-5.5h12l2 5.5V15"/><path d="M4 12.5h16"/><circle cx="8" cy="15.5" r="1.6"/><circle cx="16" cy="15.5" r="1.6"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 2"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 17l-5.2 2.6 1-5.8-4.3-4.1 5.9-.9Z"/></symbol>
+  <symbol id="ic-award" viewBox="0 0 24 24"><path d="M7 4h10v3.5a5 5 0 0 1-10 0V4Z"/><path d="M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10M17 5h3v1.5A3.5 3.5 0 0 1 16.5 10"/><path d="M12 12.5v3"/><path d="M9.5 19h5l-.6-3.5h-3.8Z"/></symbol>
+  <symbol id="ic-grain" viewBox="0 0 24 24"><path d="M12 21V8.5"/><path d="M12 9c0-2.2 1.6-3.8 3.8-3.8C15.8 7.4 14.2 9 12 9Z"/><path d="M12 9c0-2.2-1.6-3.8-3.8-3.8C8.2 7.4 9.8 9 12 9Z"/><path d="M12 14c0-2.2 1.6-3.8 3.8-3.8C15.8 12.4 14.2 14 12 14Z"/><path d="M12 14c0-2.2-1.6-3.8-3.8-3.8C8.2 12.4 9.8 14 12 14Z"/></symbol>
+  <symbol id="ic-flame" viewBox="0 0 24 24"><path d="M12 3c3.2 4 5 6.2 5 9.2a5 5 0 0 1-10 0c0-1.5.6-2.8 1.6-3.9C9 10 10 11 10 12c0-3 1-5.2 2-9Z"/></symbol>
+  <symbol id="ic-fish" viewBox="0 0 24 24"><path d="M3 12c3-4.2 7-5.2 11-4.2 2.2.6 4.2 2.2 6 4.2-1.8 2-3.8 3.6-6 4.2-4 1-8 0-11-4.2Z"/><path d="M14 8.2 18.5 5v14L14 15.8"/><circle cx="7.5" cy="11" r=".7" class="ic-fill"/></symbol>
+  <symbol id="ic-chat" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H9.5L5 18.5V15a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/></symbol>
+  <symbol id="ic-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.6 2.8 2.6 14.2 0 17M12 3.5c-2.6 2.8-2.6 14.2 0 17"/></symbol>
+  <symbol id="ic-phone" viewBox="0 0 24 24"><path d="M6 3.5h3l1.4 4-2 1.4a11 11 0 0 0 4.7 4.7l1.4-2 4 1.4v3a1.5 1.5 0 0 1-1.6 1.5A15.5 15.5 0 0 1 4.6 5.1 1.5 1.5 0 0 1 6 3.5Z"/></symbol>
+  <symbol id="ic-paw" viewBox="0 0 24 24"><circle cx="7" cy="10" r="1.7"/><circle cx="12" cy="8" r="1.8"/><circle cx="17" cy="10" r="1.7"/><path d="M12 12c-3 0-5 2-5 4.4 0 1.5 1.3 2.1 2.6 1.5l2.4-1 2.4 1c1.3.6 2.6 0 2.6-1.5C17 14 15 12 12 12Z"/></symbol>
+  <symbol id="ic-wifi" viewBox="0 0 24 24"><path d="M3 8.5a14 14 0 0 1 18 0"/><path d="M6 12a9 9 0 0 1 12 0"/><path d="M9 15.5a4 4 0 0 1 6 0"/><circle cx="12" cy="19" r="1" class="ic-fill"/></symbol>
+  <symbol id="ic-card" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M6.5 14h4"/></symbol>
+  <symbol id="ic-bed" viewBox="0 0 24 24"><path d="M3 18V8"/><path d="M3 13h16a2 2 0 0 1 2 2v3"/><path d="M3 13v-1.5A1.5 1.5 0 0 1 4.5 10H11a2 2 0 0 1 2 2v1"/><path d="M21 18v-3"/></symbol>
+</svg>
 
 <!-- ══════════════ MOBILE DRAWER ══════════════ -->
 <div class="nav-drawer" id="drawer" aria-hidden="true">
@@ -1591,8 +2029,9 @@ body { cursor: default; }
   <a href="#menu-section" onclick="closeDrawer()">Menú</a>
   <a href="#laspozas" onclick="closeDrawer()">Ubicación</a>
   <a href="#galeria" onclick="closeDrawer()">Galería</a>
+  <a href="blog/index.html">Blog</a>
   <a href="#info" onclick="closeDrawer()">Contacto</a>
-  <a href="https://wa.me/524891255181" target="_blank" rel="noopener noreferrer" class="btn btn--tierra" style="margin-top:1rem;">Reservar</a>
+  <a href="#reservar" onclick="closeDrawer()" class="btn btn--tierra" style="margin-top:1rem;">Reservar mesa</a>
 </div>
 
 <!-- ══════════════ NAV ══════════════ -->
@@ -1612,14 +2051,26 @@ body { cursor: default; }
   <ul class="nav-links" role="list">
     <li><a href="#nosotros">Nosotros</a></li>
     <li><a href="#menu-section">Menú</a></li>
-    <li><a href="#laspozas">Ubicación</a></li>
+    <li><a href="#reservar">Reservar</a></li>
     <li><a href="#galeria">Galería</a></li>
+    <li><a href="blog/index.html">Blog</a></li>
     <li><a href="#info">Contacto</a></li>
   </ul>
 
   <div class="nav-cta-wrap">
     <a href="tel:4891255181" class="nav-tel" aria-label="Llamar al restaurante">(489) 125-5181</a>
-    <a href="https://wa.me/524891255181" target="_blank" rel="noopener" class="btn btn--filled" style="font-size:0.72rem;padding:0.7rem 1.3rem;" aria-label="Reservar por WhatsApp">Reservar</a>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar modo claro/oscuro">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="nav-social">
+      <a class="social-link" href="https://www.instagram.com/restaurante_papan_huasteco/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de El Papán Huasteco">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.52.01-4.76.07-.9.04-1.39.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.81-.32 1.71-.06 1.24-.07 1.61-.07 4.76s.01 3.52.07 4.76c.04.9.19 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.81.28 1.71.32 1.24.06 1.61.07 4.76.07s3.52-.01 4.76-.07c.9-.04 1.39-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.81.32-1.71.06-1.24.07-1.61.07-4.76s-.01-3.52-.07-4.76c-.04-.9-.19-1.39-.32-1.71a2.85 2.85 0 00-.69-1.06 2.85 2.85 0 00-1.06-.69c-.32-.13-.81-.28-1.71-.32-1.24-.06-1.61-.07-4.76-.07zm0 2.76a5.46 5.46 0 110 10.92 5.46 5.46 0 010-10.92zm0 9a3.54 3.54 0 100-7.08 3.54 3.54 0 000 7.08zm5.66-9.23a1.28 1.28 0 11-2.56 0 1.28 1.28 0 012.56 0z"/></svg>
+      </a>
+      <a class="social-link" href="https://www.facebook.com/profile.php?id=61567130595236" target="_blank" rel="noopener noreferrer" aria-label="Facebook de El Papán Huasteco">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+      </a>
+    </div>
+    <a href="#reservar" class="btn btn--filled" style="font-size:0.72rem;padding:0.7rem 1.3rem;" aria-label="Ir a reservar mesa">Reservar</a>
     <button class="nav-hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -1631,6 +2082,16 @@ body { cursor: default; }
 <section id="inicio" class="hero" aria-label="Restaurante El Papán Huasteco — Inicio">
   <div class="hero-bg" role="img" aria-label="Platillos tradicionales de la Huasteca Potosina en el restaurante El Papán Huasteco, Xilitla"></div>
 
+  <div class="hero-leaves" aria-hidden="true">
+    <span class="leaf" style="left:7%;width:12px;animation-duration:15s;animation-delay:0s;"></span>
+    <span class="leaf" style="left:19%;width:9px;animation-duration:19s;animation-delay:3s;"></span>
+    <span class="leaf" style="left:33%;width:15px;animation-duration:13s;animation-delay:6s;"></span>
+    <span class="leaf" style="left:48%;width:8px;animation-duration:21s;animation-delay:1.5s;"></span>
+    <span class="leaf" style="left:63%;width:13px;animation-duration:16s;animation-delay:8s;"></span>
+    <span class="leaf" style="left:78%;width:10px;animation-duration:18s;animation-delay:4.5s;"></span>
+    <span class="leaf" style="left:90%;width:14px;animation-duration:14s;animation-delay:10s;"></span>
+  </div>
+
   <div class="hero-content">
     <div class="hero-left">
       <div class="hero-tag">
@@ -1639,9 +2100,9 @@ body { cursor: default; }
       </div>
 
       <!-- H1 principal: keyword de SEO local + propuesta de valor -->
-      <h1 class="hero">
-        Cocina Huasteca<br/>
-        <em>de Verdad</em>
+      <h1 class="hero hero-h1">
+        <span class="h1-line"><span>Cocina Huasteca</span></span>
+        <span class="h1-line"><span><em>de Verdad</em></span></span>
       </h1>
 
       <p class="hero-desc">
@@ -1651,7 +2112,7 @@ body { cursor: default; }
 
       <div class="hero-btns">
         <a href="#menu-section" class="btn btn--outline-light" aria-label="Ver el menú completo">Ver el Menú</a>
-        <a href="https://wa.me/524891255181" target="_blank" rel="noopener" class="btn btn--tierra" aria-label="Reservar por WhatsApp">
+        <a href="#reservar" class="btn btn--tierra" aria-label="Ir a reservar mesa">
           Reservar Mesa →
         </a>
       </div>
@@ -1659,15 +2120,15 @@ body { cursor: default; }
 
     <div class="hero-stats" aria-label="Datos del restaurante">
       <div class="hero-stat-item">
-        <div class="hero-stat-num">4.9</div>
+        <div class="hero-stat-num" data-count="4.9">4.9</div>
         <div class="hero-stat-lbl">★★★★★ Google</div>
       </div>
       <div class="hero-stat-item">
-        <div class="hero-stat-num">5'</div>
+        <div class="hero-stat-num" data-count="5" data-suffix="'">5'</div>
         <div class="hero-stat-lbl">del Castillo</div>
       </div>
       <div class="hero-stat-item">
-        <div class="hero-stat-num">#1</div>
+        <div class="hero-stat-num" data-count="1" data-prefix="#">#1</div>
         <div class="hero-stat-lbl">en Xilitla</div>
       </div>
     </div>
@@ -1685,29 +2146,29 @@ body { cursor: default; }
 <!-- ══════════════ STRIP ══════════════ -->
 <div class="strip" aria-label="Características del restaurante">
   <div class="strip-inner">
-    <div class="strip-item">
-      <span class="strip-icon">🌿</span>
+    <div class="strip-item reveal">
+      <span class="strip-icon"><svg class="ic"><use href="#ic-leaf"/></svg></span>
       <div class="strip-text">
         <strong>Ingredientes 100% Frescos</strong>
         Preparados al momento con productos locales de la región
       </div>
     </div>
-    <div class="strip-item">
-      <span class="strip-icon">📍</span>
+    <div class="strip-item reveal">
+      <span class="strip-icon"><svg class="ic"><use href="#ic-pin"/></svg></span>
       <div class="strip-text">
         <strong>Junto al Castillo de Edward James</strong>
         La parada perfecta antes o después de Las Pozas
       </div>
     </div>
-    <div class="strip-item">
-      <span class="strip-icon">🚗</span>
+    <div class="strip-item reveal">
+      <span class="strip-icon"><svg class="ic"><use href="#ic-car"/></svg></span>
       <div class="strip-text">
         <strong>Estacionamiento Disponible</strong>
         Llega sin preocupaciones, tenemos espacio para tu vehículo
       </div>
     </div>
-    <div class="strip-item">
-      <span class="strip-icon">🕗</span>
+    <div class="strip-item reveal">
+      <span class="strip-icon"><svg class="ic"><use href="#ic-clock"/></svg></span>
       <div class="strip-text">
         <strong>Abierto Todos los Días</strong>
         De 7:30 AM a 9:00 PM · Desayuno, comida y cena
@@ -1721,24 +2182,25 @@ body { cursor: default; }
 <section id="nosotros" class="intro" aria-labelledby="nosotros-h2">
   <div class="intro-grid">
 
-    <div class="intro-visual reveal">
+    <div class="intro-visual reveal reveal-left">
       <!--
         📸 FOTO PRINCIPAL: Vista de la terraza exterior con mesas y vegetación
         alt="Terraza al aire libre del restaurante El Papán Huasteco rodeada de vegetación tropical en Xilitla, SLP"
         Recomendación: Foto horizontal tomada desde afuera, mostrando el ambiente verde y acogedor
       -->
       <div style="width:100%;aspect-ratio:3/4;position:relative;overflow:hidden;">
-        <img src="Images/terraza.jpg"
+        <img src="Images/terraza-web.jpg"
              alt="Terraza al aire libre del restaurante El Papán Huasteco rodeada de vegetación tropical en Xilitla, San Luis Potosí"
              style="width:100%;height:100%;object-fit:cover;display:block;"
              loading="lazy"/>
 
       </div>
-      <div class="intro-img-float" style="overflow:hidden;padding:0;" role="img" aria-label="Café del restaurante El Papán Huasteco">
-        <img src="Images/cafe.JPG"
+      <div class="intro-img-float" style="padding:0;" role="img" aria-label="Café del restaurante El Papán Huasteco">
+        <img src="Images/cafe-web.jpg"
              alt="Café de olla del restaurante El Papán Huasteco, Xilitla"
-             style="width:100%;height:100%;object-fit:cover;display:block;"
+             style="width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;"
              loading="lazy"/>
+        <div class="steam" aria-hidden="true"><span class="steam-p"></span><span class="steam-p"></span><span class="steam-p"></span></div>
       </div>
     </div>
 
@@ -1821,8 +2283,9 @@ body { cursor: default; }
         alt="Enchiladas Huastecas del restaurante El Papán Huasteco en Xilitla — salsa regional, cecina y frijoles"
       -->
       <div class="plato-img-wrap">
-        <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=900&amp;q=85&amp;fit=crop"
-             alt="Enchiladas Huastecas del restaurante El Papán Huasteco en Xilitla — salsa regional, cecina y frijoles de olla"
+        <!-- TODO: reemplazar por foto real de las Enchiladas Huastecas cuando el dueño la envíe -->
+        <img src="Images/plato-web.jpg"
+             alt="Platillo de la cocina huasteca servido en El Papán Huasteco, Xilitla"
              class="plato-img"
              loading="lazy"
              width="600" height="450"/>
@@ -1843,15 +2306,16 @@ body { cursor: default; }
         alt="Huevos Ahogados en cazuela de barro del restaurante El Papán Huasteco — salsa ranchera con rajas poblanas y aguacate"
       -->
       <div class="plato-img-wrap">
-        <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=900&amp;q=85&amp;fit=crop"
-             alt="Huevos Ahogados en cazuela de barro del restaurante El Papán Huasteco, Xilitla — salsa ranchera con rajas poblanas, queso y aguacate"
+        <!-- TODO: reemplazar por foto real de los Huevos Ahogados cuando el dueño la envíe -->
+        <img src="Images/fogon-web.jpg"
+             alt="Preparación al fogón en la cocina de El Papán Huasteco, Xilitla"
              class="plato-img"
              loading="lazy"
              width="600" height="450"/>
         <div class="plato-overlay"><span class="plato-overlay-text">El más pedido</span></div>
       </div>
       <div class="plato-body">
-        <p class="plato-category">⭐ El Más Pedido</p>
+        <p class="plato-category"><svg class="ic"><use href="#ic-star"/></svg> El Más Pedido</p>
         <h3 class="plato-name">Huevos Ahogados</h3>
         <p class="plato-desc">En salsa ranchera con rajas poblanas, queso y aguacate, servidos en cazuela de barro. Con frijoles y tortillas del comal.</p>
         <span class="plato-price">$150</span>
@@ -1865,8 +2329,9 @@ body { cursor: default; }
         alt="Arrachera 300g con guacamole y nopal gratinado servida en El Papán Huasteco, Xilitla SLP"
       -->
       <div class="plato-img-wrap">
-        <img src="https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=900&amp;q=85&amp;fit=crop"
-             alt="Arrachera 300g con guacamole, nopal gratinado y chile toreado — platillo principal del restaurante El Papán Huasteco en Xilitla"
+        <!-- TODO: reemplazar por foto real de los Bocoles cuando el dueño la envíe -->
+        <img src="Images/cafe-web.jpg"
+             alt="Café de olla recién servido en El Papán Huasteco, Xilitla"
              class="plato-img"
              loading="lazy"
              width="600" height="450"/>
@@ -1885,7 +2350,7 @@ body { cursor: default; }
 
 <!-- ══════════════ 04. EXPERIENCIA BREAK ══════════════ -->
 <div class="experiencia-break" aria-label="Experiencia en la selva huasteca">
-  <div class="experiencia-bg" role="img" aria-label="Vista de la exuberante selva tropical de la Huasteca Potosina en Xilitla, San Luis Potosí"></div>
+  <div class="experiencia-bg" data-parallax="0.12" role="img" aria-label="Vista de la exuberante selva tropical de la Huasteca Potosina en Xilitla, San Luis Potosí"></div>
   <div class="experiencia-content reveal">
     <span class="label" style="color:rgba(255,255,255,0.5);">La Experiencia Huasteca</span>
     <!-- H2: diferenciador experiencial -->
@@ -1934,7 +2399,7 @@ body { cursor: default; }
         puesto en cada platillo.
       </p>
       <div class="amlo-badge">
-        <span class="amlo-badge-icon">🏆</span>
+        <span class="amlo-badge-icon"><svg class="ic"><use href="#ic-award"/></svg></span>
         <div class="amlo-badge-text">
           <strong>Premio a la Calidad</strong>
           Reconocido como uno de los mejores restaurantes de Xilitla
@@ -1944,6 +2409,28 @@ body { cursor: default; }
   </div>
 </section>
 
+
+<!-- ══════════════ MARQUEE DE ESPECIALIDADES ══════════════ -->
+<div class="specialties-marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Bocoles</span><span class="sep">◆</span>
+    <span>Enchiladas Huastecas</span><span class="sep">◆</span>
+    <span>Cecina</span><span class="sep">◆</span>
+    <span>Zacahuil</span><span class="sep">◆</span>
+    <span>Huevos Ahogados</span><span class="sep">◆</span>
+    <span>Café de Olla</span><span class="sep">◆</span>
+    <span>Arrachera</span><span class="sep">◆</span>
+    <span>Bandeja Huasteca</span><span class="sep">◆</span>
+    <span>Bocoles</span><span class="sep">◆</span>
+    <span>Enchiladas Huastecas</span><span class="sep">◆</span>
+    <span>Cecina</span><span class="sep">◆</span>
+    <span>Zacahuil</span><span class="sep">◆</span>
+    <span>Huevos Ahogados</span><span class="sep">◆</span>
+    <span>Café de Olla</span><span class="sep">◆</span>
+    <span>Arrachera</span><span class="sep">◆</span>
+    <span>Bandeja Huasteca</span><span class="sep">◆</span>
+  </div>
+</div>
 
 <!-- ══════════════ 06. MENÚ COMPLETO ══════════════ -->
 <section id="menu-section" class="menu-highlight" aria-labelledby="menu-h2">
@@ -1974,6 +2461,7 @@ body { cursor: default; }
     <button class="menu-tab" data-tab="mar" role="tab" aria-selected="false">Del Mar</button>
     <button class="menu-tab" data-tab="antojitos" role="tab" aria-selected="false">Antojitos</button>
     <button class="menu-tab" data-tab="bebidas" role="tab" aria-selected="false">Bebidas</button>
+    <span class="menu-tab-indicator" id="tabIndicator" aria-hidden="true"></span>
   </div>
 
   <div class="menu-content">
@@ -1981,7 +2469,7 @@ body { cursor: default; }
     <div class="menu-panel active" id="tab-desayunos" role="tabpanel">
       <div class="menu-featured reveal">
         <div class="menu-feat-left">
-          <div class="menu-feat-badge">⭐ Estrella del desayuno</div>
+          <div class="menu-feat-badge"><svg class="ic"><use href="#ic-star"/></svg> Estrella del desayuno</div>
           <div class="menu-feat-name">Huevos Ahogados</div>
           <div class="menu-feat-desc">En salsa ranchera con rajas poblanas, queso y aguacate en cazuela de barro. Con frijoles y tortillas del comal.</div>
         </div>
@@ -2009,7 +2497,7 @@ body { cursor: default; }
     <div class="menu-panel" id="tab-comal" role="tabpanel">
       <div class="menu-featured reveal">
         <div class="menu-feat-left">
-          <div class="menu-feat-badge">🌽 Para compartir</div>
+          <div class="menu-feat-badge"><svg class="ic"><use href="#ic-grain"/></svg> Para compartir</div>
           <div class="menu-feat-name">Bandeja Huasteca (3 personas)</div>
           <div class="menu-feat-desc">Variedad de enchiladas, bocoles y cecina. La mejor forma de probar la Huasteca entera.</div>
         </div>
@@ -2035,7 +2523,7 @@ body { cursor: default; }
     <div class="menu-panel" id="tab-principales" role="tabpanel">
       <div class="menu-featured reveal">
         <div class="menu-feat-left">
-          <div class="menu-feat-badge">🔥 Favorito</div>
+          <div class="menu-feat-badge"><svg class="ic"><use href="#ic-flame"/></svg> Favorito</div>
           <div class="menu-feat-name">Arrachera 300 grs</div>
           <div class="menu-feat-desc">Con guacamole, quesadillas, nopal gratinado, chile toreado y cebollita.</div>
         </div>
@@ -2060,7 +2548,7 @@ body { cursor: default; }
     <div class="menu-panel" id="tab-mar" role="tabpanel">
       <div class="menu-featured reveal">
         <div class="menu-feat-left">
-          <div class="menu-feat-badge">🐟 Del Mar</div>
+          <div class="menu-feat-badge"><svg class="ic"><use href="#ic-fish"/></svg> Del Mar</div>
           <div class="menu-feat-name">Salmón a la Plancha</div>
           <div class="menu-feat-desc">Con ensalada verde, tomate cherry y reducción de balsámico.</div>
         </div>
@@ -2142,7 +2630,7 @@ body { cursor: default; }
       </p>
 
       <div class="laspozas-distance reveal reveal-delay-2">
-        <div class="laspozas-dist-num">5'</div>
+        <div class="laspozas-dist-num" data-count="5" data-suffix="'">5'</div>
         <div class="laspozas-dist-text">
           <strong>caminando al Castillo de Edward James</strong>
           <span>Camino La Conchita – Las Pozas Núm. 10, Xilitla, SLP</span>
@@ -2178,7 +2666,7 @@ body { cursor: default; }
       </div>
     </div>
 
-    <div class="laspozas-visual reveal">
+    <div class="laspozas-visual reveal reveal-right">
       <!--
         📸 FOTO: Vista del restaurante desde el camino con señal de Las Pozas al fondo
         alt="Vista exterior del restaurante El Papán Huasteco en el Camino a Las Pozas en Xilitla, San Luis Potosí"
@@ -2211,7 +2699,7 @@ body { cursor: default; }
       </h2>
     </div>
     <p class="body-sm" style="max-width:320px;">
-      Síguenos en Instagram <strong>@paraisoencantadoxilitla</strong> y comparte tu visita.
+      Síguenos en Instagram <a href="https://www.instagram.com/restaurante_papan_huasteco/" target="_blank" rel="noopener noreferrer" style="color:var(--tierra);font-weight:600;"><strong>@restaurante_papan_huasteco</strong></a> y comparte tu visita.
     </p>
   </div>
 
@@ -2220,8 +2708,8 @@ body { cursor: default; }
       📸 GAL 1: Terraza exterior con mesas vacías al amanecer
       alt="Terraza al aire libre del restaurante El Papán Huasteco al amanecer, rodeada de vegetación tropical en Xilitla SLP"
     -->
-    <div class="gal" role="img" aria-label="Terraza al aire libre del restaurante El Papán Huasteco rodeada de vegetación tropical al amanecer">
-      <div class="gal-ph gal-ph-1">🌿</div>
+    <div class="gal reveal" role="img" aria-label="Terraza al aire libre del restaurante El Papán Huasteco rodeada de vegetación tropical al amanecer">
+      <img src="Images/terraza-web.jpg" alt="" loading="lazy"/>
       <div class="gal-caption"><p class="gal-caption-text">Terraza exterior · rodeada de selva</p></div>
     </div>
 
@@ -2229,8 +2717,8 @@ body { cursor: default; }
       📸 GAL 2: Platillo estrella (Huevos Ahogados o Enchiladas en cazuela de barro)
       alt="Huevos Ahogados en cazuela de barro — platillo estrella del restaurante El Papán Huasteco, Xilitla"
     -->
-    <div class="gal" role="img" aria-label="Platillo estrella del restaurante — Huevos Ahogados en cazuela de barro con salsa ranchera, preparados en El Papán Huasteco">
-      <div class="gal-ph gal-ph-2">🍽️</div>
+    <div class="gal reveal" role="img" aria-label="Platillo estrella del restaurante — Huevos Ahogados en cazuela de barro con salsa ranchera, preparados en El Papán Huasteco">
+      <img src="Images/plato-web.jpg" alt="" loading="lazy"/>
       <div class="gal-caption"><p class="gal-caption-text">Cocina 100% casera · ingredientes frescos</p></div>
     </div>
 
@@ -2238,8 +2726,8 @@ body { cursor: default; }
       📸 GAL 3 (grande vertical): Vista hacia la selva / naturaleza desde la mesa
       alt="Vista de la selva tropical de la Huasteca Potosina desde la terraza del restaurante El Papán Huasteco, Xilitla"
     -->
-    <div class="gal" role="img" aria-label="Vista privilegiada de la selva tropical de la Huasteca Potosina desde la terraza del restaurante El Papán Huasteco">
-      <div class="gal-ph gal-ph-3">🌲</div>
+    <div class="gal reveal" role="img" aria-label="Vista privilegiada de la selva tropical de la Huasteca Potosina desde la terraza del restaurante El Papán Huasteco">
+      <img src="Images/las pozas.webp" alt="" loading="lazy"/>
       <div class="gal-caption"><p class="gal-caption-text">A 5 min · Castillo de Edward James</p></div>
     </div>
 
@@ -2247,8 +2735,8 @@ body { cursor: default; }
       📸 GAL 4: Desayuno completo servido en mesa exterior
       alt="Desayuno huasteco completo servido en la terraza del El Papán Huasteco — café de olla, tortillas y platillos regionales"
     -->
-    <div class="gal" role="img" aria-label="Desayuno huasteco completo en terraza exterior — café de olla, tortillas y platillos regionales del Papán Huasteco">
-      <div class="gal-ph gal-ph-4">☕</div>
+    <div class="gal reveal" role="img" aria-label="Desayuno huasteco completo en terraza exterior — café de olla, tortillas y platillos regionales del Papán Huasteco">
+      <img src="Images/cafe-web.jpg" alt="" loading="lazy"/>
       <div class="gal-caption"><p class="gal-caption-text">Desayuno · 7:30 AM todos los días</p></div>
     </div>
 
@@ -2256,8 +2744,8 @@ body { cursor: default; }
       📸 GAL 5: Bocoles o antojitos en primer plano
       alt="Bocoles Huastecos — antojito tradicional de la Huasteca Potosina preparado en El Papán Huasteco, Xilitla SLP"
     -->
-    <div class="gal" role="img" aria-label="Bocoles y antojitos tradicionales huastecos preparados al comal en El Papán Huasteco, Xilitla San Luis Potosí">
-      <div class="gal-ph gal-ph-5">🌮</div>
+    <div class="gal reveal" role="img" aria-label="Bocoles y antojitos tradicionales huastecos preparados al comal en El Papán Huasteco, Xilitla San Luis Potosí">
+      <img src="Images/fogon-web.jpg" alt="" loading="lazy"/>
       <div class="gal-caption"><p class="gal-caption-text">Antojitos · del comal al instante</p></div>
     </div>
   </div>
@@ -2274,7 +2762,7 @@ body { cursor: default; }
 
   <div class="reviews-grid" role="list">
     <article class="review-card reveal" role="listitem">
-      <div class="review-stars">★★★★★</div>
+      <div class="review-stars" aria-label="5 de 5 estrellas"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
       <p class="review-text">"This is a hidden gem of Xilitla. All the food ordered was delicious. Prices were reasonable and the atmosphere is amazing. The service was top notch!"</p>
       <div class="review-author">
         <div class="review-avatar" aria-hidden="true">P</div>
@@ -2283,7 +2771,7 @@ body { cursor: default; }
     </article>
 
     <article class="review-card reveal reveal-delay-1" role="listitem">
-      <div class="review-stars">★★★★★</div>
+      <div class="review-stars" aria-label="5 de 5 estrellas"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
       <p class="review-text">"El mejor restaurante de la región. La atención es increíble, el sabor excepcional. Podría desayunar, comer y cenar en el mismo lugar. También alimentas la vista con la naturaleza."</p>
       <div class="review-author">
         <div class="review-avatar" aria-hidden="true">C</div>
@@ -2292,7 +2780,7 @@ body { cursor: default; }
     </article>
 
     <article class="review-card reveal reveal-delay-2" role="listitem">
-      <div class="review-stars">★★★★★</div>
+      <div class="review-stars" aria-label="5 de 5 estrellas"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
       <p class="review-text">"This was the best restaurant of our holiday. Great food, terrace surrounded by the jungle. Estuvimos encantados con su comida 100% casera y su relajante espacio."</p>
       <div class="review-author">
         <div class="review-avatar" aria-hidden="true">B</div>
@@ -2302,18 +2790,18 @@ body { cursor: default; }
   </div>
 
   <div class="rating-summary reveal">
-    <div class="rating-item">
-      <span class="rating-num">4.9</span>
+    <a class="rating-item" href="https://maps.google.com/?q=El+Papán+Huasteco+Xilitla" target="_blank" rel="noopener noreferrer" aria-label="Ver reseñas en Google Maps">
+      <span class="rating-num" data-count="4.9">4.9</span>
       <div class="review-stars" style="font-size:0.75rem;letter-spacing:0.1em;margin:0.3rem 0;">★★★★★</div>
       <span class="rating-platform">Google Maps</span>
-    </div>
-    <div class="rating-item">
-      <span class="rating-num">5.0</span>
+    </a>
+    <a class="rating-item" href="https://www.tripadvisor.com.mx/Restaurant_Review-g635968-d27771889-Reviews-El_Papan_Huasteco_Restaurante-Xilitla_Central_Mexico_and_Gulf_Coast.html" target="_blank" rel="noopener noreferrer" aria-label="Ver reseñas en TripAdvisor">
+      <span class="rating-num" data-count="5.0">5.0</span>
       <div class="review-stars" style="font-size:0.75rem;letter-spacing:0.1em;margin:0.3rem 0;">★★★★★</div>
       <span class="rating-platform">TripAdvisor</span>
-    </div>
+    </a>
     <div class="rating-item">
-      <span class="rating-num">4.9</span>
+      <span class="rating-num" data-count="4.9">4.9</span>
       <div class="review-stars" style="font-size:0.75rem;letter-spacing:0.1em;margin:0.3rem 0;">★★★★★</div>
       <span class="rating-platform">Restaurant Guru</span>
     </div>
@@ -2321,6 +2809,94 @@ body { cursor: default; }
       <span class="rating-num">#1</span>
       <div style="height:1.2rem;"></div>
       <span class="rating-platform">Mejor en Xilitla</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════ 09b. RESERVAR ══════════════ -->
+<section id="reservar" class="reservar" aria-labelledby="reservar-h2">
+  <div class="reservar-grid">
+    <div class="reservar-intro reveal reveal-left">
+      <span class="label">Reserva tu mesa</span>
+      <h2 class="heading-lg" id="reservar-h2" style="margin-top:0.6rem;">
+        Aparta tu lugar<br/>en El Papán
+      </h2>
+      <p class="body-text" style="margin-top:1.2rem;">
+        Déjanos tus datos y te confirmamos tu reserva a la brevedad. Ideal para
+        grupos, celebraciones o si vienes desde lejos camino a Las Pozas.
+      </p>
+      <p class="body-sm" style="margin-top:1.5rem;">
+        ¿Prefieres mensaje directo?
+      </p>
+      <a href="https://wa.me/524891255181?text=Hola%2C%20quiero%20reservar%20una%20mesa%20en%20El%20Pap%C3%A1n%20Huasteco"
+         target="_blank" rel="noopener noreferrer" class="btn btn--outline" style="margin-top:0.6rem;"
+         aria-label="Reservar por WhatsApp">
+        <svg class="ic"><use href="#ic-chat"/></svg> Reservar por WhatsApp
+      </a>
+    </div>
+
+    <div class="reservar-form-wrap reveal reveal-right">
+      <div class="reservar-ok" id="reservar-ok" role="status" hidden>
+        <div class="reservar-ok-icon" aria-hidden="true">✓</div>
+        <h3>¡Solicitud enviada!</h3>
+        <p>Gracias. Recibimos tu solicitud de reserva y te confirmaremos muy pronto.</p>
+      </div>
+
+      <form class="reservar-form" id="reservar-form"
+            action="https://formsubmit.co/daftpunkmanolo@gmail.com" method="POST">
+        <!-- Configuración Formsubmit -->
+        <input type="hidden" name="_subject" value="Nueva reserva — El Papán Huasteco"/>
+        <input type="hidden" name="_template" value="table"/>
+        <input type="hidden" name="_captcha" value="true"/>
+        <input type="hidden" name="_next" value="https://papan-huasteco-production.up.railway.app/?ok=1#reservar"/>
+        <!-- Honeypot anti-spam: dejar vacío -->
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
+
+        <div class="form-row">
+          <label class="form-field">
+            <span>Nombre *</span>
+            <input type="text" name="Nombre" required autocomplete="name" placeholder="Tu nombre completo"/>
+          </label>
+        </div>
+        <div class="form-row form-row--2">
+          <label class="form-field">
+            <span>Teléfono *</span>
+            <input type="tel" name="Teléfono" required autocomplete="tel" inputmode="tel" placeholder="10 dígitos"/>
+          </label>
+          <label class="form-field">
+            <span>Correo</span>
+            <input type="email" name="Email" autocomplete="email" inputmode="email" placeholder="correo@ejemplo.com"/>
+          </label>
+        </div>
+        <div class="form-row form-row--3">
+          <label class="form-field">
+            <span>Fecha *</span>
+            <input type="date" name="Fecha" required/>
+          </label>
+          <label class="form-field">
+            <span>Hora</span>
+            <input type="time" name="Hora" min="07:30" max="21:00"/>
+          </label>
+          <label class="form-field">
+            <span>Personas *</span>
+            <input type="number" name="Personas" min="1" max="40" required inputmode="numeric" placeholder="2"/>
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="form-field">
+            <span>Comentario</span>
+            <textarea name="Comentario" rows="3" placeholder="Alguna ocasión especial, alergias, etc. (opcional)"></textarea>
+          </label>
+        </div>
+        <button type="submit" class="btn btn--filled" style="width:100%;justify-content:center;">
+          Solicitar Reserva →
+        </button>
+        <p class="reservar-legal">
+          Al enviar aceptas nuestro <a href="privacidad.html">Aviso de Privacidad</a>.
+          Horario de atención: 7:30 AM – 9:00 PM, todos los días.
+        </p>
+      </form>
     </div>
   </div>
 </section>
@@ -2341,7 +2917,7 @@ body { cursor: default; }
 
       <div class="info-contact-list">
         <div class="info-contact-item reveal">
-          <div class="info-contact-icon" aria-hidden="true">📍</div>
+          <div class="info-contact-icon" aria-hidden="true"><svg class="ic"><use href="#ic-pin"/></svg></div>
           <div>
             <div class="info-contact-lbl">Dirección</div>
             <div class="info-contact-val">
@@ -2351,21 +2927,21 @@ body { cursor: default; }
           </div>
         </div>
         <div class="info-contact-item reveal">
-          <div class="info-contact-icon" aria-hidden="true">📞</div>
+          <div class="info-contact-icon" aria-hidden="true"><svg class="ic"><use href="#ic-phone"/></svg></div>
           <div>
             <div class="info-contact-lbl">Teléfono</div>
             <div class="info-contact-val"><a href="tel:4891255181">(489) 125-5181</a></div>
           </div>
         </div>
         <div class="info-contact-item reveal">
-          <div class="info-contact-icon" aria-hidden="true">💬</div>
+          <div class="info-contact-icon" aria-hidden="true"><svg class="ic"><use href="#ic-chat"/></svg></div>
           <div>
             <div class="info-contact-lbl">WhatsApp</div>
             <div class="info-contact-val"><a href="https://wa.me/524891255181" target="_blank" rel="noopener noreferrer">Escríbenos ahora →</a></div>
           </div>
         </div>
         <div class="info-contact-item reveal">
-          <div class="info-contact-icon" aria-hidden="true">🌐</div>
+          <div class="info-contact-icon" aria-hidden="true"><svg class="ic"><use href="#ic-globe"/></svg></div>
           <div>
             <div class="info-contact-lbl">Web</div>
             <div class="info-contact-val"><a href="https://papan-huasteco-production.up.railway.app" target="_blank" rel="noopener noreferrer">papan-huasteco-production.up.railway.app</a></div>
@@ -2388,30 +2964,25 @@ body { cursor: default; }
 
       <div style="margin-top:2.5rem;" class="reveal">
         <div class="info-col-h">Amenidades</div>
-        <div class="amenities-grid">
-          <div class="amenity"><span class="amenity-icon">🚗</span>Estacionamiento propio</div>
-          <div class="amenity"><span class="amenity-icon">🌿</span>Terraza al aire libre</div>
-          <div class="amenity"><span class="amenity-icon">👨‍👩‍👧</span>Pet-friendly</div>
-          <div class="amenity"><span class="amenity-icon">📶</span>WiFi disponible</div>
-          <div class="amenity"><span class="amenity-icon">💳</span>Efectivo y tarjeta</div>
-          <div class="amenity"><span class="amenity-icon">🏨</span>Hotel incluido</div>
+        <div class="amenities-grid reveal">
+          <div class="amenity"><span class="amenity-icon"><svg class="ic"><use href="#ic-car"/></svg></span>Estacionamiento propio</div>
+          <div class="amenity"><span class="amenity-icon"><svg class="ic"><use href="#ic-leaf"/></svg></span>Terraza al aire libre</div>
+          <div class="amenity"><span class="amenity-icon"><svg class="ic"><use href="#ic-paw"/></svg></span>Pet-friendly</div>
+          <div class="amenity"><span class="amenity-icon"><svg class="ic"><use href="#ic-wifi"/></svg></span>WiFi disponible</div>
+          <div class="amenity"><span class="amenity-icon"><svg class="ic"><use href="#ic-card"/></svg></span>Efectivo y tarjeta</div>
+          <div class="amenity"><span class="amenity-icon"><svg class="ic"><use href="#ic-bed"/></svg></span>Hotel incluido</div>
         </div>
       </div>
     </div>
 
     <div>
       <div class="info-col-h">Cómo Llegar</div>
-      <!--
-        🗺️ REEMPLAZAR CON EMBED REAL:
-        <iframe src="https://www.google.com/maps/embed?pb=...TU_EMBED..."
-                width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
-                title="Ubicación El Papán Huasteco, Xilitla"></iframe>
-      -->
       <div class="map-card reveal">
-        <div class="map-embed-placeholder">
-          <span>🗺️</span>
-          <p>El Papán Huasteco<br/>Xilitla, SLP<br/><em>[ Insertar Google Maps embed ]</em></p>
-        </div>
+        <iframe
+          src="https://www.google.com/maps?q=El%20Pap%C3%A1n%20Huasteco%2C%20Camino%20La%20Conchita%20-%20Las%20Pozas%2010%2C%20Xilitla%2C%20SLP&z=15&output=embed"
+          width="100%" height="220" style="border:0;display:block;" allowfullscreen=""
+          loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="Ubicación de El Papán Huasteco en Xilitla, San Luis Potosí"></iframe>
         <div class="map-card-footer">
           <div class="map-card-addr">
             <strong>Camino La Conchita – Las Pozas 10</strong><br/>
@@ -2427,9 +2998,55 @@ body { cursor: default; }
 </section>
 
 
+<!-- ══════════════ PREGUNTAS FRECUENTES (SEO / FAQ) ══════════════ -->
+<section id="faq" class="faq" aria-labelledby="faq-h2">
+  <div class="faq-inner">
+    <div class="faq-head reveal">
+      <span class="label">Preguntas Frecuentes</span>
+      <h2 class="heading-md" id="faq-h2" style="margin-top:0.6rem;">Antes de tu visita</h2>
+    </div>
+    <div class="faq-list reveal reveal-delay-1">
+      <details class="faq-item">
+        <summary>¿Dónde está El Papán Huasteco?</summary>
+        <p>Estamos en Camino La Conchita – Las Pozas Núm. 10, Xilitla, San Luis Potosí, a solo 5 minutos caminando del Castillo de Edward James (Las Pozas), con estacionamiento propio.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Cuál es el horario?</summary>
+        <p>Abrimos todos los días del año, de 7:30 AM a 9:00 PM. Servimos desayuno, comida y cena.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Necesito reservación?</summary>
+        <p>No es obligatoria, pero la recomendamos para grupos, celebraciones o fines de semana. Puedes reservar desde el formulario de esta página o por WhatsApp.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Qué tipo de comida sirven?</summary>
+        <p>Cocina huasteca potosina auténtica: enchiladas huastecas, bocoles, cecina, huevos ahogados en cazuela de barro, antojitos del comal, mariscos y café de olla, entre otros platillos regionales.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Tienen estacionamiento y aceptan tarjeta?</summary>
+        <p>Sí. Contamos con estacionamiento propio sin costo y aceptamos efectivo y tarjeta de crédito o débito.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"¿Dónde está El Papán Huasteco?","acceptedAnswer":{"@type":"Answer","text":"Estamos en Camino La Conchita – Las Pozas Núm. 10, Xilitla, San Luis Potosí, a solo 5 minutos caminando del Castillo de Edward James (Las Pozas), con estacionamiento propio."}},
+    {"@type":"Question","name":"¿Cuál es el horario de El Papán Huasteco?","acceptedAnswer":{"@type":"Answer","text":"Abrimos todos los días del año, de 7:30 AM a 9:00 PM. Servimos desayuno, comida y cena."}},
+    {"@type":"Question","name":"¿Necesito reservación?","acceptedAnswer":{"@type":"Answer","text":"No es obligatoria, pero la recomendamos para grupos, celebraciones o fines de semana. Puedes reservar desde el formulario del sitio o por WhatsApp."}},
+    {"@type":"Question","name":"¿Qué tipo de comida sirven?","acceptedAnswer":{"@type":"Answer","text":"Cocina huasteca potosina auténtica: enchiladas huastecas, bocoles, cecina, huevos ahogados en cazuela de barro, antojitos del comal, mariscos y café de olla."}},
+    {"@type":"Question","name":"¿Tienen estacionamiento y aceptan tarjeta?","acceptedAnswer":{"@type":"Answer","text":"Sí. Contamos con estacionamiento propio sin costo y aceptamos efectivo y tarjeta de crédito o débito."}}
+  ]
+}
+</script>
+
 <!-- ══════════════ 11. CTA FINAL ══════════════ -->
 <div class="cta-final" aria-label="Llamado a la acción — visita el restaurante">
-  <div class="cta-bg" role="img" aria-label="Vista de la terraza exterior del restaurante El Papán Huasteco con la selva huasteca de fondo en Xilitla"></div>
+  <div class="cta-bg" data-parallax="0.12" role="img" aria-label="Vista de la terraza exterior del restaurante El Papán Huasteco con la selva huasteca de fondo en Xilitla"></div>
   <div class="cta-content reveal">
     <span class="label" style="color:rgba(255,255,255,0.5);">¿Listo para visitar Xilitla?</span>
     <h2 class="heading-lg" style="font-style:italic;margin:1rem 0;">
@@ -2442,10 +3059,10 @@ body { cursor: default; }
     </p>
     <div class="cta-btns">
       <a href="https://wa.me/524891255181" target="_blank" rel="noopener" class="btn btn--tierra" aria-label="Reservar por WhatsApp">
-        💬 Reservar por WhatsApp
+        <svg class="ic"><use href="#ic-chat"/></svg> Reservar por WhatsApp
       </a>
       <a href="https://maps.google.com/?q=El+Papán+Huasteco+Xilitla" target="_blank" rel="noopener noreferrer" class="btn btn--outline-light" aria-label="Cómo llegar en Google Maps">
-        📍 Cómo Llegar
+        <svg class="ic"><use href="#ic-pin"/></svg> Cómo Llegar
       </a>
     </div>
   </div>
@@ -2462,18 +3079,37 @@ body { cursor: default; }
     <ul class="footer-links-row" role="list">
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#menu-section">Menú</a></li>
+      <li><a href="#reservar">Reservar</a></li>
       <li><a href="#galeria">Galería</a></li>
+      <li><a href="blog/index.html">Blog</a></li>
       <li><a href="#info">Contacto</a></li>
-      <li><a href="https://papan-huasteco-production.up.railway.app" target="_blank" rel="noopener noreferrer">Hotel</a></li>
       <li><a href="https://img1.wsimg.com/blobby/go/a8c05a84-4571-4c63-88c9-26db66fe3d5d/Men%C3%BA%20Papan%20Huasteco.pdf" target="_blank" rel="noopener noreferrer">PDF Menú</a></li>
+      <li><a href="privacidad.html">Aviso de Privacidad</a></li>
     </ul>
+  </div>
+  <div class="footer-social">
+    <a class="social-link" href="https://www.instagram.com/restaurante_papan_huasteco/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de El Papán Huasteco">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.52.01-4.76.07-.9.04-1.39.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.81-.32 1.71-.06 1.24-.07 1.61-.07 4.76s.01 3.52.07 4.76c.04.9.19 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.81.28 1.71.32 1.24.06 1.61.07 4.76.07s3.52-.01 4.76-.07c.9-.04 1.39-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.81.32-1.71.06-1.24.07-1.61.07-4.76s-.01-3.52-.07-4.76c-.04-.9-.19-1.39-.32-1.71a2.85 2.85 0 00-.69-1.06 2.85 2.85 0 00-1.06-.69c-.32-.13-.81-.28-1.71-.32-1.24-.06-1.61-.07-4.76-.07zm0 2.76a5.46 5.46 0 110 10.92 5.46 5.46 0 010-10.92zm0 9a3.54 3.54 0 100-7.08 3.54 3.54 0 000 7.08zm5.66-9.23a1.28 1.28 0 11-2.56 0 1.28 1.28 0 012.56 0z"/></svg>
+    </a>
+    <a class="social-link" href="https://www.facebook.com/profile.php?id=61567130595236" target="_blank" rel="noopener noreferrer" aria-label="Facebook de El Papán Huasteco">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+    </a>
+    <a class="social-link" href="https://www.tripadvisor.com.mx/Restaurant_Review-g635968-d27771889-Reviews-El_Papan_Huasteco_Restaurante-Xilitla_Central_Mexico_and_Gulf_Coast.html" target="_blank" rel="noopener noreferrer" aria-label="TripAdvisor de El Papán Huasteco">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 5.5c-2.6 0-5.05.62-7.1 1.7H.5l1.8 1.96A4.86 4.86 0 006.7 17a4.84 4.84 0 003.6-1.6l1.7 1.85 1.7-1.85a4.84 4.84 0 003.6 1.6 4.86 4.86 0 004.4-6.84L23.5 7.2h-4.4A15.4 15.4 0 0012 5.5zm-5.3 9.7a3.06 3.06 0 110-6.12 3.06 3.06 0 010 6.12zm10.6 0a3.06 3.06 0 110-6.12 3.06 3.06 0 010 6.12zM6.7 10.2a1.94 1.94 0 100 3.88 1.94 1.94 0 000-3.88zm10.6 0a1.94 1.94 0 100 3.88 1.94 1.94 0 000-3.88z"/></svg>
+    </a>
   </div>
 </footer>
 
 
 <!-- WhatsApp flotante -->
 <a href="https://wa.me/524891255181" target="_blank" rel="noopener noreferrer"
-   class="wfloat" aria-label="Contactar por WhatsApp">💬</a>
+   class="wfloat" aria-label="Contactar por WhatsApp"><svg class="ic"><use href="#ic-chat"/></svg></a>
+
+<!-- Lightbox de galería -->
+<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Imagen ampliada">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar imagen">✕</button>
+  <img src="" alt=""/>
+</div>
 
 
 <script>
@@ -2502,7 +3138,33 @@ function closeDrawer() {
 hamburger.addEventListener('click', openDrawer);
 drawerClose.addEventListener('click', closeDrawer);
 
-// ── Menu tabs ──
+// ── Modo noche (opt-in, recordado en localStorage) ──
+(function () {
+  const root = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+  let saved = null;
+  try { saved = localStorage.getItem('papan-theme'); } catch (e) {}
+  if (saved === 'dark') root.setAttribute('data-theme', 'dark');
+  function syncLabel() {
+    if (toggle) toggle.setAttribute('aria-label',
+      root.getAttribute('data-theme') === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+  }
+  syncLabel();
+  if (toggle) toggle.addEventListener('click', () => {
+    const dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'dark');
+    try { localStorage.setItem('papan-theme', dark ? 'light' : 'dark'); } catch (e) {}
+    syncLabel();
+  });
+})();
+
+// ── Menu tabs + indicador deslizante ──
+const tabIndicator = document.getElementById('tabIndicator');
+function moveTabIndicator(tab) {
+  if (!tabIndicator || !tab) return;
+  tabIndicator.style.width = tab.offsetWidth + 'px';
+  tabIndicator.style.transform = 'translateX(' + tab.offsetLeft + 'px)';
+}
 document.querySelectorAll('.menu-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.menu-tab').forEach(t => {
@@ -2513,8 +3175,12 @@ document.querySelectorAll('.menu-tab').forEach(tab => {
     tab.classList.add('active');
     tab.setAttribute('aria-selected','true');
     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    moveTabIndicator(tab);
   });
 });
+// Posición inicial del indicador (y al redimensionar)
+window.addEventListener('load', () => moveTabIndicator(document.querySelector('.menu-tab.active')));
+window.addEventListener('resize', () => moveTabIndicator(document.querySelector('.menu-tab.active')), { passive: true });
 
 // ── Reveal on scroll ──
 const revealObs = new IntersectionObserver((entries) => {
@@ -2526,6 +3192,173 @@ const revealObs = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ── Respeto a "reducir movimiento" ──
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ── Barra de progreso de scroll + drift del hero ──
+const progress = document.getElementById('scrollProgress');
+const heroContent = document.querySelector('.hero-content');
+if (!reduceMotion && (progress || heroContent)) {
+  let ticking = false;
+  const onScroll = () => {
+    const h = document.documentElement;
+    if (progress) {
+      const max = h.scrollHeight - h.clientHeight;
+      progress.style.transform = 'scaleX(' + (max > 0 ? h.scrollTop / max : 0) + ')';
+    }
+    if (heroContent) {
+      const p = Math.min(h.scrollTop / window.innerHeight, 1);
+      heroContent.style.opacity = String(1 - p * 0.8);
+      heroContent.style.transform = 'translateY(' + (p * 48) + 'px)';
+    }
+    parallaxEls.forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) {
+        let offset = (r.top + r.height / 2 - window.innerHeight / 2) * -el._pf;
+        const maxO = 0.075 * r.height;
+        if (offset > maxO) offset = maxO; else if (offset < -maxO) offset = -maxO;
+        el.style.transform = 'scale(1.16) translateY(' + offset.toFixed(1) + 'px)';
+      }
+    });
+    ticking = false;
+  };
+  const parallaxEls = Array.prototype.slice.call(document.querySelectorAll('[data-parallax]'));
+  parallaxEls.forEach(el => { el._pf = parseFloat(el.dataset.parallax) || 0.1; el.style.willChange = 'transform'; });
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+  }, { passive: true });
+  onScroll();
+}
+
+// ── Contadores animados del hero ──
+function animateCount(el) {
+  const raw = el.dataset.count;
+  const target = parseFloat(raw);
+  const decimals = (raw.split('.')[1] || '').length;
+  const prefix = el.dataset.prefix || '';
+  const suffix = el.dataset.suffix || '';
+  const dur = 1200;
+  const start = performance.now();
+  (function step(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = prefix + (target * eased).toFixed(decimals) + suffix;
+    if (t < 1) requestAnimationFrame(step);
+    else el.textContent = prefix + target.toFixed(decimals) + suffix;
+  })(start);
+}
+const statObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      if (!reduceMotion && e.target.dataset.count) animateCount(e.target);
+      statObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => statObs.observe(el));
+
+// ── Reserva: mostrar confirmación al volver de Formsubmit (?ok=1) ──
+(function () {
+  if (new URLSearchParams(window.location.search).get('ok') === '1') {
+    var form = document.getElementById('reservar-form');
+    var ok = document.getElementById('reservar-ok');
+    if (form && ok) {
+      form.setAttribute('hidden', '');
+      ok.removeAttribute('hidden');
+    }
+    var sec = document.getElementById('reservar');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+  }
+})();
+
+// ── Lightbox de galería ──
+(function () {
+  const lb = document.getElementById('lightbox');
+  if (!lb) return;
+  const lbImg = lb.querySelector('img');
+  const lbClose = document.getElementById('lightboxClose');
+  function open(src, alt) {
+    lbImg.src = src;
+    lbImg.alt = alt || '';
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('.galeria-mosaic .gal img').forEach(img => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', () => open(img.currentSrc || img.src, img.closest('.gal') ? img.closest('.gal').getAttribute('aria-label') : ''));
+  });
+  lbClose.addEventListener('click', close);
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) close(); });
+})();
+
+// ── Reserva: estado "Enviando…" al enviar ──
+(function () {
+  const form = document.getElementById('reservar-form');
+  if (!form) return;
+  form.addEventListener('submit', () => {
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+  });
+})();
+
+// ── Estela del cursor (solo escritorio, color tierra) ──
+(function () {
+  if (reduceMotion || !window.matchMedia('(pointer: fine)').matches) return;
+  let last = 0;
+  window.addEventListener('mousemove', e => {
+    const now = performance.now();
+    if (now - last < 45) return;
+    last = now;
+    const dot = document.createElement('div');
+    dot.className = 'cursor-dot';
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
+    document.body.appendChild(dot);
+    requestAnimationFrame(() => {
+      dot.style.opacity = '0';
+      dot.style.transform = 'translate(-50%,-50%) scale(0.3)';
+    });
+    setTimeout(() => dot.remove(), 650);
+  }, { passive: true });
+})();
+
+// ── Marquee de especialidades: scramble al hover ──
+(function () {
+  if (reduceMotion) return;
+  const marquee = document.querySelector('.specialties-marquee');
+  if (!marquee) return;
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚ';
+  let running = false;
+  function scramble(el) {
+    const final = el.dataset.final || el.textContent;
+    el.dataset.final = final;
+    const dur = 520, start = performance.now();
+    (function tick(now) {
+      const t = Math.min((now - start) / dur, 1);
+      const reveal = Math.floor(final.length * t);
+      let out = '';
+      for (let i = 0; i < final.length; i++) {
+        out += (i < reveal || final[i] === ' ') ? final[i] : chars[Math.floor(Math.random() * chars.length)];
+      }
+      el.textContent = out;
+      if (t < 1) requestAnimationFrame(tick); else el.textContent = final;
+    })(start);
+  }
+  marquee.addEventListener('mouseenter', () => {
+    if (running) return;
+    running = true;
+    marquee.querySelectorAll('.marquee-track span:not(.sep)').forEach(scramble);
+    setTimeout(() => { running = false; }, 750);
+  });
+})();
 </script>
 
 </body>
