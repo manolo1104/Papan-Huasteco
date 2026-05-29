@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://papan-huasteco-production.up.railway.app/sitemap.xml
+Sitemap: https://papan-huasteco.vercel.app/sitemap.xml

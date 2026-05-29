@@ -13,7 +13,7 @@
 <title>El Papán Huasteco – Restaurante en Xilitla · Cocina Huasteca Auténtica</title>
 <meta name="description" content="Restaurante de cocina huasteca auténtica en Xilitla, SLP. A minutos del Castillo de Edward James. Ingredientes frescos, platillos regionales tradicionales. Visítanos."/>
 <meta name="keywords" content="restaurante Xilitla, comida huasteca, restaurante cerca castillo Edward James Las Pozas, dónde comer Xilitla, El Papán Huasteco"/>
-<link rel="canonical" href="https://papan-huasteco-production.up.railway.app"/>
+<link rel="canonical" href="https://papan-huasteco.vercel.app"/>
 
 <link rel="icon" type="image/png" href="favicon.png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
@@ -23,8 +23,8 @@
 <meta property="og:site_name" content="El Papán Huasteco"/>
 <meta property="og:title" content="El Papán Huasteco – Cocina Huasteca Auténtica en Xilitla"/>
 <meta property="og:description" content="Restaurante de cocina huasteca auténtica en Xilitla, SLP, a minutos del Castillo de Edward James (Las Pozas). Abierto todos los días."/>
-<meta property="og:url" content="https://papan-huasteco-production.up.railway.app"/>
-<meta property="og:image" content="https://papan-huasteco-production.up.railway.app/Images/og-image.jpg"/>
+<meta property="og:url" content="https://papan-huasteco.vercel.app"/>
+<meta property="og:image" content="https://papan-huasteco.vercel.app/Images/og-image.jpg"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 <meta property="og:image:alt" content="Terraza del restaurante El Papán Huasteco en Xilitla rodeada de selva huasteca"/>
@@ -34,7 +34,7 @@
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="El Papán Huasteco – Cocina Huasteca Auténtica en Xilitla"/>
 <meta name="twitter:description" content="Restaurante de cocina huasteca auténtica en Xilitla, SLP, a minutos del Castillo de Edward James (Las Pozas). Abierto todos los días."/>
-<meta name="twitter:image" content="https://papan-huasteco-production.up.railway.app/Images/og-image.jpg"/>
+<meta name="twitter:image" content="https://papan-huasteco.vercel.app/Images/og-image.jpg"/>
 <meta name="twitter:image:alt" content="Terraza del restaurante El Papán Huasteco en Xilitla rodeada de selva huasteca"/>
 
 <script type="application/ld+json">
@@ -43,10 +43,10 @@
   "@type":["Restaurant","LocalBusiness"],
   "name":"El Papán Huasteco",
   "description":"Restaurante de cocina huasteca auténtica en Xilitla, San Luis Potosí. A minutos del Castillo de Edward James.",
-  "url":"https://papan-huasteco-production.up.railway.app",
+  "url":"https://papan-huasteco.vercel.app",
   "telephone":"+52-489-125-5181",
-  "image":"https://papan-huasteco-production.up.railway.app/Images/og-image.jpg",
-  "logo":"https://papan-huasteco-production.up.railway.app/Images/LOGO RESTAURANT PAPAN.png",
+  "image":"https://papan-huasteco.vercel.app/Images/og-image.jpg",
+  "logo":"https://papan-huasteco.vercel.app/Images/LOGO RESTAURANT PAPAN.png",
   "servesCuisine":["Mexican","Huasteca","Cocina Huasteca Potosina"],
   "priceRange":"$$",
   "acceptsReservations":true,
@@ -1598,6 +1598,7 @@ a.rating-item:hover .rating-platform { color: var(--tierra); }
    RESPONSIVE
 ════════════════════════════════════════════ */
 @media (max-width: 1024px) {
+  .nav-tel, .nav-social { display: none; }
   .intro-grid { grid-template-columns: 1fr; gap: 3rem; }
   .intro-img-float { display: none; }
   .intro-year-badge { left: 1rem; }
@@ -1613,6 +1614,7 @@ a.rating-item:hover .rating-platform { color: var(--tierra); }
 }
 @media (max-width: 768px) {
   .nav-links, .nav-tel { display: none; }
+  .nav-cta-wrap .btn--filled { display: none; }
   .nav-hamburger { display: flex; }
   .hero-content { grid-template-columns: 1fr; padding: 0 1.5rem 3rem; }
   .hero-stats { display: none; }
@@ -2844,12 +2846,12 @@ body { transition: background-color 0.5s ease, color 0.5s ease; }
       </div>
 
       <form class="reservar-form" id="reservar-form"
-            action="https://formsubmit.co/daftpunkmanolo@gmail.com" method="POST">
+            action="https://formsubmit.co/elpapanhuasteco@gmail.com" method="POST">
         <!-- Configuración Formsubmit -->
         <input type="hidden" name="_subject" value="Nueva reserva — El Papán Huasteco"/>
         <input type="hidden" name="_template" value="table"/>
         <input type="hidden" name="_captcha" value="true"/>
-        <input type="hidden" name="_next" value="https://papan-huasteco-production.up.railway.app/?ok=1#reservar"/>
+        <input type="hidden" name="_next" value="https://papan-huasteco.vercel.app/?ok=1#reservar"/>
         <!-- Honeypot anti-spam: dejar vacío -->
         <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
 
@@ -2944,7 +2946,7 @@ body { transition: background-color 0.5s ease, color 0.5s ease; }
           <div class="info-contact-icon" aria-hidden="true"><svg class="ic"><use href="#ic-globe"/></svg></div>
           <div>
             <div class="info-contact-lbl">Web</div>
-            <div class="info-contact-val"><a href="https://papan-huasteco-production.up.railway.app" target="_blank" rel="noopener noreferrer">papan-huasteco-production.up.railway.app</a></div>
+            <div class="info-contact-val"><a href="https://papan-huasteco.vercel.app" target="_blank" rel="noopener noreferrer">papan-huasteco.vercel.app</a></div>
           </div>
         </div>
       </div>
