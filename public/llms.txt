@@ -1,0 +1,35 @@
+# El Papán Huasteco
+
+> Restaurante de cocina huasteca potosina auténtica en Xilitla, San Luis Potosí, México. Está a 5 minutos caminando del Castillo de Edward James (Las Pozas), dentro del Hotel Paraíso Encantado. Abierto todos los días de 7:30 AM a 9:00 PM. Calificación 4.9/5 (Google).
+
+## Datos clave
+
+- Nombre: El Papán Huasteco
+- Tipo: Restaurante de cocina huasteca / mexicana regional
+- Ciudad: Xilitla, San Luis Potosí, México
+- Dirección: Camino La Conchita – Las Pozas Núm. 10, Xilitla, SLP, C.P. 79910
+- A 5 minutos caminando de Las Pozas (Castillo de Edward James)
+- Horario: todos los días, 7:30 AM a 9:00 PM
+- Teléfono: (489) 125-5181
+- WhatsApp: https://wa.me/524891255181
+- Reservaciones: recomendadas para grupos y fines de semana; no obligatorias
+- Estacionamiento propio gratuito, pet-friendly, terraza al aire libre, WiFi
+- Pagos: efectivo y tarjeta de crédito/débito
+- Rango de precios: medio ($$). Desayunos desde $45, principales $150–$350 MXN
+- Calificación: 4.9/5 con más de 87 reseñas (Google Maps)
+
+## Especialidades
+
+Enchiladas huastecas, huevos ahogados en cazuela de barro, bocoles, cecina, arrachera, zacahuil, mariscos (camarones, ceviche, filete), café de olla, antojitos del comal. Opciones vegetarianas disponibles.
+
+## Páginas
+
+- [Inicio](https://papan-huasteco.vercel.app): propuesta, fotos, ubicación, horarios y reservas
+- [Menú y precios](https://papan-huasteco.vercel.app/menu): carta completa con precios en pesos
+- [Dónde comer cerca de Las Pozas](https://papan-huasteco.vercel.app/las-pozas): ubicación, cómo llegar y mapa
+- [Blog: Dónde comer en Xilitla (guía 2026)](https://papan-huasteco.vercel.app/blog/donde-comer-en-xilitla)
+- [Blog: Desayunos huastecos típicos](https://papan-huasteco.vercel.app/blog/desayunos-huastecos-tipicos)
+- [Blog: Guía para visitar Las Pozas de Xilitla](https://papan-huasteco.vercel.app/blog/visitar-las-pozas-xilitla)
+- [Blog: Qué hacer en Xilitla (guía de 2 días)](https://papan-huasteco.vercel.app/blog/que-hacer-en-xilitla)
+- [Blog: 5 platillos imperdibles de la cocina huasteca](https://papan-huasteco.vercel.app/blog/platillos-cocina-huasteca)
+- [Aviso de Privacidad](https://papan-huasteco.vercel.app/privacidad)
