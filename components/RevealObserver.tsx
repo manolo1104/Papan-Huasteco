@@ -2,10 +2,10 @@
 
 import { useEffect } from "react";
 
-// Observa los elementos animables y les agrega la clase `visible` al entrar en
-// pantalla. A prueba de fallos: revela lo que ya está en/por encima del viewport
-// (carga desplazada o saltos por ancla del menú) y tiene una red de seguridad,
-// para que NINGÚN elemento quede oculto ocupando espacio.
+// Anima los elementos al entrar en pantalla (IntersectionObserver) y, como red
+// de seguridad, revela los que quedaron POR ENCIMA del viewport (carga desplazada
+// o saltos por ancla del menú) para que no queden ocultos ocupando espacio.
+// No revela los que están por debajo del fold: esos deben animarse al hacer scroll.
 const SELECTOR = [
   ".reveal",
   ".reveal-clip",
@@ -31,16 +31,7 @@ export default function RevealObserver() {
       return;
     }
 
-    // Revela de inmediato lo que ya esté en pantalla o por encima de ella
-    // (cubre cargas desplazadas y saltos por ancla del nav).
-    const revealInOrAbove = () => {
-      const vh = window.innerHeight;
-      for (const el of els) {
-        if (el.classList.contains("visible")) continue;
-        if (el.getBoundingClientRect().top < vh * 0.92) reveal(el);
-      }
-    };
-
+    // Animación normal: revela cuando el elemento entra en pantalla desde abajo.
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -54,29 +45,34 @@ export default function RevealObserver() {
     );
     els.forEach((el) => io.observe(el));
 
-    // Pase inicial + al hacer scroll/resize (rAF), para no dejar nada oculto
-    // que ya se haya "pasado" (elementos por encima del viewport).
-    revealInOrAbove();
+    // Red de seguridad: revela SOLO lo que quedó por encima del viewport
+    // (scrolleado/saltado con ancla). No toca lo de abajo, que sí debe animarse.
     let ticking = false;
+    const revealPassed = () => {
+      for (const el of els) {
+        if (el.classList.contains("visible")) continue;
+        if (el.getBoundingClientRect().bottom <= 0) {
+          reveal(el);
+          io.unobserve(el);
+        }
+      }
+      ticking = false;
+    };
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
-      requestAnimationFrame(() => {
-        revealInOrAbove();
-        ticking = false;
-      });
+      requestAnimationFrame(revealPassed);
     };
+    revealPassed();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
-
-    // Red de seguridad: si algo quedó oculto, revélalo.
-    const safety = window.setTimeout(() => els.forEach(reveal), 1500);
+    window.addEventListener("hashchange", onScroll);
 
     return () => {
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      window.clearTimeout(safety);
+      window.removeEventListener("hashchange", onScroll);
     };
   }, []);
 
