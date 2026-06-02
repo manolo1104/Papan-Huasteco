@@ -8,6 +8,8 @@ import { useEffect } from "react";
 export default function Parallax() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Solo en escritorio: en móvil el parallax por JS puede dar saltos/huecos.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     const els = Array.from(document.querySelectorAll<HTMLElement>("[data-parallax]"));
     if (!els.length) return;
 

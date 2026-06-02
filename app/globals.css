@@ -654,7 +654,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .nav-tel, .nav-social { display: none; }
   .intro-grid { grid-template-columns: 1fr; gap: 3rem; }
   .intro-img-float { display: none; }
-  .amlo-inner { grid-template-columns: 1fr; }
+  .amlo-inner { grid-template-columns: 1fr; min-height: auto; }
   .amlo-visual { min-height: 300px; padding: 3rem; }
   .laspozas-grid { grid-template-columns: 1fr; gap: 3rem; }
   .laspozas-overlay-card { display: none; }
