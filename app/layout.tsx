@@ -2,12 +2,10 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/site";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
+import NavGate from "@/components/NavGate";
+import SiteFootGate from "@/components/SiteFootGate";
 import ScrollProgress from "@/components/ScrollProgress";
 import RevealObserver from "@/components/RevealObserver";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
-import StickyCta from "@/components/StickyCta";
 import Analytics from "@/components/Analytics";
 import Parallax from "@/components/Parallax";
 import PointerFx from "@/components/PointerFx";
@@ -99,11 +97,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <div className="grain" aria-hidden="true" />
         <ScrollProgress />
-        <Nav />
+        <NavGate />
         {children}
-        <Footer />
-        <WhatsAppFloat />
-        <StickyCta />
+        <SiteFootGate />
         <RevealObserver />
         <Parallax />
         <PointerFx />
