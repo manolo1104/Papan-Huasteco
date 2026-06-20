@@ -7,6 +7,7 @@ import { TURNOS, labelDe, type Turno } from "@/lib/caja/types";
 import { mxn, mxnCorto, fechaCorta } from "@/lib/caja/format";
 import { todayISO } from "@/lib/caja/server";
 import { useFeedback } from "@/components/caja/ui/Feedback";
+import { Icon } from "@/components/caja/ui/Icon";
 
 const n = (v: string) => (v === "" ? 0 : Number(v) || 0);
 
@@ -296,7 +297,7 @@ function Historial({ rol, turnos }: { rol: Rol; turnos: Turno[] }) {
                   </td>
                   {rol === "admin" && (
                     <td className="num">
-                      <button className="caja-iconbtn" title="Borrar" onClick={() => borrar(t.id)}>✕</button>
+                      <button className="caja-iconbtn" title="Borrar" onClick={() => borrar(t.id)}><Icon name="cerrar" size={15} /></button>
                     </td>
                   )}
                 </tr>

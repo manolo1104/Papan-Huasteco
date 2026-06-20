@@ -1,9 +1,19 @@
 import Link from "next/link";
 import type { Rol } from "@/lib/caja/auth";
-import type { DashboardData } from "@/lib/caja/data";
+import type { DashboardData, PuntoSerie, TopPlatillo } from "@/lib/caja/data";
 import { TURNOS, labelDe, type Categoria } from "@/lib/caja/types";
 import { todayISO } from "@/lib/caja/server";
 import { mxn, mxnCorto, fechaCorta, fechaLarga } from "@/lib/caja/format";
+import AreaChart from "@/components/caja/charts/AreaChart";
+import RankList from "@/components/caja/charts/RankList";
+import { Icon } from "@/components/caja/ui/Icon";
+
+interface MetricasDash {
+  serie30: PuntoSerie[];
+  cuentas: number;
+  ticketPromedio: number;
+  topVendidos: TopPlatillo[];
+}
 
 function Kpi({
   label,
@@ -125,14 +135,47 @@ function MetasComparativo({ data }: { data: DashboardData }) {
   );
 }
 
+function MetricasDashboard({ m }: { m: MetricasDash }) {
+  return (
+    <div className="caja-grid2">
+      <section className="caja-card">
+        <div className="caja-card__head">
+          <h3 className="caja-card__title">Ventas · últimos 30 días</h3>
+          <Link href="/admin/reportes" className="caja-link">Ver detalle</Link>
+        </div>
+        <AreaChart serie={m.serie30} id="dash" />
+        <div className="caja-kpis caja-kpis--3" style={{ marginTop: "1rem" }}>
+          <Kpi label="Cuentas del mes" valor={m.cuentas > 0 ? String(m.cuentas) : "—"} />
+          <Kpi label="Ticket promedio" valor={m.ticketPromedio > 0 ? mxn(m.ticketPromedio) : "—"} tono="verde" />
+          <Kpi label="Venta 30 días" valor={mxnCorto(m.serie30.reduce((a, p) => a + p.total, 0))} />
+        </div>
+      </section>
+
+      <section className="caja-card">
+        <div className="caja-card__head">
+          <h3 className="caja-card__title">Platillos más vendidos</h3>
+          <span className="caja-muted">este mes</span>
+        </div>
+        <RankList
+          items={m.topVendidos}
+          modo="vendidos"
+          emptyHint="Cuando empiecen a cobrar pedidos en el POS, aquí verás lo que más se vende."
+        />
+      </section>
+    </div>
+  );
+}
+
 export default function Dashboard({
   rol,
   data,
   categorias,
+  metricas,
 }: {
   rol: Rol;
   data: DashboardData | null;
   categorias: Categoria[];
+  metricas?: MetricasDash;
 }) {
   if (!data) {
     return (
@@ -162,7 +205,7 @@ export default function Dashboard({
 
         <div className="caja-actions">
           <Link href="/admin/turnos" className="caja-action">
-            <span className="caja-action__icon">🧾</span>
+            <span className="caja-action__icon"><Icon name="turnos" size={26} /></span>
             <span className="caja-action__t">
               {t ? "Cerrar turno" : "Abrir turno"}
             </span>
@@ -171,12 +214,12 @@ export default function Dashboard({
             </span>
           </Link>
           <Link href="/admin/gastos" className="caja-action">
-            <span className="caja-action__icon">💸</span>
+            <span className="caja-action__icon"><Icon name="gastos" size={26} /></span>
             <span className="caja-action__t">Registrar gasto</span>
             <span className="caja-action__d">Compras, proveedores, pagos</span>
           </Link>
           <Link href="/admin/eventos" className="caja-action">
-            <span className="caja-action__icon">🎉</span>
+            <span className="caja-action__icon"><Icon name="eventos" size={26} /></span>
             <span className="caja-action__t">Eventos</span>
             <span className="caja-action__d">Grupos, anticipos y saldos</span>
           </Link>
@@ -222,6 +265,8 @@ export default function Dashboard({
         <Kpi label="Utilidad de hoy" valor={mxn(data.hoy.utilidad)} tono={data.hoy.utilidad >= 0 ? "verde" : "rojo"} />
         <Kpi label="Faltantes del mes" valor={mxn(data.mes.faltantes)} tono={data.mes.faltantes > 0 ? "rojo" : "neutro"} pista={data.mes.faltantes > 0 ? "Revisa los cortes" : "Sin faltantes 👌"} />
       </div>
+
+      {metricas && <MetricasDashboard m={metricas} />}
 
       <MetasComparativo data={data} />
 

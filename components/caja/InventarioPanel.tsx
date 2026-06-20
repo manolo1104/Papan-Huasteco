@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Insumo, Producto, Receta } from "@/lib/caja/types";
 import { mxn, mxnCorto } from "@/lib/caja/format";
 import { useFeedback } from "@/components/caja/ui/Feedback";
+import { Icon } from "@/components/caja/ui/Icon";
 
 export default function InventarioPanel({
   insumos,
@@ -162,13 +163,15 @@ function Insumos({ insumos }: { insumos: Insumo[] }) {
                     <td>{i.nombre}</td>
                     <td>{i.unidad}</td>
                     <td className="num">{mxnCorto(i.costo_unitario)}</td>
-                    <td className={`num ${bajo ? "neg" : ""}`}>{i.stock_actual}{bajo ? " ⚠️" : ""}</td>
+                    <td className={`num ${bajo ? "neg" : ""}`}>
+                      <span className="caja-stock-cell">{i.stock_actual}{bajo && <Icon name="alerta" size={14} />}</span>
+                    </td>
                     <td className="num">{i.stock_minimo}</td>
                     <td className="num caja-prod-acc">
-                      <button className="caja-btn caja-btn--sm caja-btn--ghost" onClick={() => entrada(i)}>+ Stock</button>
+                      <button className="caja-btn caja-btn--sm caja-btn--ghost" onClick={() => entrada(i)}><Icon name="nuevo" size={14} /> Stock</button>
                       <button className="caja-btn caja-btn--sm caja-btn--ghost" onClick={() => editarCosto(i)}>Costo</button>
                       <button className="caja-btn caja-btn--sm caja-btn--ghost" onClick={() => editarMinimo(i)}>Mínimo</button>
-                      <button className="caja-iconbtn" title="Borrar" onClick={() => borrar(i.id)}>✕</button>
+                      <button className="caja-iconbtn" title="Borrar" onClick={() => borrar(i.id)}><Icon name="cerrar" size={15} /></button>
                     </td>
                   </tr>
                 );
@@ -285,7 +288,7 @@ function Recetas({
                   <td className="num">{r.cantidad} {ins?.unidad}</td>
                   <td className="num">{mxnCorto(r.cantidad * (ins?.costo_unitario ?? 0))}</td>
                   <td className="num">
-                    <button className="caja-iconbtn" title="Quitar" onClick={() => set(r.insumo_id, 0)}>✕</button>
+                    <button className="caja-iconbtn" title="Quitar" onClick={() => set(r.insumo_id, 0)}><Icon name="cerrar" size={15} /></button>
                   </td>
                 </tr>
               );

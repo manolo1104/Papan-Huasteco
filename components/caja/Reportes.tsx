@@ -2,7 +2,9 @@ import { TURNOS, GASTO_CATEGORIAS, labelDe, type Turno, type Gasto } from "@/lib
 import { mxn, mxnCorto, fechaCorta, fechaLarga } from "@/lib/caja/format";
 import ReportesActions from "./ReportesActions";
 import Tendencia from "./Tendencia";
-import type { Tendencia as TData } from "@/lib/caja/data";
+import AreaChart from "@/components/caja/charts/AreaChart";
+import RankList from "@/components/caja/charts/RankList";
+import type { Tendencia as TData, MetricasRango } from "@/lib/caja/data";
 
 export default function Reportes({
   desde,
@@ -10,12 +12,14 @@ export default function Reportes({
   turnos,
   gastos,
   tendencia,
+  metricas,
 }: {
   desde: string;
   hasta: string;
   turnos: Turno[];
   gastos: Gasto[];
   tendencia: TData;
+  metricas: MetricasRango;
 }) {
   const cerrados = turnos.filter((t) => t.estado === "cerrado");
   const ingresos = cerrados.reduce((a, t) => a + t.total_ingresos, 0);
@@ -74,6 +78,64 @@ export default function Reportes({
           <span className="caja-kpi__label">Faltantes de caja</span>
           <span className="caja-kpi__valor">{mxn(faltantes)}</span>
         </div>
+      </div>
+
+      <section className="caja-card">
+        <div className="caja-card__head">
+          <h3 className="caja-card__title">Ventas en el periodo</h3>
+          {(() => {
+            const d =
+              metricas.prevVentas > 0
+                ? Math.round(((metricas.ventasTotal - metricas.prevVentas) / metricas.prevVentas) * 100)
+                : null;
+            if (d === null) return <span className="caja-muted">sin periodo anterior</span>;
+            return (
+              <span className={d >= 0 ? "caja-delta caja-delta--up" : "caja-delta caja-delta--down"}>
+                {d >= 0 ? "▲" : "▼"} {Math.abs(d)}% vs. periodo anterior
+              </span>
+            );
+          })()}
+        </div>
+        <AreaChart serie={metricas.serie} id="rep" height={240} />
+        <div className="caja-kpis caja-kpis--3" style={{ marginTop: "1rem" }}>
+          <div className="caja-kpi">
+            <span className="caja-kpi__label">Cuentas cobradas</span>
+            <span className="caja-kpi__valor">{metricas.cuentas > 0 ? metricas.cuentas : "—"}</span>
+          </div>
+          <div className="caja-kpi caja-kpi--verde">
+            <span className="caja-kpi__label">Ticket promedio</span>
+            <span className="caja-kpi__valor">{metricas.ticketPromedio > 0 ? mxn(metricas.ticketPromedio) : "—"}</span>
+          </div>
+          <div className="caja-kpi">
+            <span className="caja-kpi__label">Periodo anterior</span>
+            <span className="caja-kpi__valor">{mxnCorto(metricas.prevVentas)}</span>
+          </div>
+        </div>
+      </section>
+
+      <div className="caja-grid2">
+        <section className="caja-card">
+          <div className="caja-card__head">
+            <h3 className="caja-card__title">Platillos más vendidos</h3>
+            <span className="caja-muted">por cantidad</span>
+          </div>
+          <RankList
+            items={metricas.topVendidos}
+            modo="vendidos"
+            emptyHint="Aún no hay pedidos cobrados por el POS en este periodo."
+          />
+        </section>
+        <section className="caja-card">
+          <div className="caja-card__head">
+            <h3 className="caja-card__title">Platillos más rentables</h3>
+            <span className="caja-muted">ganancia (precio − costo)</span>
+          </div>
+          <RankList
+            items={metricas.topRentables}
+            modo="rentables"
+            emptyHint="Carga las recetas en Inventario para ver cuánto te deja cada platillo."
+          />
+        </section>
       </div>
 
       <div className="caja-grid2">

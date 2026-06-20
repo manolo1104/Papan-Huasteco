@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getRol } from "@/lib/caja/auth";
-import { loadDashboard, loadCategorias } from "@/lib/caja/data";
+import { loadDashboard, loadCategorias, loadMetricasDashboard } from "@/lib/caja/data";
 import CajaLogin from "@/components/caja/CajaLogin";
 import CajaShell from "@/components/caja/CajaShell";
 import Dashboard from "@/components/caja/Dashboard";
@@ -13,10 +13,14 @@ export default async function AdminPage() {
   // El personal va directo a su pantalla.
   if (rol === "mesero") redirect("/admin/pos");
   if (rol === "cocina") redirect("/admin/cocina");
-  const [data, categorias] = await Promise.all([loadDashboard(), loadCategorias()]);
+  const [data, categorias, metricas] = await Promise.all([
+    loadDashboard(),
+    loadCategorias(),
+    loadMetricasDashboard(),
+  ]);
   return (
     <CajaShell rol={rol} active="inicio">
-      <Dashboard rol={rol} data={data} categorias={categorias} />
+      <Dashboard rol={rol} data={data} categorias={categorias} metricas={metricas} />
     </CajaShell>
   );
 }

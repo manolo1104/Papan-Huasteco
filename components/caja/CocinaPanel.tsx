@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { ComandaCocina } from "@/lib/caja/data";
 import { useFeedback } from "@/components/caja/ui/Feedback";
+import { Icon } from "@/components/caja/ui/Icon";
 
 function minutosDesde(iso: string): number {
   return Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 60000));
@@ -60,7 +61,7 @@ export default function CocinaPanel({ inicial }: { inicial: ComandaCocina[] }) {
           <p className="caja-head__sub">Se actualiza sola. {comandas.length} pendiente{comandas.length === 1 ? "" : "s"}.</p>
         </div>
         <button className="caja-btn caja-btn--ghost caja-btn--sm" onClick={cargar}>
-          ↻ Actualizar
+          <Icon name="actualizar" size={15} /> Actualizar
         </button>
       </header>
 
@@ -93,7 +94,7 @@ export default function CocinaPanel({ inicial }: { inicial: ComandaCocina[] }) {
                   ))}
                 </ul>
                 <button className="caja-btn caja-btn--primary" onClick={() => marcar({ orden_id: c.orden_id }, `${c.mesa_nombre} lista`)}>
-                  ✓ Comanda completa
+                  <Icon name="check" size={16} /> Comanda completa
                 </button>
               </article>
             );

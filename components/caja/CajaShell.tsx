@@ -3,27 +3,28 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Rol } from "@/lib/caja/auth";
+import { Icon, type IconName } from "@/components/caja/ui/Icon";
 
 type NavItem = {
   id: string;
   href: string;
   label: string;
-  icon: string;
+  icon: IconName;
   roles: Rol[]; // roles que ven esta opción (admin siempre la ve)
 };
 
 const NAV: NavItem[] = [
-  { id: "inicio", href: "/admin", label: "Inicio", icon: "🏠", roles: ["admin", "operador"] },
-  { id: "pos", href: "/admin/pos", label: "POS / Mesas", icon: "🍽️", roles: ["admin", "operador", "mesero"] },
-  { id: "cocina", href: "/admin/cocina", label: "Cocina", icon: "👨‍🍳", roles: ["admin", "operador", "cocina"] },
-  { id: "turnos", href: "/admin/turnos", label: "Turnos", icon: "🧾", roles: ["admin", "operador"] },
-  { id: "gastos", href: "/admin/gastos", label: "Gastos", icon: "💸", roles: ["admin", "operador"] },
-  { id: "eventos", href: "/admin/eventos", label: "Eventos", icon: "🎉", roles: ["admin", "operador"] },
-  { id: "productos", href: "/admin/productos", label: "Productos", icon: "📋", roles: ["admin", "operador"] },
-  { id: "inventario", href: "/admin/inventario", label: "Inventario", icon: "📦", roles: ["admin", "operador"] },
-  { id: "resumen", href: "/admin/resumen", label: "Resumen", icon: "📅", roles: ["admin", "operador"] },
-  { id: "reportes", href: "/admin/reportes", label: "Reportes", icon: "📊", roles: ["admin"] },
-  { id: "ajustes", href: "/admin/ajustes", label: "Ajustes", icon: "⚙️", roles: ["admin"] },
+  { id: "inicio", href: "/admin", label: "Inicio", icon: "home", roles: ["admin", "operador"] },
+  { id: "pos", href: "/admin/pos", label: "POS / Mesas", icon: "pos", roles: ["admin", "operador", "mesero"] },
+  { id: "cocina", href: "/admin/cocina", label: "Cocina", icon: "cocina", roles: ["admin", "operador", "cocina"] },
+  { id: "turnos", href: "/admin/turnos", label: "Turnos", icon: "turnos", roles: ["admin", "operador"] },
+  { id: "gastos", href: "/admin/gastos", label: "Gastos", icon: "gastos", roles: ["admin", "operador"] },
+  { id: "eventos", href: "/admin/eventos", label: "Eventos", icon: "eventos", roles: ["admin", "operador"] },
+  { id: "productos", href: "/admin/productos", label: "Productos", icon: "productos", roles: ["admin", "operador"] },
+  { id: "inventario", href: "/admin/inventario", label: "Inventario", icon: "inventario", roles: ["admin", "operador"] },
+  { id: "resumen", href: "/admin/resumen", label: "Resumen", icon: "resumen", roles: ["admin", "operador"] },
+  { id: "reportes", href: "/admin/reportes", label: "Reportes", icon: "reportes", roles: ["admin"] },
+  { id: "ajustes", href: "/admin/ajustes", label: "Ajustes", icon: "ajustes", roles: ["admin"] },
 ];
 
 const ROL_LABEL: Record<Rol, string> = {
@@ -64,7 +65,7 @@ export default function CajaShell({
               href={n.href}
               className={`caja-nav__item ${active === n.id ? "is-active" : ""}`}
             >
-              <span aria-hidden>{n.icon}</span>
+              <Icon name={n.icon} size={18} />
               {n.label}
             </Link>
           ))}
@@ -86,7 +87,7 @@ export default function CajaShell({
             href={n.href}
             className={`caja-bottomnav__item ${active === n.id ? "is-active" : ""}`}
           >
-            <span aria-hidden>{n.icon}</span>
+            <Icon name={n.icon} size={22} />
             <span>{n.label.split(" ")[0]}</span>
           </Link>
         ))}

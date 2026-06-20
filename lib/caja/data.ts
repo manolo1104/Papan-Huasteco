@@ -469,3 +469,207 @@ export async function loadTodasRecetas(): Promise<Record<string, Receta[]>> {
   }
   return out;
 }
+
+// ── Métricas (ventas + platillos) ─────────────────────────────
+
+type SB = ReturnType<typeof createAdminClient>;
+
+export interface PuntoSerie {
+  fecha: string;
+  total: number;
+}
+export interface TopPlatillo {
+  producto_id: string | null;
+  nombre: string;
+  cantidad: number;
+  ingresos: number;
+  ganancia: number;
+  tieneCosto: boolean;
+}
+export interface MetricasRango {
+  serie: PuntoSerie[];
+  ventasTotal: number;
+  cuentas: number;
+  ticketPromedio: number;
+  prevVentas: number; // periodo anterior del mismo tamaño
+  topVendidos: TopPlatillo[];
+  topRentables: TopPlatillo[];
+}
+
+/** Costo por producto (Σ receta×costo_unitario), para calcular ganancia. */
+async function costoPorProducto(sb: SB): Promise<Map<string, number>> {
+  const [recetas, insumos] = await Promise.all([
+    sb.from("pos_recetas").select("*").then((r) => (r.data as Receta[]) ?? []),
+    sb
+      .from("pos_insumos")
+      .select("id, costo_unitario")
+      .then((r) => (r.data as { id: string; costo_unitario: number }[]) ?? []),
+  ]);
+  const costoUnit = new Map(insumos.map((i) => [i.id, i.costo_unitario]));
+  const m = new Map<string, number>();
+  for (const r of recetas)
+    m.set(r.producto_id, (m.get(r.producto_id) || 0) + r.cantidad * (costoUnit.get(r.insumo_id) ?? 0));
+  return m;
+}
+
+/** Serie diaria de ventas (de los cortes) entre dos fechas, rellenando huecos. */
+async function serieVentas(sb: SB, desde: string, hasta: string): Promise<PuntoSerie[]> {
+  const { data } = await sb
+    .from("caja_turnos")
+    .select("fecha, total_ingresos")
+    .gte("fecha", desde)
+    .lte("fecha", hasta);
+  const porDia = new Map<string, number>();
+  for (const t of (data as { fecha: string; total_ingresos: number }[]) ?? [])
+    porDia.set(t.fecha, (porDia.get(t.fecha) || 0) + t.total_ingresos);
+  const out: PuntoSerie[] = [];
+  let cursor = desde;
+  for (let i = 0; i < 370 && cursor <= hasta; i++) {
+    out.push({ fecha: cursor, total: porDia.get(cursor) || 0 });
+    cursor = addDays(cursor, 1);
+  }
+  return out;
+}
+
+/** Platillos cobrados en el rango (por fecha del turno), con ganancia. */
+async function topPlatillos(sb: SB, desde: string, hasta: string): Promise<TopPlatillo[]> {
+  const { data: turnos } = await sb
+    .from("caja_turnos")
+    .select("id")
+    .gte("fecha", desde)
+    .lte("fecha", hasta);
+  const turnoIds = ((turnos as { id: string }[]) ?? []).map((t) => t.id);
+  if (turnoIds.length === 0) return [];
+  const { data: ords } = await sb
+    .from("pos_ordenes")
+    .select("id")
+    .eq("estado", "cobrada")
+    .in("turno_id", turnoIds);
+  const ordenIds = ((ords as { id: string }[]) ?? []).map((o) => o.id);
+  if (ordenIds.length === 0) return [];
+
+  const [{ data: items }, costo] = await Promise.all([
+    sb
+      .from("pos_orden_items")
+      .select("producto_id, nombre, precio_unit, cantidad")
+      .in("orden_id", ordenIds),
+    costoPorProducto(sb),
+  ]);
+
+  const map = new Map<string, TopPlatillo>();
+  for (const it of (items as {
+    producto_id: string | null;
+    nombre: string;
+    precio_unit: number;
+    cantidad: number;
+  }[]) ?? []) {
+    const key = it.producto_id ?? it.nombre;
+    const cu = it.producto_id ? costo.get(it.producto_id) ?? null : null;
+    const cur =
+      map.get(key) ??
+      ({
+        producto_id: it.producto_id,
+        nombre: it.nombre,
+        cantidad: 0,
+        ingresos: 0,
+        ganancia: 0,
+        tieneCosto: cu != null && cu > 0,
+      } as TopPlatillo);
+    cur.cantidad += it.cantidad;
+    cur.ingresos += it.precio_unit * it.cantidad;
+    if (cu != null) cur.ganancia += (it.precio_unit - cu) * it.cantidad;
+    map.set(key, cur);
+  }
+  return Array.from(map.values());
+}
+
+/** Cuentas cobradas y ticket promedio en el rango (del POS). */
+async function cuentasTicket(
+  sb: SB,
+  desde: string,
+  hasta: string
+): Promise<{ cuentas: number; total: number }> {
+  const { data: turnos } = await sb
+    .from("caja_turnos")
+    .select("id")
+    .gte("fecha", desde)
+    .lte("fecha", hasta);
+  const turnoIds = ((turnos as { id: string }[]) ?? []).map((t) => t.id);
+  if (turnoIds.length === 0) return { cuentas: 0, total: 0 };
+  const { data } = await sb
+    .from("pos_ordenes")
+    .select("total")
+    .eq("estado", "cobrada")
+    .in("turno_id", turnoIds);
+  const rows = (data as { total: number }[]) ?? [];
+  return { cuentas: rows.length, total: rows.reduce((a, r) => a + (r.total || 0), 0) };
+}
+
+/** Paquete de métricas para un rango (lo usa Reportes). */
+export async function loadMetricasRango(desde: string, hasta: string): Promise<MetricasRango> {
+  const vacio: MetricasRango = {
+    serie: [],
+    ventasTotal: 0,
+    cuentas: 0,
+    ticketPromedio: 0,
+    prevVentas: 0,
+    topVendidos: [],
+    topRentables: [],
+  };
+  if (!adminEnvReady) return vacio;
+  const sb = createAdminClient();
+
+  // periodo anterior del mismo tamaño (en días)
+  const dias = Math.max(1, Math.round((Date.parse(hasta) - Date.parse(desde)) / 86400000) + 1);
+  const prevHasta = addDays(desde, -1);
+  const prevDesde = addDays(prevHasta, -(dias - 1));
+
+  const [serie, top, ct, prev] = await Promise.all([
+    serieVentas(sb, desde, hasta),
+    topPlatillos(sb, desde, hasta),
+    cuentasTicket(sb, desde, hasta),
+    serieVentas(sb, prevDesde, prevHasta),
+  ]);
+
+  const ventasTotal = serie.reduce((a, p) => a + p.total, 0);
+  const topVendidos = [...top].sort((a, b) => b.cantidad - a.cantidad).slice(0, 8);
+  const topRentables = top
+    .filter((t) => t.tieneCosto)
+    .sort((a, b) => b.ganancia - a.ganancia)
+    .slice(0, 8);
+
+  return {
+    serie,
+    ventasTotal,
+    cuentas: ct.cuentas,
+    ticketPromedio: ct.cuentas > 0 ? ct.total / ct.cuentas : 0,
+    prevVentas: prev.reduce((a, p) => a + p.total, 0),
+    topVendidos,
+    topRentables,
+  };
+}
+
+/** Métricas compactas para el tablero de Inicio (últimos 30 días + mes). */
+export async function loadMetricasDashboard(): Promise<{
+  serie30: PuntoSerie[];
+  cuentas: number;
+  ticketPromedio: number;
+  topVendidos: TopPlatillo[];
+}> {
+  if (!adminEnvReady)
+    return { serie30: [], cuentas: 0, ticketPromedio: 0, topVendidos: [] };
+  const sb = createAdminClient();
+  const hoy = todayISO();
+  const inicioMes = hoy.slice(0, 8) + "01";
+  const [serie30, top, ct] = await Promise.all([
+    serieVentas(sb, addDays(hoy, -29), hoy),
+    topPlatillos(sb, inicioMes, hoy),
+    cuentasTicket(sb, inicioMes, hoy),
+  ]);
+  return {
+    serie30,
+    cuentas: ct.cuentas,
+    ticketPromedio: ct.cuentas > 0 ? ct.total / ct.cuentas : 0,
+    topVendidos: [...top].sort((a, b) => b.cantidad - a.cantidad).slice(0, 5),
+  };
+}

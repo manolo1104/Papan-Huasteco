@@ -1,5 +1,7 @@
 "use client";
 
+import { Icon } from "@/components/caja/ui/Icon";
+
 export default function ResumenActions({ texto }: { texto: string }) {
   const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
   return (
@@ -10,13 +12,13 @@ export default function ResumenActions({ texto }: { texto: string }) {
         target="_blank"
         rel="noopener noreferrer"
       >
-        💬 Compartir por WhatsApp
+        <Icon name="whatsapp" size={15} /> Compartir por WhatsApp
       </a>
       <button
         className="caja-btn caja-btn--ghost caja-btn--sm"
         onClick={() => window.print()}
       >
-        🖨 Imprimir / PDF
+        <Icon name="imprimir" size={15} /> Imprimir / PDF
       </button>
     </div>
   );

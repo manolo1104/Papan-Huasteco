@@ -7,6 +7,7 @@ import type { Rol } from "@/lib/caja/auth";
 import type { Mesa, Orden, OrdenItem, Producto } from "@/lib/caja/types";
 import { mxn, mxnCorto } from "@/lib/caja/format";
 import { useFeedback } from "@/components/caja/ui/Feedback";
+import { Icon } from "@/components/caja/ui/Icon";
 
 export default function PosPanel({
   rol,
@@ -216,7 +217,7 @@ function OrdenView({
     <div className="caja-page caja-pos">
       <header className="caja-head caja-head--row">
         <div>
-          <Link href="/admin/pos" className="caja-link">← Mesas</Link>
+          <Link href="/admin/pos" className="caja-link caja-link--icon"><Icon name="volver" size={15} /> Mesas</Link>
           <h1>{mesa}</h1>
         </div>
         {orden && (
@@ -310,7 +311,7 @@ function OrdenView({
               disabled={busy || !porEnviar}
               onClick={enviarCocina}
             >
-              👨‍🍳 Enviar a cocina
+              <Icon name="cocina" size={18} /> Enviar a cocina
             </button>
             <button
               className="caja-btn caja-btn--primary caja-btn--lg"
@@ -379,10 +380,10 @@ function CobroModal({
 
         <div className="caja-pos__acciones" style={{ marginTop: "1.1rem" }}>
           <button className="caja-btn caja-btn--primary caja-btn--lg" disabled={busy} onClick={() => onCobrar("efectivo")}>
-            💵 Cobrar en efectivo
+            <Icon name="efectivo" size={18} /> Cobrar en efectivo
           </button>
           <button className="caja-btn caja-btn--ghost caja-btn--lg" disabled={busy} onClick={() => onCobrar("tarjeta")}>
-            💳 Cobrar con tarjeta
+            <Icon name="tarjeta" size={18} /> Cobrar con tarjeta
           </button>
           <button className="caja-btn caja-btn--ghost" disabled={busy} onClick={onClose}>
             Cancelar

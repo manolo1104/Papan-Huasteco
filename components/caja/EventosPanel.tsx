@@ -6,6 +6,7 @@ import type { Rol } from "@/lib/caja/auth";
 import { EVENTO_ESTADOS, labelDe, type Evento } from "@/lib/caja/types";
 import { mxn, fechaCorta } from "@/lib/caja/format";
 import { useFeedback } from "@/components/caja/ui/Feedback";
+import { Icon } from "@/components/caja/ui/Icon";
 
 const colorEstado = (id: string) =>
   EVENTO_ESTADOS.find((e) => e.id === id)?.color ?? "#6b7280";
@@ -128,7 +129,7 @@ export default function EventosPanel({
                     ))}
                   </select>
                   {rol === "admin" && (
-                    <button className="caja-iconbtn" title="Borrar" onClick={() => borrar(e.id)}>✕</button>
+                    <button className="caja-iconbtn" title="Borrar" onClick={() => borrar(e.id)}><Icon name="cerrar" size={15} /></button>
                   )}
                 </div>
               </article>

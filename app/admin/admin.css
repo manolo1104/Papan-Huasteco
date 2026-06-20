@@ -247,7 +247,7 @@
 .caja-kpi--verde { border-left-color: var(--c-green); }
 .caja-kpi--rojo { border-left-color: var(--c-red); }
 .caja-kpi__label { font-size: 0.78rem; color: var(--c-muted); font-weight: 500; }
-.caja-kpi__valor { font-size: 1.45rem; font-weight: 700; letter-spacing: -0.01em; }
+.caja-kpi__valor { font-size: 1.45rem; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 .caja-kpi__pista { font-size: 0.74rem; color: var(--c-muted); }
 
 /* ── Banner turno abierto ──────────────────── */
@@ -313,6 +313,9 @@
 }
 .caja-table td { padding: 0.55rem 0.6rem; border-bottom: 1px solid var(--c-border); }
 .caja-table tr:last-child td { border-bottom: none; }
+/* Resaltado de fila al pasar el cursor (estilo dashboard de datos) */
+.caja-table tbody tr { transition: background-color 120ms ease; }
+.caja-table tbody tr:hover { background: var(--c-green-soft); }
 .caja-table .num { text-align: right; font-variant-numeric: tabular-nums; }
 .caja-table .neg { color: var(--c-red); font-weight: 600; }
 .caja-table .pos { color: var(--c-green); font-weight: 600; }
@@ -328,6 +331,12 @@
 .caja-tag--abierto { background: #fff2d6; color: #946800; }
 
 .caja-link { color: var(--c-green); font-size: 0.85rem; font-weight: 600; }
+.caja-link--icon { display: inline-flex; align-items: center; gap: 0.3rem; }
+.caja-stock-cell { display: inline-flex; align-items: center; gap: 0.25rem; justify-content: flex-end; }
+.caja-stock-cell svg { color: var(--c-red); }
+/* Iconos dentro de botones/nav: alineados al texto, heredan color */
+.caja-btn svg, .caja-nav__item svg, .caja-action__icon svg { flex-shrink: 0; }
+.caja-iconbtn { display: inline-flex; align-items: center; justify-content: center; }
 .caja-muted { color: var(--c-muted); font-size: 0.9rem; }
 
 .caja-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
@@ -700,7 +709,7 @@
     color: var(--c-muted);
     border-radius: var(--r-sm);
   }
-  .caja-bottomnav__item span:first-child { font-size: 1.25rem; line-height: 1; }
+  .caja-bottomnav__item svg { width: 22px; height: 22px; }
   .caja-bottomnav__item.is-active { color: var(--c-green); }
   .caja-main { padding-bottom: 5rem; }
 }
@@ -738,6 +747,49 @@
 
 /* ── Press físico en tarjetas tocables ────────── */
 .caja-action:active, .caja-mesa:active { transform: scale(0.985); }
+
+/* ── Gráfica de área (ventas) ─────────────────── */
+.caja-chart { width: 100%; }
+.caja-chart__svg { width: 100%; display: block; }
+.caja-chart__grid { stroke: var(--c-border); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.caja-chart__ylabel { fill: var(--c-muted); font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.caja-chart__xlabel { fill: var(--c-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.caja-chart__line { stroke: var(--c-green); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.caja-chart__dot { fill: var(--c-green); }
+.caja-chart__halo { fill: var(--c-green); opacity: 0.16; }
+.caja-chart__svg rect:hover ~ * { opacity: 1; }
+.caja-chart__svg rect:hover { fill: rgba(58, 92, 62, 0.06); }
+
+/* ── Ranking de platillos ─────────────────────── */
+.caja-rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.85rem; }
+.caja-rank__row { display: flex; gap: 0.7rem; align-items: flex-start; }
+.caja-rank__num {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  background: var(--c-green-soft); color: var(--c-green-dark);
+  font-size: 0.78rem; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.caja-rank__row:first-child .caja-rank__num { background: var(--c-green); color: #fff; }
+.caja-rank__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.2rem; }
+.caja-rank__head { display: flex; justify-content: space-between; gap: 0.6rem; font-size: 0.92rem; }
+.caja-rank__nombre { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.caja-rank__head strong { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.caja-rank__track { height: 6px; background: var(--c-bg); border-radius: 999px; overflow: hidden; }
+.caja-rank__fill { height: 100%; background: linear-gradient(90deg, var(--c-green-light), var(--c-green)); border-radius: 999px; }
+.caja-rank__sub { font-size: 0.74rem; color: var(--c-muted); }
+
+/* Delta de comparativo (▲▼ %) */
+.caja-delta { font-size: 0.82rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.caja-delta--up { color: var(--c-green); }
+.caja-delta--down { color: var(--c-red); }
+
+/* Sub-tabs (Más vendidos / Más rentables) */
+.caja-subtabs { display: inline-flex; gap: 0.25rem; background: var(--c-bg); padding: 0.2rem; border-radius: var(--r-sm); }
+.caja-subtab { padding: 0.35rem 0.7rem; border: none; background: transparent; border-radius: calc(var(--r-sm) - 3px); font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--c-muted); cursor: pointer; }
+.caja-subtab.is-active { background: #fff; color: var(--c-green-dark); box-shadow: var(--sh-1); }
 
 /* ── Respeta reduced-motion (Emil / a11y) ─────── */
 @media (prefers-reduced-motion: reduce) {

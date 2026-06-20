@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Categoria } from "@/lib/caja/types";
 import { useFeedback } from "@/components/caja/ui/Feedback";
+import { Icon } from "@/components/caja/ui/Icon";
 
 export default function AjustesPanel({
   categorias,
@@ -133,7 +134,7 @@ export default function AjustesPanel({
                 <button className="caja-btn caja-btn--sm caja-btn--ghost" onClick={() => patch(c.id, { activo: !c.activo })}>
                   {c.activo ? "Ocultar" : "Mostrar"}
                 </button>
-                <button className="caja-iconbtn" onClick={() => borrar(c.id)} title="Borrar">✕</button>
+                <button className="caja-iconbtn" onClick={() => borrar(c.id)} title="Borrar"><Icon name="cerrar" size={15} /></button>
               </div>
             </li>
           ))}

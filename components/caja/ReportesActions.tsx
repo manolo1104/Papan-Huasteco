@@ -2,6 +2,7 @@
 
 import type { Turno, Gasto } from "@/lib/caja/types";
 import { labelDe, TURNOS, GASTO_CATEGORIAS, FORMAS_PAGO } from "@/lib/caja/types";
+import { Icon } from "@/components/caja/ui/Icon";
 
 function descargarCSV(nombre: string, filas: string[][]) {
   const csv = filas
@@ -64,13 +65,13 @@ export default function ReportesActions({
   return (
     <div className="caja-reportes__actions caja-noprint">
       <button className="caja-btn caja-btn--ghost caja-btn--sm" onClick={exportTurnos}>
-        ⬇ Turnos (CSV)
+        <Icon name="importar" size={15} /> Turnos (CSV)
       </button>
       <button className="caja-btn caja-btn--ghost caja-btn--sm" onClick={exportGastos}>
-        ⬇ Gastos (CSV)
+        <Icon name="importar" size={15} /> Gastos (CSV)
       </button>
       <button className="caja-btn caja-btn--ghost caja-btn--sm" onClick={() => window.print()}>
-        🖨 Imprimir / PDF
+        <Icon name="imprimir" size={15} /> Imprimir / PDF
       </button>
     </div>
   );

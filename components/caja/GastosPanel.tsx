@@ -14,6 +14,7 @@ import {
 import { mxn, fechaCorta } from "@/lib/caja/format";
 import { todayISO } from "@/lib/caja/server";
 import { useFeedback } from "@/components/caja/ui/Feedback";
+import { Icon } from "@/components/caja/ui/Icon";
 
 export default function GastosPanel({
   rol,
@@ -151,8 +152,8 @@ export default function GastosPanel({
             <span>Foto del ticket (opcional)</span>
             {comprobante ? (
               <div className="caja-ticket-prev">
-                <a href={comprobante} target="_blank" rel="noopener noreferrer">📎 Ver comprobante</a>
-                <button type="button" className="caja-iconbtn" onClick={() => setComprobante(null)}>quitar ✕</button>
+                <a href={comprobante} target="_blank" rel="noopener noreferrer" className="caja-link--icon"><Icon name="ticket" size={15} /> Ver comprobante</a>
+                <button type="button" className="caja-iconbtn" onClick={() => setComprobante(null)}>quitar</button>
               </div>
             ) : (
               <input type="file" accept="image/*,application/pdf" capture="environment" onChange={subirTicket} disabled={subiendo} />
@@ -212,14 +213,14 @@ export default function GastosPanel({
                     <td>{labelDe([...FORMAS_PAGO], g.forma_pago)}</td>
                     <td>
                       {g.comprobante_url ? (
-                        <a href={g.comprobante_url} target="_blank" rel="noopener noreferrer" className="caja-link">📎 Ver</a>
+                        <a href={g.comprobante_url} target="_blank" rel="noopener noreferrer" className="caja-link caja-link--icon"><Icon name="ticket" size={14} /> Ver</a>
                       ) : (
                         <span className="caja-muted">—</span>
                       )}
                     </td>
                     <td className="num">{mxn(g.monto)}</td>
                     <td className="num">
-                      <button className="caja-iconbtn" title="Borrar" onClick={() => borrar(g.id)}>✕</button>
+                      <button className="caja-iconbtn" title="Borrar" onClick={() => borrar(g.id)}><Icon name="cerrar" size={15} /></button>
                     </td>
                   </tr>
                 ))}

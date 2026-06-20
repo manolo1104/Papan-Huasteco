@@ -6,6 +6,7 @@ import type { Rol } from "@/lib/caja/auth";
 import type { ProductoCosteo } from "@/lib/caja/types";
 import { mxn, mxnCorto } from "@/lib/caja/format";
 import { useFeedback } from "@/components/caja/ui/Feedback";
+import { Icon } from "@/components/caja/ui/Icon";
 
 export default function ProductosPanel({
   rol,
@@ -95,7 +96,7 @@ export default function ProductosPanel({
           <p className="caja-head__sub">{totalProd} platillos en el sistema. El costo y margen salen de las recetas (Inventario).</p>
         </div>
         <button className="caja-btn caja-btn--primary caja-btn--sm" disabled={busy} onClick={importar}>
-          ⬇ Importar menú del sitio
+          <Icon name="importar" size={15} /> Importar menú del sitio
         </button>
       </header>
 
