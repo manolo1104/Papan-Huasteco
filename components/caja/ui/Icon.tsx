@@ -23,6 +23,10 @@ import {
   ArrowLeft,
   X,
   LogOut,
+  Pencil,
+  ChevronLeft,
+  ChevronRight,
+  List,
   type LucideIcon,
 } from "lucide-react";
 
@@ -53,6 +57,10 @@ const MAP = {
   volver: ArrowLeft,
   cerrar: X,
   salir: LogOut,
+  editar: Pencil,
+  izquierda: ChevronLeft,
+  derecha: ChevronRight,
+  lista: List,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof MAP;

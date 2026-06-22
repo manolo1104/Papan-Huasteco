@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Rol } from "@/lib/caja/auth";
@@ -100,6 +100,7 @@ function OrdenView({
   const [error, setError] = useState("");
   const [busca, setBusca] = useState("");
   const [cobroOpen, setCobroOpen] = useState(false);
+  const [persItem, setPersItem] = useState<OrdenItem | null>(null);
 
   const categorias = useMemo(
     () => Array.from(new Set(productos.map((p) => p.categoria))),
@@ -179,6 +180,13 @@ function OrdenView({
   function cambiarCantidad(it: OrdenItem, delta: number) {
     if (!orden) return;
     call({ id: orden.id, action: "item_cantidad", item_id: it.id, cantidad: it.cantidad + delta });
+  }
+
+  async function guardarNota(nota: string) {
+    if (!orden || !persItem) return;
+    setPersItem(null);
+    const r = await call({ id: orden.id, action: "item_nota", item_id: persItem.id, nota });
+    if (r?.ok) toast.success(nota ? "Platillo personalizado" : "Indicación quitada");
   }
 
   async function enviarCocina() {
@@ -273,28 +281,43 @@ function OrdenView({
             <ul className="caja-cuenta">
               {items.map((it) => (
                 <li key={it.id} className="caja-cuenta__row">
-                  <div className="caja-cuenta__info">
-                    {it.enviado_cocina ? (
-                      <span className="caja-cuenta__qty">{it.cantidad}×</span>
-                    ) : (
-                      <span className="caja-stepper">
-                        <button disabled={busy} aria-label="Quitar uno" onClick={() => cambiarCantidad(it, -1)}>−</button>
-                        <span className="caja-stepper__val">{it.cantidad}</span>
-                        <button disabled={busy} aria-label="Agregar uno" onClick={() => cambiarCantidad(it, 1)}>+</button>
-                      </span>
-                    )}
-                    <span>
-                      {it.nombre}
-                      {it.enviado_cocina && (
-                        <span className={`caja-tag ${it.estado === "listo" ? "caja-tag--listo" : "caja-tag--cocina"}`}>
-                          {it.estado === "listo" ? "listo" : "en cocina"}
+                  <div className="caja-cuenta__main">
+                    <div className="caja-cuenta__info">
+                      {it.enviado_cocina ? (
+                        <span className="caja-cuenta__qty">{it.cantidad}×</span>
+                      ) : (
+                        <span className="caja-stepper">
+                          <button disabled={busy} aria-label="Quitar uno" onClick={() => cambiarCantidad(it, -1)}>−</button>
+                          <span className="caja-stepper__val">{it.cantidad}</span>
+                          <button disabled={busy} aria-label="Agregar uno" onClick={() => cambiarCantidad(it, 1)}>+</button>
                         </span>
                       )}
-                    </span>
+                      <span className="caja-cuenta__nombre">
+                        {it.nombre}
+                        {it.enviado_cocina && (
+                          <span className={`caja-tag ${it.estado === "listo" ? "caja-tag--listo" : "caja-tag--cocina"}`}>
+                            {it.estado === "listo" ? "listo" : "en cocina"}
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="caja-cuenta__der">
+                      <span>{mxnCorto(it.precio_unit * it.cantidad)}</span>
+                    </div>
                   </div>
-                  <div className="caja-cuenta__der">
-                    <span>{mxnCorto(it.precio_unit * it.cantidad)}</span>
-                  </div>
+                  {it.nota && (
+                    <p className="caja-cuenta__nota"><Icon name="editar" size={12} /> {it.nota}</p>
+                  )}
+                  {!it.enviado_cocina && (
+                    <button
+                      type="button"
+                      className="caja-cuenta__pers"
+                      disabled={busy}
+                      onClick={() => setPersItem(it)}
+                    >
+                      <Icon name="editar" size={13} /> {it.nota ? "Editar indicaciones" : "Personalizar"}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -332,6 +355,130 @@ function OrdenView({
           onCobrar={confirmarCobro}
         />
       )}
+
+      {persItem && (
+        <PersonalizarModal
+          key={persItem.id}
+          item={persItem}
+          busy={busy}
+          onClose={() => setPersItem(null)}
+          onSave={guardarNota}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── Modal de personalización (sin cebolla, sin crema, etc.) ───
+// Las indicaciones se guardan en `nota` y se ven en la comanda de cocina.
+const QUITABLES = [
+  "Sin cebolla",
+  "Sin crema",
+  "Sin queso",
+  "Sin chile",
+  "Sin cilantro",
+  "Sin frijoles",
+  "Sin lechuga",
+  "Sin jitomate",
+  "Sin picante",
+  "Sin salsa",
+];
+const EXTRAS = ["Para llevar", "Salsa aparte", "Bien dorado", "Poco picante"];
+const TODAS = [...QUITABLES, ...EXTRAS];
+
+function PersonalizarModal({
+  item,
+  busy,
+  onClose,
+  onSave,
+}: {
+  item: OrdenItem;
+  busy: boolean;
+  onClose: () => void;
+  onSave: (nota: string) => void;
+}) {
+  // Separa la nota existente en chips conocidos + texto libre.
+  const inicial = useMemo(() => {
+    const set = new Set<string>();
+    const libre: string[] = [];
+    for (const parte of (item.nota ?? "").split(",").map((s) => s.trim()).filter(Boolean)) {
+      const match = TODAS.find((c) => c.toLowerCase() === parte.toLowerCase());
+      if (match) set.add(match);
+      else libre.push(parte);
+    }
+    return { set, libre: libre.join(", ") };
+  }, [item.nota]);
+
+  const [chips, setChips] = useState<Set<string>>(inicial.set);
+  const [libre, setLibre] = useState(inicial.libre);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  function toggle(c: string) {
+    setChips((prev) => {
+      const next = new Set(prev);
+      if (next.has(c)) next.delete(c);
+      else next.add(c);
+      return next;
+    });
+  }
+
+  function guardar() {
+    const orden = TODAS.filter((c) => chips.has(c));
+    const extra = libre.trim();
+    onSave([...orden, ...(extra ? [extra] : [])].join(", "));
+  }
+
+  return (
+    <div className="caja-modal" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="caja-modal__card caja-modal__card--ancho" role="dialog" aria-modal="true" aria-label="Personalizar platillo">
+        <h3 className="caja-modal__title">Personalizar</h3>
+        <p className="caja-modal__msg">{item.cantidad}× {item.nombre}</p>
+
+        <div className="caja-pers">
+          <span className="caja-pers__lbl">Toca lo que se quita o se indica</span>
+          <div className="caja-perschips">
+            {TODAS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                className={`caja-perschip ${chips.has(c) ? "is-on" : ""}`}
+                onClick={() => toggle(c)}
+              >
+                {chips.has(c) && <Icon name="check" size={13} />} {c}
+              </button>
+            ))}
+          </div>
+          <label className="caja-field" style={{ marginTop: "0.9rem" }}>
+            <span>Otra indicación (opcional)</span>
+            <input
+              value={libre}
+              onChange={(e) => setLibre(e.target.value)}
+              placeholder="Ej. término medio, sin sal…"
+            />
+          </label>
+        </div>
+
+        <div className="caja-modal__acciones">
+          {item.nota && (
+            <button className="caja-btn caja-btn--ghost" disabled={busy} onClick={() => onSave("")}>
+              Quitar indicaciones
+            </button>
+          )}
+          <button className="caja-btn caja-btn--ghost" disabled={busy} onClick={onClose}>
+            Cancelar
+          </button>
+          <button className="caja-btn caja-btn--primary" disabled={busy} onClick={guardar}>
+            Guardar
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

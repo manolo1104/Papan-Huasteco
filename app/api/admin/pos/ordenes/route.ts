@@ -88,12 +88,16 @@ export async function PATCH(req: Request) {
     const d = data!;
     let merged = false;
     if (d.producto_id) {
+      // Solo se fusiona con un renglón del mismo producto que NO esté
+      // personalizado (sin nota). Así "2 enchiladas sin cebolla" no se
+      // mezcla con una enchilada normal: quedan en renglones aparte.
       const { data: ex } = await sb
         .from("pos_orden_items")
         .select("id, cantidad")
         .eq("orden_id", id)
         .eq("producto_id", d.producto_id as string)
         .eq("enviado_cocina", false)
+        .is("nota", null)
         .limit(1)
         .maybeSingle();
       if (ex) {
@@ -141,6 +145,23 @@ export async function PATCH(req: Request) {
     }
     const total = await recomputeTotal(sb, id);
     return NextResponse.json({ ok: true, total });
+  }
+
+  // Personalizar un renglón (ej. "Sin cebolla, sin crema"). Solo se puede
+  // mientras NO se haya mandado a cocina. La nota aparece en la comanda.
+  if (action === "item_nota") {
+    const itemId = typeof body.item_id === "string" ? body.item_id : "";
+    if (!itemId) return NextResponse.json({ error: "Falta el renglón." }, { status: 400 });
+    const raw = typeof body.nota === "string" ? body.nota.trim() : "";
+    const nota = raw ? raw.slice(0, 300) : null;
+    const { error } = await sb
+      .from("pos_orden_items")
+      .update({ nota })
+      .eq("id", itemId)
+      .eq("orden_id", id)
+      .eq("enviado_cocina", false);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true });
   }
 
   // Enviar a cocina los renglones que aún no se han mandado

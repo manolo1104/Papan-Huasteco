@@ -791,6 +791,110 @@
 .caja-subtab { padding: 0.35rem 0.7rem; border: none; background: transparent; border-radius: calc(var(--r-sm) - 3px); font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--c-muted); cursor: pointer; }
 .caja-subtab.is-active { background: #fff; color: var(--c-green-dark); box-shadow: var(--sh-1); }
 
+/* ════════════════════════════════════════════════
+   POS · Personalización de platillos (sin cebolla, etc.)
+═══════════════════════════════════════════════════ */
+.caja-cuenta__row { flex-direction: column; align-items: stretch; gap: 0.3rem; }
+.caja-cuenta__main { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.caja-cuenta__nombre { line-height: 1.25; }
+.caja-cuenta__nota {
+  display: inline-flex; align-items: center; gap: 0.32rem;
+  width: fit-content; max-width: 100%;
+  font-size: 0.8rem; color: var(--c-terra);
+  background: #fbf1ec; padding: 0.22rem 0.5rem; border-radius: var(--r-sm);
+}
+.caja-cuenta__nota svg { flex-shrink: 0; }
+.caja-cuenta__pers {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: none; border: none; padding: 0.05rem 0;
+  font: inherit; font-size: 0.8rem; font-weight: 600;
+  color: var(--c-green); cursor: pointer;
+}
+.caja-cuenta__pers:hover { color: var(--c-green-dark); text-decoration: underline; }
+.caja-cuenta__pers:disabled { opacity: 0.5; cursor: default; text-decoration: none; }
+
+.caja-modal__card--ancho { max-width: 460px; }
+.caja-pers { margin-top: 0.7rem; }
+.caja-pers__lbl { display: block; font-size: 0.8rem; font-weight: 600; color: var(--c-muted); margin-bottom: 0.55rem; }
+.caja-perschips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.caja-perschip {
+  display: inline-flex; align-items: center; gap: 0.22rem;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid var(--c-border); background: #fff;
+  border-radius: 999px; font: inherit; font-size: 0.84rem; color: var(--c-text);
+  cursor: pointer;
+  transition: transform 140ms var(--ease-out), border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+.caja-perschip:hover { border-color: var(--c-green); }
+.caja-perschip:active { transform: scale(0.96); }
+.caja-perschip.is-on { background: var(--c-green); border-color: var(--c-green); color: #fff; }
+
+/* ════════════════════════════════════════════════
+   Eventos · Calendario mensual
+═══════════════════════════════════════════════════ */
+.caja-calwrap { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.2rem; align-items: start; }
+
+.caja-cal { padding: 1rem 1.1rem 1.2rem; }
+.caja-cal__head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
+.caja-cal__title { font-size: 1.12rem; }
+.caja-cal__nav {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px;
+  border: 1px solid var(--c-border); background: #fff; color: var(--c-text);
+  border-radius: var(--r-sm); cursor: pointer;
+  transition: transform 140ms var(--ease-out), border-color 150ms ease, color 150ms ease;
+}
+.caja-cal__nav:hover { border-color: var(--c-green); color: var(--c-green); }
+.caja-cal__nav:active { transform: scale(0.92); }
+.caja-cal__hoy { margin-left: auto; }
+
+.caja-cal__dows { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+.caja-cal__dow { text-align: center; font-size: 0.7rem; font-weight: 700; color: var(--c-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.caja-cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.caja-cal__cell {
+  display: flex; flex-direction: column; gap: 3px; align-items: stretch;
+  min-height: 80px; padding: 4px 4px 5px;
+  border: 1px solid var(--c-border); border-radius: var(--r-sm);
+  background: #fff; text-align: left; font: inherit; cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+  overflow: hidden;
+}
+.caja-cal__cell.is-empty { background: transparent; border-color: transparent; cursor: default; }
+.caja-cal__cell:not(.is-empty):hover { border-color: var(--c-green); }
+.caja-cal__cell.is-today { border-color: var(--c-green); box-shadow: inset 0 0 0 1px var(--c-green); }
+.caja-cal__cell.is-selected { background: var(--c-green-soft); border-color: var(--c-green); box-shadow: 0 0 0 2px rgba(58,92,62,0.18); }
+.caja-cal__num { font-size: 0.8rem; font-weight: 700; color: var(--c-text); font-variant-numeric: tabular-nums; }
+.caja-cal__cell.is-today .caja-cal__num { color: var(--c-green); }
+.caja-cal__evs { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.caja-cal__ev {
+  font-size: 0.68rem; font-weight: 600; color: #fff;
+  padding: 1px 5px; border-radius: 5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.caja-cal__more { font-size: 0.66rem; color: var(--c-muted); font-weight: 600; padding-left: 2px; }
+.caja-cal__leyenda {
+  list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem;
+  margin: 0.9rem 0 0; padding: 0.85rem 0 0;
+  border-top: 1px solid var(--c-border); font-size: 0.76rem; color: var(--c-muted);
+}
+.caja-cal__leyenda li { display: inline-flex; align-items: center; gap: 0.35rem; }
+.caja-cal__punto { width: 9px; height: 9px; border-radius: 999px; display: inline-block; }
+
+.caja-calside { display: flex; flex-direction: column; gap: 0.85rem; }
+.caja-calside__head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+.caja-calside__head h3 { font-size: 1rem; }
+.caja-calside .caja-eventos { grid-template-columns: 1fr; }
+.caja-calside__sinfecha { margin-top: 0.4rem; }
+.caja-calside__sinfecha h3 { font-size: 0.92rem; color: var(--c-muted); margin-bottom: 0.6rem; }
+
+@media (max-width: 980px) { .caja-calwrap { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  .caja-cal__cell { min-height: 54px; }
+  .caja-cal__ev { font-size: 0; line-height: 0; height: 5px; padding: 0; border-radius: 999px; }
+  .caja-cal__more { font-size: 0.6rem; }
+}
+
 /* ── Respeta reduced-motion (Emil / a11y) ─────── */
 @media (prefers-reduced-motion: reduce) {
   .caja-root *,
