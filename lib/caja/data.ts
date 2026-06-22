@@ -13,7 +13,7 @@ import type {
   Receta,
   ProductoCosteo,
 } from "./types";
-import { CATEGORIAS_DEFAULT } from "./types";
+import { CATEGORIAS_DEFAULT, CONCEPTOS_DEFAULT } from "./types";
 
 // Cargadores de datos para las páginas del panel (server components).
 // Todos verifican que Supabase esté configurado; si no, devuelven vacío para
@@ -25,7 +25,7 @@ const sum = <T,>(rows: T[], pick: (r: T) => number): number =>
 export interface DashboardData {
   hoy: { ingresos: number; efectivo: number; tarjeta: number; gastos: number; utilidad: number };
   semana: { ingresos: number; gastos: number; utilidad: number };
-  mes: { ingresos: number; gastos: number; utilidad: number; faltantes: number };
+  mes: { ingresos: number; gastos: number; utilidad: number; faltantes: number; efectivo: number; tarjeta: number; otros: number };
   gastosPorCategoria: { categoria: string; total: number }[];
   turnosRecientes: Turno[];
   eventosPendientes: Evento[];
@@ -112,7 +112,15 @@ export async function loadDashboard(): Promise<DashboardData | null> {
   return {
     hoy: { ingresos: ingHoy, efectivo: sum(tHoy, (t) => t.ventas_efectivo), tarjeta: sum(tHoy, (t) => t.ventas_tarjeta), gastos: gasHoy, utilidad: ingHoy - gasHoy },
     semana: { ingresos: ingSemana, gastos: gasSemana, utilidad: ingSemana - gasSemana },
-    mes: { ingresos: ingMes, gastos: gasMes, utilidad: ingMes - gasMes, faltantes },
+    mes: {
+      ingresos: ingMes,
+      gastos: gasMes,
+      utilidad: ingMes - gasMes,
+      faltantes,
+      efectivo: sum(turnos, (t) => t.ventas_efectivo),
+      tarjeta: sum(turnos, (t) => t.ventas_tarjeta),
+      otros: sum(turnos, (t) => t.otros_ingresos),
+    },
     gastosPorCategoria,
     turnosRecientes,
     eventosPendientes,
@@ -201,6 +209,19 @@ export async function loadCategorias(): Promise<Categoria[]> {
     .order("orden", { ascending: true });
   const rows = (data as Categoria[]) ?? [];
   if (error || rows.length === 0) return CATEGORIAS_DEFAULT;
+  return rows;
+}
+
+/** Conceptos de gasto (de la BD; respaldo a los default si aún no hay tabla). */
+export async function loadConceptos(): Promise<Categoria[]> {
+  if (!adminEnvReady) return CONCEPTOS_DEFAULT;
+  const sb = createAdminClient();
+  const { data, error } = await sb
+    .from("caja_conceptos")
+    .select("*")
+    .order("orden", { ascending: true });
+  const rows = (data as Categoria[]) ?? [];
+  if (error || rows.length === 0) return CONCEPTOS_DEFAULT;
   return rows;
 }
 

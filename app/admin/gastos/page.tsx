@@ -1,5 +1,5 @@
 import { getRol } from "@/lib/caja/auth";
-import { loadGastos, loadTurnoAbierto, loadCategorias } from "@/lib/caja/data";
+import { loadGastos, loadTurnoAbierto, loadCategorias, loadConceptos } from "@/lib/caja/data";
 import CajaLogin from "@/components/caja/CajaLogin";
 import CajaShell from "@/components/caja/CajaShell";
 import GastosPanel from "@/components/caja/GastosPanel";
@@ -10,15 +10,16 @@ export default async function GastosPage() {
   const rol = await getRol();
   if (!rol) return <CajaLogin />;
 
-  const [gastos, turnoAbierto, categorias] = await Promise.all([
+  const [gastos, turnoAbierto, categorias, conceptos] = await Promise.all([
     loadGastos(),
     loadTurnoAbierto(),
     loadCategorias(),
+    loadConceptos(),
   ]);
 
   return (
     <CajaShell rol={rol} active="gastos">
-      <GastosPanel rol={rol} gastos={gastos} turnoAbierto={turnoAbierto} categorias={categorias} />
+      <GastosPanel rol={rol} gastos={gastos} turnoAbierto={turnoAbierto} categorias={categorias} conceptos={conceptos} />
     </CajaShell>
   );
 }

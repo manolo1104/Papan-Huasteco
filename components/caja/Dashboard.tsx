@@ -6,6 +6,7 @@ import { todayISO } from "@/lib/caja/server";
 import { mxn, mxnCorto, fechaCorta, fechaLarga } from "@/lib/caja/format";
 import AreaChart from "@/components/caja/charts/AreaChart";
 import RankList from "@/components/caja/charts/RankList";
+import EstadoResultados from "@/components/caja/EstadoResultados";
 import { Icon } from "@/components/caja/ui/Icon";
 
 interface MetricasDash {
@@ -269,6 +270,24 @@ export default function Dashboard({
       {metricas && <MetricasDashboard m={metricas} />}
 
       <MetasComparativo data={data} />
+
+      <section className="caja-card">
+        <h3 className="caja-card__title">Estado de resultados del mes</h3>
+        <EstadoResultados
+          ingresos={{
+            efectivo: data.mes.efectivo,
+            tarjeta: data.mes.tarjeta,
+            otros: data.mes.otros,
+            total: data.mes.ingresos,
+          }}
+          gastos={data.gastosPorCategoria.map((g) => ({
+            label: labelDe(categorias, g.categoria),
+            total: g.total,
+          }))}
+          totalGastos={data.mes.gastos}
+          utilidad={data.mes.utilidad}
+        />
+      </section>
 
       <div className="caja-grid2">
         <section className="caja-card">

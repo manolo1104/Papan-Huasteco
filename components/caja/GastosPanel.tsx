@@ -16,23 +16,29 @@ import { todayISO } from "@/lib/caja/server";
 import { useFeedback } from "@/components/caja/ui/Feedback";
 import { Icon } from "@/components/caja/ui/Icon";
 
+const OTRO = "__otro__";
+
 export default function GastosPanel({
   rol,
   gastos,
   turnoAbierto,
   categorias,
+  conceptos,
 }: {
   rol: Rol;
   gastos: Gasto[];
   turnoAbierto: Turno | null;
   categorias: Categoria[];
+  conceptos: Categoria[];
 }) {
   const router = useRouter();
   const { toast, confirm } = useFeedback();
   const activas = categorias.filter((c) => c.activo);
+  const conceptosActivos = conceptos.filter((c) => c.activo);
   const [fecha, setFecha] = useState(todayISO());
   const [categoria, setCategoria] = useState(activas[0]?.id ?? "otros");
-  const [concepto, setConcepto] = useState("");
+  const [concepto, setConcepto] = useState(conceptosActivos[0]?.label ?? OTRO);
+  const [conceptoLibre, setConceptoLibre] = useState("");
   const [monto, setMonto] = useState("");
   const [formaPago, setFormaPago] = useState("efectivo");
   const [proveedor, setProveedor] = useState("");
@@ -58,6 +64,8 @@ export default function GastosPanel({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    const conceptoFinal = (concepto === OTRO ? conceptoLibre : concepto).trim();
+    if (!conceptoFinal) return setError("Elige o escribe el concepto del gasto.");
     setLoading(true);
     setError("");
     const res = await fetch("/api/admin/gastos", {
@@ -66,7 +74,7 @@ export default function GastosPanel({
       body: JSON.stringify({
         fecha,
         categoria,
-        concepto,
+        concepto: conceptoFinal,
         monto: monto === "" ? 0 : Number(monto),
         forma_pago: formaPago,
         proveedor,
@@ -77,7 +85,8 @@ export default function GastosPanel({
     const data = await res.json().catch(() => ({}));
     setLoading(false);
     if (!res.ok) return setError(data.error || "No se pudo guardar el gasto.");
-    setConcepto("");
+    setConcepto(conceptosActivos[0]?.label ?? OTRO);
+    setConceptoLibre("");
     setMonto("");
     setProveedor("");
     setComprobante(null);
@@ -129,8 +138,24 @@ export default function GastosPanel({
           </label>
           <label className="caja-field">
             <span>Concepto</span>
-            <input value={concepto} onChange={(e) => setConcepto(e.target.value)} placeholder="¿En qué se gastó?" />
+            <select value={concepto} onChange={(e) => setConcepto(e.target.value)}>
+              {conceptosActivos.map((c) => (
+                <option key={c.id} value={c.label}>{c.label}</option>
+              ))}
+              <option value={OTRO}>Otro (escribir)…</option>
+            </select>
           </label>
+          {concepto === OTRO && (
+            <label className="caja-field">
+              <span>Escribe el concepto</span>
+              <input
+                value={conceptoLibre}
+                onChange={(e) => setConceptoLibre(e.target.value)}
+                placeholder="¿En qué se gastó?"
+                autoFocus
+              />
+            </label>
+          )}
           <label className="caja-field">
             <span>Monto</span>
             <input type="number" min="0" step="0.01" inputMode="decimal" value={monto} onChange={(e) => setMonto(e.target.value)} placeholder="$" />

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getRol } from "@/lib/caja/auth";
-import { loadTurnos, loadGastos, loadTendencia, loadMetricasRango } from "@/lib/caja/data";
+import { loadTurnos, loadGastos, loadTendencia, loadMetricasRango, loadCategorias } from "@/lib/caja/data";
 import { todayISO, addDays } from "@/lib/caja/server";
 import CajaLogin from "@/components/caja/CajaLogin";
 import CajaShell from "@/components/caja/CajaShell";
@@ -24,11 +24,12 @@ export default async function ReportesPage({
   const hasta = isDate(searchParams.hasta) ? searchParams.hasta : todayISO();
   const desde = isDate(searchParams.desde) ? searchParams.desde : addDays(hasta, -29);
 
-  const [turnos, gastos, tendencia, metricas] = await Promise.all([
+  const [turnos, gastos, tendencia, metricas, categorias] = await Promise.all([
     loadTurnos(desde, hasta),
     loadGastos(desde, hasta),
     loadTendencia(hasta.slice(0, 7)),
     loadMetricasRango(desde, hasta),
+    loadCategorias(),
   ]);
 
   return (
@@ -40,6 +41,7 @@ export default async function ReportesPage({
         gastos={gastos}
         tendencia={tendencia}
         metricas={metricas}
+        categorias={categorias}
       />
     </CajaShell>
   );

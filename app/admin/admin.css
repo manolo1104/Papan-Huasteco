@@ -895,6 +895,61 @@
   .caja-cal__more { font-size: 0.6rem; }
 }
 
+/* ════════════════════════════════════════════════
+   Estado de resultados (P&L)
+═══════════════════════════════════════════════════ */
+.caja-er { display: flex; flex-direction: column; gap: 0.9rem; }
+.caja-er__h { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--c-muted); margin-bottom: 0.35rem; }
+.caja-er__list { list-style: none; margin: 0; padding: 0; }
+.caja-er__list li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.3rem 0; border-bottom: 1px dashed var(--c-border); font-size: 0.92rem; }
+.caja-er__list li span:last-child { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.caja-er__vacio { padding: 0.3rem 0; }
+.caja-er__sub { display: flex; justify-content: space-between; gap: 1rem; padding-top: 0.5rem; font-size: 0.95rem; font-weight: 600; }
+.caja-er__sub strong { font-variant-numeric: tabular-nums; }
+.caja-er__total { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.8rem 1rem; border-radius: var(--r-md); margin-top: 0.2rem; }
+.caja-er__total strong { font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.caja-er__total.is-pos { background: var(--c-green-soft); color: var(--c-green-dark); }
+.caja-er__total.is-neg { background: var(--c-red-soft); color: var(--c-red); }
+.caja-er__margen { text-align: right; font-size: 0.85rem; color: var(--c-muted); }
+
+/* ════════════════════════════════════════════════
+   Asistente (chat con IA)
+═══════════════════════════════════════════════════ */
+.caja-chat { display: flex; flex-direction: column; min-height: calc(100vh - 4rem); }
+.caja-chat .caja-head h1 { display: inline-flex; align-items: center; gap: 0.5rem; }
+.caja-chat__hilo { flex: 1; display: flex; flex-direction: column; gap: 0.7rem; padding: 0.3rem 0 0.5rem; }
+.caja-chat__intro { margin: auto 0; text-align: center; padding: 1.5rem 0.5rem; }
+.caja-chat__sugs { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1rem; }
+.caja-chat__sug {
+  padding: 0.55rem 0.9rem; border: 1px solid var(--c-border); background: #fff;
+  border-radius: 999px; font: inherit; font-size: 0.88rem; color: var(--c-text); cursor: pointer;
+  transition: border-color 150ms ease, transform 140ms var(--ease-out);
+}
+.caja-chat__sug:hover { border-color: var(--c-green); color: var(--c-green); }
+.caja-chat__sug:active { transform: scale(0.97); }
+.caja-burbuja {
+  max-width: 80%; padding: 0.7rem 0.95rem; border-radius: var(--r-md);
+  font-size: 0.95rem; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;
+  box-shadow: var(--sh-1); animation: caja-pop 200ms var(--ease-out);
+}
+.caja-burbuja--user { align-self: flex-end; background: var(--c-green); color: #fff; border-bottom-right-radius: 4px; }
+.caja-burbuja--assistant { align-self: flex-start; background: var(--c-surface); border: 1px solid var(--c-border); border-bottom-left-radius: 4px; }
+.caja-burbuja--pensando { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--c-muted); }
+.caja-typing { display: inline-flex; gap: 3px; }
+.caja-typing i { width: 6px; height: 6px; border-radius: 999px; background: var(--c-green-light); display: inline-block; animation: caja-typing 1s infinite ease-in-out; }
+.caja-typing i:nth-child(2) { animation-delay: 0.15s; }
+.caja-typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes caja-typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-4px); opacity: 1; } }
+.caja-chat__barra { display: flex; gap: 0.5rem; align-items: flex-end; position: sticky; bottom: 0; background: var(--c-bg); padding: 0.6rem 0 0.3rem; }
+.caja-chat__input {
+  flex: 1; resize: none; max-height: 140px; min-height: 48px;
+  padding: 0.75rem 0.9rem; border: 1px solid var(--c-border); border-radius: var(--r-md);
+  font: inherit; font-size: 0.95rem; background: #fff;
+}
+.caja-chat__input:focus { outline: none; border-color: var(--c-green); box-shadow: 0 0 0 3px rgba(58,92,62,0.14); }
+.caja-chat__enviar { padding: 0.75rem 0.9rem; align-self: stretch; }
+@media (max-width: 860px) { .caja-chat__barra { position: static; } }
+
 /* ── Respeta reduced-motion (Emil / a11y) ─────── */
 @media (prefers-reduced-motion: reduce) {
   .caja-root *,

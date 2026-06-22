@@ -89,6 +89,26 @@ export const CATEGORIAS_DEFAULT: Categoria[] = GASTO_CATEGORIAS.map((c, i) => ({
   activo: true,
 }));
 
+/** Un concepto de gasto reutiliza la misma forma que una categoría. */
+export type Concepto = Categoria;
+
+/** Conceptos de gasto por defecto (respaldo si aún no se corre la fase 4). */
+export const CONCEPTOS_DEFAULT: Concepto[] = [
+  "Compra de carne",
+  "Abarrotes / Despensa",
+  "Frutas y verduras",
+  "Tortillas",
+  "Refrescos y bebidas",
+  "Gas",
+  "Luz (CFE)",
+  "Agua",
+  "Sueldos / Raya",
+  "Renta",
+  "Limpieza",
+  "Mantenimiento",
+  "Otro gasto",
+].map((label, i) => ({ id: `c${i}`, label, orden: (i + 1) * 10, activo: true }));
+
 export interface Evento {
   id: string;
   cliente_nombre: string;

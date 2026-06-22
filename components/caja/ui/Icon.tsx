@@ -27,6 +27,8 @@ import {
   ChevronLeft,
   ChevronRight,
   List,
+  Sparkles,
+  Send,
   type LucideIcon,
 } from "lucide-react";
 
@@ -61,6 +63,8 @@ const MAP = {
   izquierda: ChevronLeft,
   derecha: ChevronRight,
   lista: List,
+  asistente: Sparkles,
+  enviar: Send,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof MAP;

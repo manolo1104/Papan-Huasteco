@@ -1,7 +1,8 @@
-import { TURNOS, GASTO_CATEGORIAS, labelDe, type Turno, type Gasto } from "@/lib/caja/types";
+import { TURNOS, labelDe, type Turno, type Gasto, type Categoria } from "@/lib/caja/types";
 import { mxn, mxnCorto, fechaCorta, fechaLarga } from "@/lib/caja/format";
 import ReportesActions from "./ReportesActions";
 import Tendencia from "./Tendencia";
+import EstadoResultados from "./EstadoResultados";
 import AreaChart from "@/components/caja/charts/AreaChart";
 import RankList from "@/components/caja/charts/RankList";
 import type { Tendencia as TData, MetricasRango } from "@/lib/caja/data";
@@ -13,6 +14,7 @@ export default function Reportes({
   gastos,
   tendencia,
   metricas,
+  categorias,
 }: {
   desde: string;
   hasta: string;
@@ -20,6 +22,7 @@ export default function Reportes({
   gastos: Gasto[];
   tendencia: TData;
   metricas: MetricasRango;
+  categorias: Categoria[];
 }) {
   const cerrados = turnos.filter((t) => t.estado === "cerrado");
   const ingresos = cerrados.reduce((a, t) => a + t.total_ingresos, 0);
@@ -35,6 +38,7 @@ export default function Reportes({
   const porCat = new Map<string, number>();
   for (const g of gastos) porCat.set(g.categoria, (porCat.get(g.categoria) || 0) + g.monto);
   const gastosPorCat = Array.from(porCat.entries()).sort((a, b) => b[1] - a[1]);
+  const gastosER = gastosPorCat.map(([cat, total]) => ({ label: labelDe(categorias, cat), total }));
 
   return (
     <div className="caja-page">
@@ -79,6 +83,19 @@ export default function Reportes({
           <span className="caja-kpi__valor">{mxn(faltantes)}</span>
         </div>
       </div>
+
+      <section className="caja-card">
+        <h3 className="caja-card__title">Estado de resultados</h3>
+        <p className="caja-muted" style={{ marginBottom: "0.8rem" }}>
+          Del {fechaLarga(desde)} al {fechaLarga(hasta)}
+        </p>
+        <EstadoResultados
+          ingresos={{ efectivo, tarjeta, otros, total: ingresos }}
+          gastos={gastosER}
+          totalGastos={totalGastos}
+          utilidad={utilidad}
+        />
+      </section>
 
       <section className="caja-card">
         <div className="caja-card__head">
@@ -148,7 +165,7 @@ export default function Reportes({
               <tbody>
                 {gastosPorCat.map(([cat, total]) => (
                   <tr key={cat}>
-                    <td>{labelDe([...GASTO_CATEGORIAS], cat)}</td>
+                    <td>{labelDe(categorias, cat)}</td>
                     <td className="num">{mxn(total)}</td>
                   </tr>
                 ))}

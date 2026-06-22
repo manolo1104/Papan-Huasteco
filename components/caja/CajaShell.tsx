@@ -23,6 +23,7 @@ const NAV: NavItem[] = [
   { id: "productos", href: "/admin/productos", label: "Productos", icon: "productos", roles: ["admin", "operador"] },
   { id: "inventario", href: "/admin/inventario", label: "Inventario", icon: "inventario", roles: ["admin", "operador"] },
   { id: "resumen", href: "/admin/resumen", label: "Resumen", icon: "resumen", roles: ["admin", "operador"] },
+  { id: "chat", href: "/admin/chat", label: "Asistente", icon: "asistente", roles: ["admin", "operador"] },
   { id: "reportes", href: "/admin/reportes", label: "Reportes", icon: "reportes", roles: ["admin"] },
   { id: "ajustes", href: "/admin/ajustes", label: "Ajustes", icon: "ajustes", roles: ["admin"] },
 ];
