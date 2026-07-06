@@ -10,8 +10,8 @@ const PHOTOS = [
     caption: "Nuestra terraza al amanecer",
   },
   {
-    src: "/images/dishes/enchiladas.jpg",
-    alt: "Mesa con enchiladas, chilaquiles y antojitos huastecos servidos en platos de barro en El Papán Huasteco, Xilitla",
+    src: "/images/dishes/bocoles-rellenos.jpg",
+    alt: "Bocoles rellenos de cecina con frijoles, queso y aguacate servidos en El Papán Huasteco, Xilitla",
     caption: "La mesa huasteca, servida",
   },
   {
@@ -20,14 +20,19 @@ const PHOTOS = [
     caption: "La selva huasteca que nos rodea",
   },
   {
-    src: "/images/dishes/cafe-olla.jpg",
-    alt: "Taza de café de olla recién servido en El Papán Huasteco, Xilitla",
-    caption: "Café de olla recién hecho",
+    src: "/images/cafe-de-olla-barro.jpg",
+    alt: "Café de olla servido en taza de barro en el comedor de El Papán Huasteco, Xilitla",
+    caption: "Café de olla en taza de barro",
   },
   {
-    src: "/images/dishes/tacos.jpg",
-    alt: "Tacos con salsa fresca y limón, antojitos del comal de El Papán Huasteco, Xilitla",
-    caption: "Antojitos del comal",
+    src: "/images/fogon-lena.jpg",
+    alt: "Fogón de leña encendido frente al comedor de El Papán Huasteco, Xilitla",
+    caption: "El fogón de leña, corazón de la cocina",
+  },
+  {
+    src: "/images/dishes/bocoles-comal.jpg",
+    alt: "Bocoles de masa de maíz dorándose sobre comal de barro en El Papán Huasteco, Xilitla",
+    caption: "Bocoles en el comal de barro, como siempre se han hecho",
   },
 ];
 

@@ -65,7 +65,7 @@ export default function Page() {
       <h2>Horarios y reservación</h2>
       <p>
         En temporada alta (puentes y vacaciones) los mejores lugares se llenan. Te recomendamos reservar con
-        anticipación si viajas en fin de semana. En El Papán Huasteco abrimos todos los días de 7:30 AM a 9:00 PM y
+        anticipación si viajas en fin de semana. En El Papán Huasteco abrimos todos los días de 8:00 AM a 8:00 PM y
         puedes <Link href="/#reservar">reservar tu mesa</Link> en un minuto.
       </p>
     </ArticleShell>

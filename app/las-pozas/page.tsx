@@ -45,7 +45,7 @@ export default function LasPozasPage() {
 
         <p>
           <strong>El Papán Huasteco está a solo 5 minutos caminando del Castillo de Edward James (Las Pozas)</strong>, en
-          Camino La Conchita – Las Pozas Núm. 10, Xilitla, San Luis Potosí. Si vas a visitar el jardín surrealista más
+          Camino a Las Pozas 10, colonia La Conchita, Xilitla, San Luis Potosí. Si vas a visitar el jardín surrealista más
           famoso de la Huasteca, somos la parada ideal para desayunar antes o comer al terminar el recorrido, con
           estacionamiento propio sin costo y una terraza al aire libre rodeada de selva.
         </p>
@@ -74,15 +74,15 @@ export default function LasPozasPage() {
             bocoles, cecina, arrachera, mariscos y café de olla.
           </li>
           <li>
-            <strong>Horario amplio:</strong> abierto todos los días de 7:30 AM a 9:00 PM (desayuno, comida y cena).
+            <strong>Horario amplio:</strong> abierto todos los días de 8:00 AM a 8:00 PM (desayuno, comida y cena).
           </li>
           <li>
             <strong>Comodidad:</strong> estacionamiento propio gratis, terraza al aire libre, pet-friendly, WiFi y pago
             con tarjeta o efectivo.
           </li>
           <li>
-            <strong>Reputación:</strong> 4.9 / 5 con más de 87 reseñas; reconocido entre los mejores restaurantes de
-            Xilitla.
+            <strong>Reputación:</strong> 4.7 / 5 con más de 500 reseñas en Google; reconocido entre los mejores
+            restaurantes de Xilitla.
           </li>
         </ul>
 

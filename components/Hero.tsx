@@ -74,7 +74,7 @@ export default function Hero() {
         <div className="hero-stats" aria-label="Datos del restaurante">
           <div className="hero-stat-item">
             <div className="hero-stat-num">
-              <CountUp value={4.9} decimals={1} />
+              <CountUp value={4.7} decimals={1} />
             </div>
             <div className="hero-stat-lbl">★★★★★ Google</div>
           </div>
@@ -86,9 +86,9 @@ export default function Hero() {
           </div>
           <div className="hero-stat-item">
             <div className="hero-stat-num">
-              <CountUp value={1} prefix="#" />
+              <CountUp value={514} prefix="+" />
             </div>
-            <div className="hero-stat-lbl">en Xilitla</div>
+            <div className="hero-stat-lbl">reseñas en Google</div>
           </div>
         </div>
       </div>

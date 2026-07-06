@@ -11,11 +11,11 @@ const WEBSITE_ID = `${SITE.url}/#website`;
 
 const ADDRESS = {
   "@type": "PostalAddress",
-  streetAddress: "Camino La Conchita – Las Pozas Núm. 10",
-  addressLocality: "Xilitla",
-  addressRegion: "San Luis Potosí",
-  postalCode: "79910",
-  addressCountry: "MX",
+  streetAddress: SITE.address.street,
+  addressLocality: SITE.address.locality,
+  addressRegion: SITE.address.region,
+  postalCode: SITE.address.postalCode,
+  addressCountry: SITE.address.country,
 };
 
 const AMENITIES = [
@@ -57,16 +57,14 @@ export function restaurantSchema() {
       {
         "@type": "OpeningHoursSpecification",
         dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        opens: "07:30",
-        closes: "21:00",
+        opens: "08:00",
+        closes: "20:00",
       },
     ],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: SITE.rating.value,
-      reviewCount: SITE.rating.count,
-      bestRating: SITE.rating.best,
-    },
+    // Nota: sin aggregateRating a propósito — Google exige que las
+    // calificaciones marcadas provengan de reseñas recolectadas en el propio
+    // sitio, no de la ficha de Google. El 4.7 real se muestra en la interfaz
+    // con link a la ficha, que es lo correcto.
     potentialAction: {
       "@type": "ReserveAction",
       target: {
@@ -80,7 +78,13 @@ export function restaurantSchema() {
       },
       result: { "@type": "Reservation", name: "Reserva de mesa en El Papán Huasteco" },
     },
-    sameAs: [SITE.social.instagram, SITE.social.facebook, SITE.social.tripadvisor],
+    sameAs: [
+      SITE.social.instagram,
+      SITE.social.facebook,
+      SITE.social.tiktok,
+      SITE.social.tripadvisor,
+      SITE.mapsLink,
+    ],
   };
 }
 

@@ -10,9 +10,9 @@ const FEATURED = {
 
 const SIDE = [
   {
-    text: "This is a hidden gem of Xilitla. All the food was delicious, prices reasonable and the atmosphere is amazing. The service was top notch!",
-    name: "Visitante",
-    initial: "V",
+    text: "Delicioso, probé los ricos huevos enhojados y bocoles. Un restaurante con una vegetación agradable y tranquila.",
+    name: "Larissa M.",
+    initial: "L",
     source: "Google Maps",
   },
   {
@@ -23,11 +23,12 @@ const SIDE = [
   },
 ];
 
+// Calificaciones REALES y verificables (jul 2026) — cada una linkea a su fuente.
 const PLATFORMS = [
-  { num: SITE.rating.value, label: "Google Maps", href: SITE.mapsLink },
-  { num: "5.0", label: "TripAdvisor", href: SITE.social.tripadvisor },
-  { num: "4.8", label: "Restaurant Guru", href: SITE.mapsLink },
-  { num: "#1", label: "Mejor en Xilitla", href: SITE.mapsLink },
+  { num: SITE.rating.value, decimals: 1, prefix: "", label: "Google Maps", href: SITE.mapsLink },
+  { num: "5.0", decimals: 1, prefix: "", label: "TripAdvisor", href: SITE.social.tripadvisor },
+  { num: "5.0", decimals: 1, prefix: "", label: "Facebook", href: SITE.social.facebook },
+  { num: SITE.rating.count, decimals: 0, prefix: "+", label: "reseñas en Google", href: SITE.mapsLink },
 ];
 
 export default function Testimonios() {
@@ -90,21 +91,14 @@ export default function Testimonios() {
       </div>
 
       <div className="rating-summary reveal">
-        {PLATFORMS.map((p) => {
-          const isRank = p.num.startsWith("#");
-          return (
-            <a className="rating-item" key={p.label} href={p.href} target="_blank" rel="noopener noreferrer">
-              <span className="rating-num">
-                <CountUp
-                  value={isRank ? parseInt(p.num.slice(1), 10) : parseFloat(p.num)}
-                  decimals={isRank ? 0 : 1}
-                  prefix={isRank ? "#" : ""}
-                />
-              </span>
-              <span className="rating-platform">{p.label}</span>
-            </a>
-          );
-        })}
+        {PLATFORMS.map((p) => (
+          <a className="rating-item" key={p.label} href={p.href} target="_blank" rel="noopener noreferrer">
+            <span className="rating-num">
+              <CountUp value={parseFloat(p.num)} decimals={p.decimals} prefix={p.prefix} />
+            </span>
+            <span className="rating-platform">{p.label}</span>
+          </a>
+        ))}
       </div>
     </section>
   );

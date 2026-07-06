@@ -17,7 +17,7 @@ export default function Page() {
     <ArticleShell
       post={post}
       ctaTitle="Ven a desayunar a Xilitla"
-      ctaText="Abrimos desde las 7:30 AM, a 5 minutos de Las Pozas. Reserva tu mesa."
+      ctaText="Abrimos desde las 8:00 AM, a 5 minutos de Las Pozas. Reserva tu mesa."
     >
       <p>
         El desayuno es sagrado en la Huasteca, y en Xilitla es la mejor forma de empezar el día antes de salir a
@@ -58,7 +58,7 @@ export default function Page() {
 
       <h2>Dónde desayunar en Xilitla</h2>
       <p>
-        En <strong>El Papán Huasteco</strong> servimos todos estos desayunos desde las 7:30 AM, a 5 minutos de Las
+        En <strong>El Papán Huasteco</strong> servimos todos estos desayunos desde las 8:00 AM, a 5 minutos de Las
         Pozas y con estacionamiento propio. Revisa el <Link href="/menu">menú completo</Link>, conoce más sobre{" "}
         <Link href="/las-pozas">cómo llegar desde Las Pozas</Link> o <Link href="/#reservar">reserva tu mesa</Link>.
       </p>

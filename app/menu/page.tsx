@@ -42,8 +42,8 @@ export default function MenuPage() {
           <Link href="/#reservar" className="btn btn--tierra">
             Reservar mesa
           </Link>
-          <a href={SITE.menuPdf} target="_blank" rel="noopener noreferrer" className="btn btn--outline" data-evt="menu_pdf">
-            ↓ Descargar PDF
+          <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className="btn btn--outline" data-evt="menu_whatsapp">
+            Pedir por WhatsApp
           </a>
         </div>
       </header>

@@ -7,11 +7,11 @@ export type Faq = { q: string; a: string };
 export const FAQS: Faq[] = [
   {
     q: "¿Dónde está El Papán Huasteco?",
-    a: "Estamos en Camino La Conchita – Las Pozas Núm. 10, Xilitla, San Luis Potosí, a solo 5 minutos caminando del Castillo de Edward James (Las Pozas). Contamos con estacionamiento propio sin costo.",
+    a: "Estamos en Camino a Las Pozas 10, colonia La Conchita, 79900 Xilitla, San Luis Potosí, a solo 5 minutos caminando del Castillo de Edward James (Las Pozas). Contamos con estacionamiento propio sin costo.",
   },
   {
     q: "¿Cuál es el horario?",
-    a: "Abrimos todos los días del año, de 7:30 AM a 9:00 PM. Servimos desayuno, comida y cena.",
+    a: "Abrimos todos los días del año, de 8:00 AM a 8:00 PM. Servimos desayuno, comida y cena.",
   },
   {
     q: "¿Necesito reservación?",

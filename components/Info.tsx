@@ -112,7 +112,7 @@ export default function Info() {
               <div className="map-card-addr">
                 <strong>El Papán Huasteco</strong>
                 <br />
-                Camino La Conchita – Las Pozas 10
+                Camino a Las Pozas 10, La Conchita
               </div>
               <a className="map-card-link" href={SITE.mapsLink} target="_blank" rel="noopener noreferrer">
                 Abrir mapa →

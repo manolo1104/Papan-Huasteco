@@ -79,7 +79,7 @@ export const metadata: Metadata = {
   other: {
     "geo.region": "MX-SLP",
     "geo.placename": "Xilitla",
-    "geo.position": "21.3845;-98.9967",
+    "geo.position": "21.3950344;-98.9913514",
   },
 };
 

@@ -68,7 +68,7 @@ export default function Intro() {
                 <path d="M8 5v3l2 2" />
               </svg>
               <p>
-                <strong>7:30 AM - 9:00 PM</strong>
+                <strong>8:00 AM - 8:00 PM</strong>
                 <br />
                 Todos los días del año
               </p>
@@ -88,9 +88,9 @@ export default function Intro() {
                 <path d="M8 2l1.8 3.6L14 6.5l-3 2.9.7 4.1L8 11.5l-3.7 1.9.7-4.1L2 6.5l4.2-.9z" />
               </svg>
               <p>
-                <strong>4.9 / 5 estrellas</strong>
+                <strong>4.7 / 5 estrellas</strong>
                 <br />
-                Más de 87 reseñas reales
+                Más de 500 reseñas reales en Google
               </p>
             </div>
           </div>

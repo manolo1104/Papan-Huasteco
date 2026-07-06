@@ -47,14 +47,14 @@ export default function Menu() {
               Ver carta completa →
             </a>
             <a
-              href={SITE.menuPdf}
+              href={SITE.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn--ghost"
-              aria-label="Descargar el menú completo en PDF"
-              data-evt="menu_pdf"
+              aria-label="Pedir para llevar por WhatsApp"
+              data-evt="menu_whatsapp"
             >
-              ↓ PDF
+              Pedir por WhatsApp
             </a>
           </div>
         </div>

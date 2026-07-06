@@ -30,9 +30,7 @@ export default function Footer() {
             <a href="/#info">Contacto</a>
           </li>
           <li>
-            <a href={SITE.menuPdf} target="_blank" rel="noopener noreferrer">
-              Menú PDF
-            </a>
+            <a href="/menu">Menú y precios</a>
           </li>
           <li>
             <a href="/privacidad">Aviso de Privacidad</a>
