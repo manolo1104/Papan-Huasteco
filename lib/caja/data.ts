@@ -1,5 +1,6 @@
 import { createAdminClient, adminEnvReady } from "@/lib/supabase/admin";
 import { todayISO, addDays, mesActual } from "./server";
+import { pinConfigurado } from "./bitacora";
 import type {
   Turno,
   Gasto,
@@ -12,6 +13,7 @@ import type {
   Insumo,
   Receta,
   ProductoCosteo,
+  Bitacora,
 } from "./types";
 import { CATEGORIAS_DEFAULT, CONCEPTOS_DEFAULT } from "./types";
 
@@ -23,9 +25,9 @@ const sum = <T,>(rows: T[], pick: (r: T) => number): number =>
   rows.reduce((acc, r) => acc + (pick(r) || 0), 0);
 
 export interface DashboardData {
-  hoy: { ingresos: number; efectivo: number; tarjeta: number; gastos: number; utilidad: number };
+  hoy: { ingresos: number; efectivo: number; tarjeta: number; transferencia: number; booking: number; gastos: number; utilidad: number };
   semana: { ingresos: number; gastos: number; utilidad: number };
-  mes: { ingresos: number; gastos: number; utilidad: number; faltantes: number; efectivo: number; tarjeta: number; otros: number };
+  mes: { ingresos: number; gastos: number; utilidad: number; faltantes: number; efectivo: number; tarjeta: number; transferencia: number; booking: number; otros: number };
   gastosPorCategoria: { categoria: string; total: number }[];
   turnosRecientes: Turno[];
   eventosPendientes: Evento[];
@@ -110,7 +112,15 @@ export async function loadDashboard(): Promise<DashboardData | null> {
   const turnoAbierto = turnosRecientes.find((t) => t.estado === "abierto") ?? null;
 
   return {
-    hoy: { ingresos: ingHoy, efectivo: sum(tHoy, (t) => t.ventas_efectivo), tarjeta: sum(tHoy, (t) => t.ventas_tarjeta), gastos: gasHoy, utilidad: ingHoy - gasHoy },
+    hoy: {
+      ingresos: ingHoy,
+      efectivo: sum(tHoy, (t) => t.ventas_efectivo),
+      tarjeta: sum(tHoy, (t) => t.ventas_tarjeta),
+      transferencia: sum(tHoy, (t) => t.ventas_transferencia),
+      booking: sum(tHoy, (t) => t.ventas_booking),
+      gastos: gasHoy,
+      utilidad: ingHoy - gasHoy,
+    },
     semana: { ingresos: ingSemana, gastos: gasSemana, utilidad: ingSemana - gasSemana },
     mes: {
       ingresos: ingMes,
@@ -119,6 +129,8 @@ export async function loadDashboard(): Promise<DashboardData | null> {
       faltantes,
       efectivo: sum(turnos, (t) => t.ventas_efectivo),
       tarjeta: sum(turnos, (t) => t.ventas_tarjeta),
+      transferencia: sum(turnos, (t) => t.ventas_transferencia),
+      booking: sum(turnos, (t) => t.ventas_booking),
       otros: sum(turnos, (t) => t.otros_ingresos),
     },
     gastosPorCategoria,
@@ -168,6 +180,61 @@ export async function loadGastos(desde?: string, hasta?: string): Promise<Gasto[
     .order("fecha", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(500);
+  return (data as Gasto[]) ?? [];
+}
+
+/** ¿Ya hay PIN de cancelaciones configurado? (para la tarjeta de Ajustes) */
+export async function loadPinConfigurado(): Promise<boolean> {
+  if (!adminEnvReady) return false;
+  try {
+    return await pinConfigurado(createAdminClient());
+  } catch {
+    return false;
+  }
+}
+
+/** Bitácora de movimientos (más recientes primero), con filtros opcionales. */
+export async function loadBitacora(opts?: {
+  fecha?: string; // YYYY-MM-DD
+  accion?: string;
+}): Promise<Bitacora[]> {
+  if (!adminEnvReady) return [];
+  const sb = createAdminClient();
+  let q = sb.from("caja_bitacora").select("*");
+  if (opts?.fecha) {
+    q = q
+      .gte("created_at", `${opts.fecha}T00:00:00-06:00`)
+      .lte("created_at", `${opts.fecha}T23:59:59-06:00`);
+  }
+  if (opts?.accion) q = q.eq("accion", opts.accion);
+  const { data } = await q.order("created_at", { ascending: false }).limit(300);
+  return (data as Bitacora[]) ?? [];
+}
+
+/** Gastos ligados a un turno (todas las formas de pago), para verlos en el cierre. */
+export async function loadGastosDeTurno(turnoId: string): Promise<Gasto[]> {
+  if (!adminEnvReady) return [];
+  const sb = createAdminClient();
+  const { data } = await sb
+    .from("caja_gastos")
+    .select("*")
+    .eq("turno_id", turnoId)
+    .order("created_at", { ascending: true })
+    .limit(200);
+  return (data as Gasto[]) ?? [];
+}
+
+/** Gastos del día SIN ligar a ningún turno (aviso en el cierre para ligarlos). */
+export async function loadGastosSinLigar(fecha: string): Promise<Gasto[]> {
+  if (!adminEnvReady) return [];
+  const sb = createAdminClient();
+  const { data } = await sb
+    .from("caja_gastos")
+    .select("*")
+    .eq("fecha", fecha)
+    .is("turno_id", null)
+    .order("created_at", { ascending: true })
+    .limit(100);
   return (data as Gasto[]) ?? [];
 }
 
@@ -245,6 +312,8 @@ export interface ResumenDia {
   ingresos: number;
   efectivo: number;
   tarjeta: number;
+  transferencia: number;
+  booking: number;
   gastosTotal: number;
   utilidad: number;
   faltantes: number;
@@ -273,6 +342,8 @@ export async function loadResumenDia(fecha: string): Promise<ResumenDia | null> 
     ingresos,
     efectivo: sum(turnos, (t) => t.ventas_efectivo),
     tarjeta: sum(turnos, (t) => t.ventas_tarjeta),
+    transferencia: sum(turnos, (t) => t.ventas_transferencia),
+    booking: sum(turnos, (t) => t.ventas_booking),
     gastosTotal,
     utilidad: ingresos - gastosTotal,
     faltantes: sum(turnos.filter((t) => t.diferencia < 0), (t) => Math.abs(t.diferencia)),
@@ -512,6 +583,10 @@ export interface MetricasRango {
   ventasTotal: number;
   cuentas: number;
   ticketPromedio: number;
+  /** Personas atendidas (suma de `personas` de las cuentas cobradas que lo capturaron). */
+  personas: number;
+  /** Ticket promedio POR PERSONA (ventas de cuentas con personas / personas). 0 si no hay datos. */
+  ticketPorPersona: number;
   prevVentas: number; // periodo anterior del mismo tamaño
   topVendidos: TopPlatillo[];
   topRentables: TopPlatillo[];
@@ -604,26 +679,41 @@ async function topPlatillos(sb: SB, desde: string, hasta: string): Promise<TopPl
   return Array.from(map.values());
 }
 
-/** Cuentas cobradas y ticket promedio en el rango (del POS). */
+/** Cuentas cobradas, ticket promedio y personas atendidas en el rango (del POS). */
 async function cuentasTicket(
   sb: SB,
   desde: string,
   hasta: string
-): Promise<{ cuentas: number; total: number }> {
+): Promise<{ cuentas: number; total: number; personas: number; totalConPersonas: number }> {
   const { data: turnos } = await sb
     .from("caja_turnos")
     .select("id")
     .gte("fecha", desde)
     .lte("fecha", hasta);
   const turnoIds = ((turnos as { id: string }[]) ?? []).map((t) => t.id);
-  if (turnoIds.length === 0) return { cuentas: 0, total: 0 };
+  if (turnoIds.length === 0) return { cuentas: 0, total: 0, personas: 0, totalConPersonas: 0 };
   const { data } = await sb
     .from("pos_ordenes")
-    .select("total")
+    .select("total, personas")
     .eq("estado", "cobrada")
     .in("turno_id", turnoIds);
-  const rows = (data as { total: number }[]) ?? [];
-  return { cuentas: rows.length, total: rows.reduce((a, r) => a + (r.total || 0), 0) };
+  const rows = (data as { total: number; personas: number | null }[]) ?? [];
+  // El ticket por persona solo usa cuentas que SÍ capturaron personas, para
+  // no diluir el promedio con cuentas sin dato.
+  let personas = 0;
+  let totalConPersonas = 0;
+  for (const r of rows) {
+    if (r.personas && r.personas > 0) {
+      personas += r.personas;
+      totalConPersonas += r.total || 0;
+    }
+  }
+  return {
+    cuentas: rows.length,
+    total: rows.reduce((a, r) => a + (r.total || 0), 0),
+    personas,
+    totalConPersonas,
+  };
 }
 
 /** Paquete de métricas para un rango (lo usa Reportes). */
@@ -633,6 +723,8 @@ export async function loadMetricasRango(desde: string, hasta: string): Promise<M
     ventasTotal: 0,
     cuentas: 0,
     ticketPromedio: 0,
+    personas: 0,
+    ticketPorPersona: 0,
     prevVentas: 0,
     topVendidos: [],
     topRentables: [],
@@ -664,6 +756,8 @@ export async function loadMetricasRango(desde: string, hasta: string): Promise<M
     ventasTotal,
     cuentas: ct.cuentas,
     ticketPromedio: ct.cuentas > 0 ? ct.total / ct.cuentas : 0,
+    personas: ct.personas,
+    ticketPorPersona: ct.personas > 0 ? ct.totalConPersonas / ct.personas : 0,
     prevVentas: prev.reduce((a, p) => a + p.total, 0),
     topVendidos,
     topRentables,
@@ -675,10 +769,12 @@ export async function loadMetricasDashboard(): Promise<{
   serie30: PuntoSerie[];
   cuentas: number;
   ticketPromedio: number;
+  personas: number;
+  ticketPorPersona: number;
   topVendidos: TopPlatillo[];
 }> {
   if (!adminEnvReady)
-    return { serie30: [], cuentas: 0, ticketPromedio: 0, topVendidos: [] };
+    return { serie30: [], cuentas: 0, ticketPromedio: 0, personas: 0, ticketPorPersona: 0, topVendidos: [] };
   const sb = createAdminClient();
   const hoy = todayISO();
   const inicioMes = hoy.slice(0, 8) + "01";
@@ -691,6 +787,8 @@ export async function loadMetricasDashboard(): Promise<{
     serie30,
     cuentas: ct.cuentas,
     ticketPromedio: ct.cuentas > 0 ? ct.total / ct.cuentas : 0,
+    personas: ct.personas,
+    ticketPorPersona: ct.personas > 0 ? ct.totalConPersonas / ct.personas : 0,
     topVendidos: [...top].sort((a, b) => b.cantidad - a.cantidad).slice(0, 5),
   };
 }

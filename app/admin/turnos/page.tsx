@@ -2,7 +2,8 @@ import { getRol } from "@/lib/caja/auth";
 import {
   loadTurnos,
   loadTurnoAbierto,
-  sumaGastosEfectivoTurno,
+  loadGastosDeTurno,
+  loadGastosSinLigar,
 } from "@/lib/caja/data";
 import CajaLogin from "@/components/caja/CajaLogin";
 import CajaShell from "@/components/caja/CajaShell";
@@ -18,9 +19,12 @@ export default async function TurnosPage() {
     loadTurnos(),
     loadTurnoAbierto(),
   ]);
-  const gastosEfectivoAbierto = turnoAbierto
-    ? await sumaGastosEfectivoTurno(turnoAbierto.id)
-    : 0;
+  const [gastosTurno, gastosSinLigar] = turnoAbierto
+    ? await Promise.all([
+        loadGastosDeTurno(turnoAbierto.id),
+        loadGastosSinLigar(turnoAbierto.fecha),
+      ])
+    : [[], []];
 
   return (
     <CajaShell rol={rol} active="turnos">
@@ -28,7 +32,8 @@ export default async function TurnosPage() {
         rol={rol}
         turnos={turnos}
         turnoAbierto={turnoAbierto}
-        gastosEfectivoAbierto={gastosEfectivoAbierto}
+        gastosTurno={gastosTurno}
+        gastosSinLigar={gastosSinLigar}
       />
     </CajaShell>
   );

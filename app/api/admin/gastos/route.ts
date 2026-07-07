@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireRol } from "@/lib/caja/auth";
 import { createAdminClient, adminEnvReady } from "@/lib/supabase/admin";
 import { sanitizeGasto } from "@/lib/caja/server";
+import { logMovimiento } from "@/lib/caja/bitacora";
 import type { Gasto } from "@/lib/caja/types";
 
 export const runtime = "nodejs";
@@ -34,7 +35,50 @@ export async function POST(req: Request) {
     .select("*")
     .single();
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+  const g = row as Gasto;
+  await logMovimiento(sb, {
+    rol: auth.rol,
+    accion: "gasto_creado",
+    detalle: `${g.concepto} · ${g.forma_pago}${g.turno_id ? " · ligado al turno" : ""}`,
+    ref_tipo: "gasto",
+    ref_id: g.id,
+    monto: g.monto,
+  });
   return NextResponse.json({ ok: true, gasto: row });
+}
+
+// ── Ligar un gasto al turno abierto ───────────────────────────
+// Se usa desde el cierre de turno cuando hay gastos del día que se
+// registraron sin ligar (para que sí entren al corte).
+export async function PATCH(req: Request) {
+  const auth = await requireRol("operador");
+  if (auth instanceof Response) return auth;
+  if (!adminEnvReady) return noDb();
+  const sb = createAdminClient();
+
+  const body = await readBody(req);
+  const id = typeof body.id === "string" ? body.id : "";
+  if (!id) return NextResponse.json({ error: "Falta el gasto." }, { status: 400 });
+
+  if (body.action === "ligar_turno") {
+    const { data: abierto } = await sb
+      .from("caja_turnos")
+      .select("id")
+      .eq("estado", "abierto")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (!abierto)
+      return NextResponse.json({ error: "No hay un turno abierto." }, { status: 409 });
+    const { error } = await sb
+      .from("caja_gastos")
+      .update({ turno_id: abierto.id })
+      .eq("id", id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  }
+
+  return NextResponse.json({ error: "Acción no válida." }, { status: 400 });
 }
 
 // ── Borrar gasto ──────────────────────────────────────────────
@@ -71,7 +115,20 @@ export async function DELETE(req: Request) {
     }
   }
 
+  const { data: previo } = await sb
+    .from("caja_gastos")
+    .select("concepto, monto")
+    .eq("id", id)
+    .maybeSingle();
   const { error } = await sb.from("caja_gastos").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  await logMovimiento(sb, {
+    rol: auth.rol,
+    accion: "gasto_borrado",
+    detalle: previo ? `${(previo as { concepto: string }).concepto}` : "gasto borrado",
+    ref_tipo: "gasto",
+    ref_id: id,
+    monto: previo ? (previo as { monto: number }).monto : null,
+  });
   return NextResponse.json({ ok: true });
 }

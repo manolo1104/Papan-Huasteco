@@ -28,6 +28,8 @@ export default function Reportes({
   const ingresos = cerrados.reduce((a, t) => a + t.total_ingresos, 0);
   const efectivo = cerrados.reduce((a, t) => a + t.ventas_efectivo, 0);
   const tarjeta = cerrados.reduce((a, t) => a + t.ventas_tarjeta, 0);
+  const transferencia = cerrados.reduce((a, t) => a + (t.ventas_transferencia ?? 0), 0);
+  const booking = cerrados.reduce((a, t) => a + (t.ventas_booking ?? 0), 0);
   const otros = cerrados.reduce((a, t) => a + t.otros_ingresos, 0);
   const totalGastos = gastos.reduce((a, g) => a + g.monto, 0);
   const utilidad = ingresos - totalGastos;
@@ -68,7 +70,9 @@ export default function Reportes({
         <div className="caja-kpi caja-kpi--verde">
           <span className="caja-kpi__label">Ingresos</span>
           <span className="caja-kpi__valor">{mxn(ingresos)}</span>
-          <span className="caja-kpi__pista">{mxnCorto(efectivo)} efectivo · {mxnCorto(tarjeta)} tarjeta{otros > 0 ? ` · ${mxnCorto(otros)} otros` : ""}</span>
+          <span className="caja-kpi__pista">
+            {mxnCorto(efectivo)} efectivo · {mxnCorto(tarjeta)} tarjeta · {mxnCorto(transferencia)} transf. · {mxnCorto(booking)} booking{otros > 0 ? ` · ${mxnCorto(otros)} otros` : ""}
+          </span>
         </div>
         <div className="caja-kpi caja-kpi--rojo">
           <span className="caja-kpi__label">Gastos</span>
@@ -90,7 +94,7 @@ export default function Reportes({
           Del {fechaLarga(desde)} al {fechaLarga(hasta)}
         </p>
         <EstadoResultados
-          ingresos={{ efectivo, tarjeta, otros, total: ingresos }}
+          ingresos={{ efectivo, tarjeta, transferencia, booking, otros, total: ingresos }}
           gastos={gastosER}
           totalGastos={totalGastos}
           utilidad={utilidad}
@@ -120,8 +124,15 @@ export default function Reportes({
             <span className="caja-kpi__valor">{metricas.cuentas > 0 ? metricas.cuentas : "—"}</span>
           </div>
           <div className="caja-kpi caja-kpi--verde">
-            <span className="caja-kpi__label">Ticket promedio</span>
-            <span className="caja-kpi__valor">{metricas.ticketPromedio > 0 ? mxn(metricas.ticketPromedio) : "—"}</span>
+            <span className="caja-kpi__label">Ticket por persona</span>
+            <span className="caja-kpi__valor">{metricas.ticketPorPersona > 0 ? mxn(metricas.ticketPorPersona) : "—"}</span>
+            <span className="caja-kpi__pista">
+              {metricas.personas > 0
+                ? `${metricas.personas} personas · por cuenta ${mxn(metricas.ticketPromedio)}`
+                : metricas.ticketPromedio > 0
+                ? `por cuenta ${mxn(metricas.ticketPromedio)}`
+                : "sin datos de personas"}
+            </span>
           </div>
           <div className="caja-kpi">
             <span className="caja-kpi__label">Periodo anterior</span>
@@ -205,6 +216,8 @@ export default function Reportes({
                   <th>Turno</th>
                   <th className="num">Efectivo</th>
                   <th className="num">Tarjeta</th>
+                  <th className="num">Transf.</th>
+                  <th className="num">Booking</th>
                   <th className="num">Ingresos</th>
                   <th className="num">Diferencia</th>
                 </tr>
@@ -216,6 +229,8 @@ export default function Reportes({
                     <td>{labelDe([...TURNOS], t.turno)}</td>
                     <td className="num">{mxnCorto(t.ventas_efectivo)}</td>
                     <td className="num">{mxnCorto(t.ventas_tarjeta)}</td>
+                    <td className="num">{mxnCorto(t.ventas_transferencia ?? 0)}</td>
+                    <td className="num">{mxnCorto(t.ventas_booking ?? 0)}</td>
                     <td className="num">{mxnCorto(t.total_ingresos)}</td>
                     <td className={`num ${t.diferencia < 0 ? "neg" : t.diferencia > 0 ? "pos" : ""}`}>
                       {mxnCorto(t.diferencia)}

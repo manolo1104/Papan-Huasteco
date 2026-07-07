@@ -25,6 +25,7 @@ const NAV: NavItem[] = [
   { id: "resumen", href: "/admin/resumen", label: "Resumen", icon: "resumen", roles: ["admin", "operador"] },
   { id: "chat", href: "/admin/chat", label: "Asistente", icon: "asistente", roles: ["admin", "operador"] },
   { id: "reportes", href: "/admin/reportes", label: "Reportes", icon: "reportes", roles: ["admin"] },
+  { id: "bitacora", href: "/admin/bitacora", label: "Bitácora", icon: "lista", roles: ["admin"] },
   { id: "ajustes", href: "/admin/ajustes", label: "Ajustes", icon: "ajustes", roles: ["admin"] },
 ];
 

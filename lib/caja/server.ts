@@ -95,6 +95,8 @@ export function sanitizeCerrarTurno(body: Record<string, unknown>) {
     data: {
       ventas_efectivo: num(body.ventas_efectivo),
       ventas_tarjeta: num(body.ventas_tarjeta),
+      ventas_transferencia: num(body.ventas_transferencia),
+      ventas_booking: num(body.ventas_booking),
       otros_ingresos: num(body.otros_ingresos),
       otros_ingresos_nota: str(body.otros_ingresos_nota),
       retiros: num(body.retiros),
@@ -111,6 +113,8 @@ export function sanitizeEditarTurno(body: Record<string, unknown>) {
     "fondo_inicial",
     "ventas_efectivo",
     "ventas_tarjeta",
+    "ventas_transferencia",
+    "ventas_booking",
     "otros_ingresos",
     "retiros",
     "efectivo_contado",

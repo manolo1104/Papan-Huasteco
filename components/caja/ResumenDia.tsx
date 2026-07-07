@@ -8,7 +8,7 @@ function buildTexto(d: RData): string {
   const cerrados = d.turnos.filter((t) => t.estado === "cerrado").length;
   const lineas = [
     `*${SITE.name}* — Resumen del ${fechaLarga(d.fecha)}`,
-    `Ventas: ${mxn(d.ingresos)} (efectivo ${mxnCorto(d.efectivo)} · tarjeta ${mxnCorto(d.tarjeta)})`,
+    `Ventas: ${mxn(d.ingresos)} (efectivo ${mxnCorto(d.efectivo)} · tarjeta ${mxnCorto(d.tarjeta)} · transf. ${mxnCorto(d.transferencia)} · booking ${mxnCorto(d.booking)})`,
     `Gastos: ${mxn(d.gastosTotal)}`,
     `Utilidad: ${mxn(d.utilidad)}`,
   ];
@@ -55,7 +55,9 @@ export default function ResumenDia({
             <div className="caja-kpi caja-kpi--verde">
               <span className="caja-kpi__label">Ventas</span>
               <span className="caja-kpi__valor">{mxn(data.ingresos)}</span>
-              <span className="caja-kpi__pista">{mxnCorto(data.efectivo)} efectivo · {mxnCorto(data.tarjeta)} tarjeta</span>
+              <span className="caja-kpi__pista">
+                {mxnCorto(data.efectivo)} efectivo · {mxnCorto(data.tarjeta)} tarjeta · {mxnCorto(data.transferencia)} transf. · {mxnCorto(data.booking)} booking
+              </span>
             </div>
             <div className="caja-kpi caja-kpi--rojo">
               <span className="caja-kpi__label">Gastos</span>
@@ -84,6 +86,9 @@ export default function ResumenDia({
                       <th>Estado</th>
                       <th className="num">Efectivo</th>
                       <th className="num">Tarjeta</th>
+                      <th className="num">Transf.</th>
+                      <th className="num">Booking</th>
+                      <th className="num">Esperado</th>
                       <th className="num">Ingresos</th>
                       <th className="num">Dif.</th>
                     </tr>
@@ -95,6 +100,9 @@ export default function ResumenDia({
                         <td>{t.estado}</td>
                         <td className="num">{t.estado === "cerrado" ? mxnCorto(t.ventas_efectivo) : "—"}</td>
                         <td className="num">{t.estado === "cerrado" ? mxnCorto(t.ventas_tarjeta) : "—"}</td>
+                        <td className="num">{t.estado === "cerrado" ? mxnCorto(t.ventas_transferencia ?? 0) : "—"}</td>
+                        <td className="num">{t.estado === "cerrado" ? mxnCorto(t.ventas_booking ?? 0) : "—"}</td>
+                        <td className="num">{t.estado === "cerrado" ? mxnCorto(t.efectivo_esperado) : "—"}</td>
                         <td className="num">{t.estado === "cerrado" ? mxnCorto(t.total_ingresos) : "—"}</td>
                         <td className={`num ${t.diferencia < 0 ? "neg" : t.diferencia > 0 ? "pos" : ""}`}>
                           {t.estado === "cerrado" ? mxnCorto(t.diferencia) : "—"}

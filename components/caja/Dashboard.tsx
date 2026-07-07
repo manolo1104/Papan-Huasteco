@@ -13,6 +13,8 @@ interface MetricasDash {
   serie30: PuntoSerie[];
   cuentas: number;
   ticketPromedio: number;
+  personas: number;
+  ticketPorPersona: number;
   topVendidos: TopPlatillo[];
 }
 
@@ -147,7 +149,16 @@ function MetricasDashboard({ m }: { m: MetricasDash }) {
         <AreaChart serie={m.serie30} id="dash" />
         <div className="caja-kpis caja-kpis--3" style={{ marginTop: "1rem" }}>
           <Kpi label="Cuentas del mes" valor={m.cuentas > 0 ? String(m.cuentas) : "—"} />
-          <Kpi label="Ticket promedio" valor={m.ticketPromedio > 0 ? mxn(m.ticketPromedio) : "—"} tono="verde" />
+          <Kpi
+            label="Ticket por persona"
+            valor={m.ticketPorPersona > 0 ? mxn(m.ticketPorPersona) : "—"}
+            tono="verde"
+            pista={
+              m.personas > 0
+                ? `${m.personas} personas atendidas · ticket por cuenta ${mxn(m.ticketPromedio)}`
+                : "captura personas por mesa en el POS"
+            }
+          />
           <Kpi label="Venta 30 días" valor={mxnCorto(m.serie30.reduce((a, p) => a + p.total, 0))} />
         </div>
       </section>
@@ -229,7 +240,12 @@ export default function Dashboard({
         <section className="caja-card">
           <h3 className="caja-card__title">Resumen de hoy</h3>
           <div className="caja-kpis caja-kpis--3">
-            <Kpi label="Ventas de hoy" valor={mxn(data.hoy.ingresos)} tono="verde" />
+            <Kpi
+              label="Ventas de hoy"
+              valor={mxn(data.hoy.ingresos)}
+              tono="verde"
+              pista={`${mxnCorto(data.hoy.transferencia)} transf. · ${mxnCorto(data.hoy.booking)} booking`}
+            />
             <Kpi label="Efectivo / Tarjeta" valor={`${mxnCorto(data.hoy.efectivo)} / ${mxnCorto(data.hoy.tarjeta)}`} />
             <Kpi label="Gastos de hoy" valor={mxn(data.hoy.gastos)} tono="rojo" />
           </div>
@@ -261,7 +277,12 @@ export default function Dashboard({
       <TurnoAbiertoBanner data={data} />
 
       <div className="caja-kpis caja-kpis--4">
-        <Kpi label="Ingresos de hoy" valor={mxn(data.hoy.ingresos)} tono="verde" pista={`${mxnCorto(data.hoy.efectivo)} efectivo · ${mxnCorto(data.hoy.tarjeta)} tarjeta`} />
+        <Kpi
+          label="Ingresos de hoy"
+          valor={mxn(data.hoy.ingresos)}
+          tono="verde"
+          pista={`${mxnCorto(data.hoy.efectivo)} efectivo · ${mxnCorto(data.hoy.tarjeta)} tarjeta · ${mxnCorto(data.hoy.transferencia)} transf. · ${mxnCorto(data.hoy.booking)} booking`}
+        />
         <Kpi label="Gastos de hoy" valor={mxn(data.hoy.gastos)} tono="rojo" />
         <Kpi label="Utilidad de hoy" valor={mxn(data.hoy.utilidad)} tono={data.hoy.utilidad >= 0 ? "verde" : "rojo"} />
         <Kpi label="Faltantes del mes" valor={mxn(data.mes.faltantes)} tono={data.mes.faltantes > 0 ? "rojo" : "neutro"} pista={data.mes.faltantes > 0 ? "Revisa los cortes" : "Sin faltantes 👌"} />
@@ -277,6 +298,8 @@ export default function Dashboard({
           ingresos={{
             efectivo: data.mes.efectivo,
             tarjeta: data.mes.tarjeta,
+            transferencia: data.mes.transferencia,
+            booking: data.mes.booking,
             otros: data.mes.otros,
             total: data.mes.ingresos,
           }}

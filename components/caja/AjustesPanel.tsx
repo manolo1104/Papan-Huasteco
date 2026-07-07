@@ -11,16 +11,43 @@ export default function AjustesPanel({
   conceptos,
   mes,
   metaActual,
+  pinConfigurado,
 }: {
   categorias: Categoria[];
   conceptos: Categoria[];
   mes: string;
   metaActual: number;
+  pinConfigurado: boolean;
 }) {
   const router = useRouter();
   const { toast } = useFeedback();
   const [meta, setMeta] = useState(metaActual ? String(metaActual) : "");
   const [savingMeta, setSavingMeta] = useState(false);
+  const [pin, setPin] = useState("");
+  const [pin2, setPin2] = useState("");
+  const [savingPin, setSavingPin] = useState(false);
+
+  async function guardarPin(e: React.FormEvent) {
+    e.preventDefault();
+    if (!/^\d{4,8}$/.test(pin.trim()))
+      return toast.error("El PIN debe ser de 4 a 8 dígitos.");
+    if (pin.trim() !== pin2.trim()) return toast.error("Los PIN no coinciden.");
+    setSavingPin(true);
+    const res = await fetch("/api/admin/config", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ pin: pin.trim() }),
+    });
+    setSavingPin(false);
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      return toast.error(d.error || "No se pudo guardar el PIN.");
+    }
+    setPin("");
+    setPin2("");
+    toast.success("PIN de cancelaciones guardado");
+    router.refresh();
+  }
 
   async function guardarMeta(e: React.FormEvent) {
     e.preventDefault();
@@ -67,6 +94,46 @@ export default function AjustesPanel({
           <div className="caja-form__full">
             <button className="caja-btn caja-btn--primary" disabled={savingMeta}>
               {savingMeta ? "Guardando…" : "Guardar meta"}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section className="caja-card">
+        <h3 className="caja-card__title">PIN de cancelaciones</h3>
+        <p className="caja-muted" style={{ marginBottom: "0.8rem" }}>
+          {pinConfigurado
+            ? "Ya hay un PIN configurado. Cancelar una cuenta o quitar un platillo ya enviado a cocina lo pide, y el movimiento queda en la bitácora. Aquí puedes cambiarlo."
+            : "⚠ Aún no hay PIN. Sin él, NADIE puede cancelar cuentas ni quitar platillos ya enviados a cocina. Define uno de 4 a 8 dígitos."}
+        </p>
+        <form className="caja-form caja-form--grid" onSubmit={guardarPin}>
+          <label className="caja-field">
+            <span>{pinConfigurado ? "Nuevo PIN" : "PIN"} (4 a 8 dígitos)</span>
+            <input
+              type="password"
+              inputMode="numeric"
+              autoComplete="off"
+              maxLength={8}
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              placeholder="••••"
+            />
+          </label>
+          <label className="caja-field">
+            <span>Repite el PIN</span>
+            <input
+              type="password"
+              inputMode="numeric"
+              autoComplete="off"
+              maxLength={8}
+              value={pin2}
+              onChange={(e) => setPin2(e.target.value)}
+              placeholder="••••"
+            />
+          </label>
+          <div className="caja-form__full">
+            <button className="caja-btn caja-btn--primary" disabled={savingPin}>
+              {savingPin ? "Guardando…" : pinConfigurado ? "Cambiar PIN" : "Guardar PIN"}
             </button>
           </div>
         </form>

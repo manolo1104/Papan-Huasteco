@@ -30,13 +30,15 @@ export default function ReportesActions({
 }) {
   function exportTurnos() {
     const filas: string[][] = [
-      ["Fecha", "Turno", "Responsable", "Efectivo", "Tarjeta", "Otros", "Ingresos", "Esperado", "Contado", "Diferencia"],
+      ["Fecha", "Turno", "Responsable", "Efectivo", "Tarjeta", "Transferencia", "Booking", "Otros", "Ingresos", "Esperado", "Contado", "Diferencia"],
       ...turnos.map((t) => [
         t.fecha,
         labelDe([...TURNOS], t.turno),
         t.responsable ?? "",
         String(t.ventas_efectivo),
         String(t.ventas_tarjeta),
+        String(t.ventas_transferencia ?? 0),
+        String(t.ventas_booking ?? 0),
         String(t.otros_ingresos),
         String(t.total_ingresos),
         String(t.efectivo_esperado),

@@ -4,7 +4,14 @@ import { mxn } from "@/lib/caja/format";
 // Es una función pura (sirve en servidor). Envuélvelo en una <section caja-card>.
 
 export interface EstadoResultadosData {
-  ingresos: { efectivo: number; tarjeta: number; otros: number; total: number };
+  ingresos: {
+    efectivo: number;
+    tarjeta: number;
+    transferencia: number;
+    booking: number;
+    otros: number;
+    total: number;
+  };
   gastos: { label: string; total: number }[];
   totalGastos: number;
   utilidad: number;
@@ -26,6 +33,11 @@ export default function EstadoResultados({
         <ul className="caja-er__list">
           <li><span>Ventas en efectivo</span><span>{mxn(ingresos.efectivo)}</span></li>
           <li><span>Ventas con tarjeta</span><span>{mxn(ingresos.tarjeta)}</span></li>
+          <li><span>Ventas por transferencia</span><span>{mxn(ingresos.transferencia)}</span></li>
+          <li>
+            <span>Ventas booking <em style={{ fontStyle: "normal", opacity: 0.65 }}>(por cobrar del hotel)</em></span>
+            <span>{mxn(ingresos.booking)}</span>
+          </li>
           {ingresos.otros > 0 && (
             <li><span>Otros ingresos</span><span>{mxn(ingresos.otros)}</span></li>
           )}

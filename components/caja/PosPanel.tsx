@@ -2,12 +2,23 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { Rol } from "@/lib/caja/auth";
-import type { Mesa, Orden, OrdenItem, Producto } from "@/lib/caja/types";
+import type { FormaCobro, Mesa, Orden, OrdenItem, Producto } from "@/lib/caja/types";
 import { mxn, mxnCorto } from "@/lib/caja/format";
+import { gruposPara, QUITABLES, EXTRAS } from "@/lib/caja/personalizacion";
+import { abrirTicket } from "@/lib/caja/ticket-html";
 import { useFeedback } from "@/components/caja/ui/Feedback";
 import { Icon } from "@/components/caja/ui/Icon";
+
+/** Datos extra que acompañan un cobro (según la forma de pago). */
+export interface DatosCobro {
+  forma: FormaCobro;
+  personas: number | null;
+  pago_recibido: number | null;
+  pago_referencia: string | null;
+  comprobante_url: string | null;
+}
 
 export default function PosPanel({
   rol,
@@ -26,11 +37,32 @@ export default function PosPanel({
   orden: Orden | null;
   items: OrdenItem[];
 }) {
+  // ── Blindaje contra el Router Cache de Next ──────────────────
+  // Si el navegador reutilizó un payload viejo (de OTRA mesa), la URL real y
+  // lo que el servidor renderizó no coinciden: se refresca y NUNCA se pinta
+  // la cuenta equivocada. (Bug reportado: "te manda a los pedidos con la
+  // misma cuenta".)
+  const params = useSearchParams();
+  const router = useRouter();
+  const urlMesa = params.get("mesa");
+  const desfasado = (urlMesa ?? null) !== (mesaSel ?? null);
+  useEffect(() => {
+    if (desfasado) router.refresh();
+  }, [desfasado, router]);
+  if (desfasado) {
+    return (
+      <div className="caja-page">
+        <p className="caja-muted" style={{ padding: "2rem 0" }}>Cargando mesa…</p>
+      </div>
+    );
+  }
+
   if (!mesaSel) {
     return <MesasGrid mesas={mesas} ordenes={ordenesAbiertas} />;
   }
   return (
     <OrdenView
+      key={mesaSel}
       rol={rol}
       mesa={mesaSel}
       orden={orden}
@@ -95,7 +127,7 @@ function OrdenView({
   productos: Producto[];
 }) {
   const router = useRouter();
-  const { toast, confirm } = useFeedback();
+  const { toast, confirm, prompt } = useFeedback();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [busca, setBusca] = useState("");
@@ -124,7 +156,9 @@ function OrdenView({
       const res = await fetch("/api/admin/pos/ordenes", {
         method,
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(body),
+        // mesa_nombre viaja SIEMPRE: el servidor rechaza la operación si la
+        // orden no es de esta mesa (candado contra cuentas cruzadas).
+        body: JSON.stringify({ mesa_nombre: mesa, ...body }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -182,6 +216,52 @@ function OrdenView({
     call({ id: orden.id, action: "item_cantidad", item_id: it.id, cantidad: it.cantidad + delta });
   }
 
+  async function editarPersonas() {
+    if (!orden) return;
+    const v = await prompt({
+      title: "¿Cuántas personas hay en la mesa?",
+      label: "Número de personas",
+      type: "number",
+      defaultValue: orden.personas ? String(orden.personas) : "",
+      placeholder: "Ej. 4",
+      confirmLabel: "Guardar",
+    });
+    if (v === null) return;
+    const r = await call({ id: orden.id, action: "set_personas", personas: Number(v) });
+    if (r?.ok) toast.success(r.personas ? `${r.personas} personas en la mesa` : "Personas sin capturar");
+  }
+
+  /** Pide el PIN de cancelaciones. Devuelve el PIN o null si se canceló. */
+  async function pedirPin(titulo: string): Promise<string | null> {
+    return prompt({
+      title: titulo,
+      message: "Esta acción requiere el PIN de cancelaciones y queda en la bitácora.",
+      label: "PIN",
+      type: "number",
+      placeholder: "••••",
+      confirmLabel: "Confirmar",
+    });
+  }
+
+  async function borrarItemEnviado(it: OrdenItem) {
+    if (!orden) return;
+    const pin = await pedirPin(`Cancelar ${it.cantidad}× ${it.nombre}`);
+    if (pin === null) return;
+    const r = await call({ id: orden.id, action: "borrar_item", item_id: it.id, pin });
+    if (r?.ok) toast.info("Platillo cancelado (quedó en la bitácora)");
+  }
+
+  function descargarCuenta() {
+    abrirTicket({
+      mesa,
+      personas: orden?.personas ?? null,
+      mesero: orden?.mesero ?? rol,
+      items,
+      total,
+      orden,
+    });
+  }
+
   async function guardarNota(nota: string) {
     if (!orden || !persItem) return;
     setPersItem(null);
@@ -199,26 +279,40 @@ function OrdenView({
     if (!orden) return;
     const ok = await confirm({
       title: "¿Cancelar esta cuenta?",
-      message: "Se borrará lo que lleva la mesa.",
+      message: "Se borrará lo que lleva la mesa. Se pedirá el PIN de cancelaciones.",
       confirmLabel: "Sí, cancelar",
       danger: true,
     });
     if (!ok) return;
-    const r = await call({ id: orden.id, action: "cancelar" });
+    const pin = await pedirPin("Cancelar la cuenta completa");
+    if (pin === null) return;
+    const r = await call({ id: orden.id, action: "cancelar", pin });
     if (r?.ok) {
-      toast.info("Cuenta cancelada");
+      toast.info("Cuenta cancelada (quedó en la bitácora)");
       router.push("/admin/pos");
     }
   }
 
-  async function confirmarCobro(forma: "efectivo" | "tarjeta") {
+  async function confirmarCobro(datos: DatosCobro) {
     if (!orden) return;
-    setCobroOpen(false);
-    const r = await call({ id: orden.id, action: "cobrar", forma_pago: forma });
+    const r = await call({
+      id: orden.id,
+      action: "cobrar",
+      forma_pago: datos.forma,
+      personas: datos.personas,
+      pago_recibido: datos.pago_recibido,
+      pago_referencia: datos.pago_referencia,
+      comprobante_url: datos.comprobante_url,
+    });
     if (r?.ok) {
-      toast.success(`Cobrado ${mxn(total)} en ${forma}`);
+      setCobroOpen(false);
+      const etiqueta =
+        datos.forma === "booking" ? "a la cuenta del hotel (booking)" : `en ${datos.forma}`;
+      toast.success(`Cobrado ${mxn(total)} ${etiqueta}`);
       router.push("/admin/pos");
+      return true;
     }
+    return false;
   }
 
   return (
@@ -226,10 +320,28 @@ function OrdenView({
       <header className="caja-head caja-head--row">
         <div>
           <Link href="/admin/pos" className="caja-link caja-link--icon"><Icon name="volver" size={15} /> Mesas</Link>
-          <h1>{mesa}</h1>
+          <h1>
+            {mesa}
+            {orden && (
+              <button
+                type="button"
+                className="caja-personas-chip"
+                disabled={busy}
+                onClick={editarPersonas}
+                title="Número de personas en la mesa"
+              >
+                👥 {orden.personas ? `${orden.personas}` : "¿personas?"}
+              </button>
+            )}
+          </h1>
         </div>
         {orden && (
           <div className="caja-head__cta">
+            {items.length > 0 && (
+              <button className="caja-btn caja-btn--ghost caja-btn--sm" disabled={busy} onClick={descargarCuenta}>
+                <Icon name="imprimir" size={15} /> Cuenta PDF
+              </button>
+            )}
             <button className="caja-btn caja-btn--ghost caja-btn--sm" disabled={busy} onClick={cancelar}>
               Cancelar cuenta
             </button>
@@ -303,6 +415,18 @@ function OrdenView({
                     </div>
                     <div className="caja-cuenta__der">
                       <span>{mxnCorto(it.precio_unit * it.cantidad)}</span>
+                      {it.enviado_cocina && (
+                        <button
+                          type="button"
+                          className="caja-cuenta__cancelitem"
+                          disabled={busy}
+                          title="Cancelar este platillo (pide PIN)"
+                          aria-label={`Cancelar ${it.nombre}`}
+                          onClick={() => borrarItemEnviado(it)}
+                        >
+                          ✕
+                        </button>
+                      )}
                     </div>
                   </div>
                   {it.nota && (
@@ -350,9 +474,11 @@ function OrdenView({
       {cobroOpen && orden && (
         <CobroModal
           total={total}
+          personasInicial={orden.personas}
           busy={busy}
           onClose={() => setCobroOpen(false)}
           onCobrar={confirmarCobro}
+          onError={(m) => setError(m)}
         />
       )}
 
@@ -369,22 +495,11 @@ function OrdenView({
   );
 }
 
-// ── Modal de personalización (sin cebolla, sin crema, etc.) ───
-// Las indicaciones se guardan en `nota` y se ven en la comanda de cocina.
-const QUITABLES = [
-  "Sin cebolla",
-  "Sin crema",
-  "Sin queso",
-  "Sin chile",
-  "Sin cilantro",
-  "Sin frijoles",
-  "Sin lechuga",
-  "Sin jitomate",
-  "Sin picante",
-  "Sin salsa",
-];
-const EXTRAS = ["Para llevar", "Salsa aparte", "Bien dorado", "Poco picante"];
-const TODAS = [...QUITABLES, ...EXTRAS];
+// ── Modal de personalización ──────────────────────────────────
+// Grupos según el platillo (sabor de licuado, término de la carne, etc.,
+// definidos en lib/caja/personalizacion.ts) + chips genéricas + texto libre.
+// Todo se guarda en `nota` y se ve en la comanda de cocina.
+const CHIPS_GENERICAS = [...QUITABLES, ...EXTRAS];
 
 function PersonalizarModal({
   item,
@@ -397,18 +512,35 @@ function PersonalizarModal({
   onClose: () => void;
   onSave: (nota: string) => void;
 }) {
-  // Separa la nota existente en chips conocidos + texto libre.
+  const grupos = useMemo(() => gruposPara(item.nombre), [item.nombre]);
+  const opcionesDeGrupos = useMemo(() => grupos.flatMap((g) => g.opciones), [grupos]);
+  const conocidas = useMemo(
+    () => [...opcionesDeGrupos, ...CHIPS_GENERICAS],
+    [opcionesDeGrupos]
+  );
+
+  // Separa la nota existente en selecciones de grupo + chips + texto libre.
   const inicial = useMemo(() => {
+    const sel = new Map<string, string>(); // titulo de grupo -> opción
     const set = new Set<string>();
     const libre: string[] = [];
     for (const parte of (item.nota ?? "").split(",").map((s) => s.trim()).filter(Boolean)) {
-      const match = TODAS.find((c) => c.toLowerCase() === parte.toLowerCase());
-      if (match) set.add(match);
+      const grupo = grupos.find((g) =>
+        g.opciones.some((o) => o.toLowerCase() === parte.toLowerCase())
+      );
+      if (grupo) {
+        const op = grupo.opciones.find((o) => o.toLowerCase() === parte.toLowerCase())!;
+        sel.set(grupo.titulo, op);
+        continue;
+      }
+      const chip = CHIPS_GENERICAS.find((c) => c.toLowerCase() === parte.toLowerCase());
+      if (chip) set.add(chip);
       else libre.push(parte);
     }
-    return { set, libre: libre.join(", ") };
-  }, [item.nota]);
+    return { sel, set, libre: libre.join(", ") };
+  }, [item.nota, grupos]);
 
+  const [seleccion, setSeleccion] = useState<Map<string, string>>(inicial.sel);
   const [chips, setChips] = useState<Set<string>>(inicial.set);
   const [libre, setLibre] = useState(inicial.libre);
 
@@ -420,6 +552,15 @@ function PersonalizarModal({
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  function elegir(grupo: string, opcion: string) {
+    setSeleccion((prev) => {
+      const next = new Map(prev);
+      if (next.get(grupo) === opcion) next.delete(grupo); // tocar de nuevo = quitar
+      else next.set(grupo, opcion);
+      return next;
+    });
+  }
+
   function toggle(c: string) {
     setChips((prev) => {
       const next = new Set(prev);
@@ -430,9 +571,12 @@ function PersonalizarModal({
   }
 
   function guardar() {
-    const orden = TODAS.filter((c) => chips.has(c));
+    const deGrupos = grupos
+      .map((g) => seleccion.get(g.titulo))
+      .filter((x): x is string => Boolean(x));
+    const genericas = CHIPS_GENERICAS.filter((c) => chips.has(c));
     const extra = libre.trim();
-    onSave([...orden, ...(extra ? [extra] : [])].join(", "));
+    onSave([...deGrupos, ...genericas, ...(extra ? [extra] : [])].join(", "));
   }
 
   return (
@@ -442,9 +586,32 @@ function PersonalizarModal({
         <p className="caja-modal__msg">{item.cantidad}× {item.nombre}</p>
 
         <div className="caja-pers">
-          <span className="caja-pers__lbl">Toca lo que se quita o se indica</span>
+          {grupos.map((g) => (
+            <div key={g.titulo} className="caja-pers__grupo">
+              <span className="caja-pers__lbl">{g.titulo} <em>(elige una)</em></span>
+              <div className="caja-perschips">
+                {g.opciones.map((o) => {
+                  const on = seleccion.get(g.titulo) === o;
+                  return (
+                    <button
+                      key={o}
+                      type="button"
+                      className={`caja-perschip ${on ? "is-on" : ""}`}
+                      onClick={() => elegir(g.titulo, o)}
+                    >
+                      {on && <Icon name="check" size={13} />} {o}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          <span className="caja-pers__lbl" style={grupos.length ? { marginTop: "0.9rem", display: "inline-block" } : undefined}>
+            Toca lo que se quita o se indica
+          </span>
           <div className="caja-perschips">
-            {TODAS.map((c) => (
+            {CHIPS_GENERICAS.map((c) => (
               <button
                 key={c}
                 type="button"
@@ -460,7 +627,7 @@ function PersonalizarModal({
             <input
               value={libre}
               onChange={(e) => setLibre(e.target.value)}
-              placeholder="Ej. término medio, sin sal…"
+              placeholder="Ej. sin sal, poco aceite…"
             />
           </label>
         </div>
@@ -483,20 +650,72 @@ function PersonalizarModal({
   );
 }
 
-// ── Modal de cobro (efectivo con ayuda de cambio / tarjeta) ───
+// ── Modal de cobro ────────────────────────────────────────────
+// Flujo: total → personas → ¿con cuánto paga? → elegir método.
+// Tarjeta/transferencia permiten adjuntar la foto del voucher (Clip);
+// booking pide la referencia del huésped (la paga el hotel después).
 function CobroModal({
   total,
+  personasInicial,
   busy,
   onClose,
   onCobrar,
+  onError,
 }: {
   total: number;
+  personasInicial: number | null;
   busy: boolean;
   onClose: () => void;
-  onCobrar: (forma: "efectivo" | "tarjeta") => void;
+  onCobrar: (datos: DatosCobro) => Promise<boolean | undefined>;
+  onError: (msg: string) => void;
 }) {
+  const [paso, setPaso] = useState<"datos" | "tarjeta" | "transferencia" | "booking">("datos");
+  const [personas, setPersonas] = useState(personasInicial ? String(personasInicial) : "");
   const [paga, setPaga] = useState("");
+  const [referencia, setReferencia] = useState("");
+  const [voucher, setVoucher] = useState<File | null>(null);
+  const [subiendo, setSubiendo] = useState(false);
   const cambio = paga === "" ? null : Number(paga) - total;
+
+  const personasNum = (() => {
+    const n = Math.floor(Number(personas));
+    return Number.isFinite(n) && n > 0 ? n : null;
+  })();
+
+  async function subirVoucher(): Promise<string | null> {
+    if (!voucher) return null;
+    setSubiendo(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", voucher);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        onError(data.error || "No se pudo subir el voucher.");
+        return null;
+      }
+      return data.url ?? null;
+    } finally {
+      setSubiendo(false);
+    }
+  }
+
+  async function cobrar(forma: FormaCobro) {
+    let comprobante: string | null = null;
+    if ((forma === "tarjeta" || forma === "transferencia") && voucher) {
+      comprobante = await subirVoucher();
+      if (voucher && !comprobante) return; // falló la subida: no cobrar a ciegas
+    }
+    await onCobrar({
+      forma,
+      personas: personasNum,
+      pago_recibido: forma === "efectivo" && paga !== "" ? Number(paga) : null,
+      pago_referencia: forma === "booking" && referencia.trim() ? referencia.trim() : null,
+      comprobante_url: comprobante,
+    });
+  }
+
+  const ocupado = busy || subiendo;
 
   return (
     <div className="caja-modal" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
@@ -507,35 +726,114 @@ function CobroModal({
           <strong>{mxn(total)}</strong>
         </div>
 
-        <label className="caja-field">
-          <span>¿Con cuánto paga? (efectivo, opcional)</span>
-          <input
-            type="number"
-            inputMode="decimal"
-            value={paga}
-            placeholder="$"
-            onChange={(e) => setPaga(e.target.value)}
-            autoFocus
-          />
-        </label>
-        {cambio !== null && cambio >= 0 && (
-          <div className="caja-cobro__cambio">Cambio: {mxn(cambio)}</div>
-        )}
-        {cambio !== null && cambio < 0 && (
-          <div className="caja-error" style={{ marginTop: "0.4rem" }}>Falta {mxn(Math.abs(cambio))}</div>
+        {paso === "datos" && (
+          <>
+            <label className="caja-field">
+              <span>¿Cuántas personas comieron?</span>
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                value={personas}
+                placeholder="Ej. 4"
+                onChange={(e) => setPersonas(e.target.value)}
+              />
+            </label>
+
+            <label className="caja-field">
+              <span>¿Con cuánto paga? (si es efectivo)</span>
+              <input
+                type="number"
+                inputMode="decimal"
+                value={paga}
+                placeholder="$"
+                onChange={(e) => setPaga(e.target.value)}
+                autoFocus
+              />
+            </label>
+            {cambio !== null && cambio >= 0 && (
+              <div className="caja-cobro__cambio">Cambio: {mxn(cambio)}</div>
+            )}
+            {cambio !== null && cambio < 0 && (
+              <div className="caja-error" style={{ marginTop: "0.4rem" }}>Falta {mxn(Math.abs(cambio))}</div>
+            )}
+
+            <div className="caja-pos__acciones" style={{ marginTop: "1.1rem" }}>
+              <button
+                className="caja-btn caja-btn--primary caja-btn--lg"
+                disabled={ocupado || (cambio !== null && cambio < 0)}
+                onClick={() => cobrar("efectivo")}
+              >
+                <Icon name="efectivo" size={18} /> Cobrar en efectivo
+              </button>
+              <button className="caja-btn caja-btn--ghost caja-btn--lg" disabled={ocupado} onClick={() => setPaso("tarjeta")}>
+                <Icon name="tarjeta" size={18} /> Tarjeta
+              </button>
+              <button className="caja-btn caja-btn--ghost caja-btn--lg" disabled={ocupado} onClick={() => setPaso("transferencia")}>
+                Transferencia
+              </button>
+              <button className="caja-btn caja-btn--ghost caja-btn--lg" disabled={ocupado} onClick={() => setPaso("booking")}>
+                Booking (hotel)
+              </button>
+              <button className="caja-btn caja-btn--ghost" disabled={ocupado} onClick={onClose}>
+                Cancelar
+              </button>
+            </div>
+          </>
         )}
 
-        <div className="caja-pos__acciones" style={{ marginTop: "1.1rem" }}>
-          <button className="caja-btn caja-btn--primary caja-btn--lg" disabled={busy} onClick={() => onCobrar("efectivo")}>
-            <Icon name="efectivo" size={18} /> Cobrar en efectivo
-          </button>
-          <button className="caja-btn caja-btn--ghost caja-btn--lg" disabled={busy} onClick={() => onCobrar("tarjeta")}>
-            <Icon name="tarjeta" size={18} /> Cobrar con tarjeta
-          </button>
-          <button className="caja-btn caja-btn--ghost" disabled={busy} onClick={onClose}>
-            Cancelar
-          </button>
-        </div>
+        {(paso === "tarjeta" || paso === "transferencia") && (
+          <>
+            <p className="caja-modal__msg" style={{ marginTop: "0.6rem" }}>
+              {paso === "tarjeta"
+                ? "Cobra en la terminal (Clip) y, si quieres, adjunta la foto del voucher."
+                : "Confirma la transferencia recibida y, si quieres, adjunta el comprobante."}
+            </p>
+            <label className="caja-field">
+              <span>Foto del voucher / comprobante (opcional)</span>
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                capture="environment"
+                onChange={(e) => setVoucher(e.target.files?.[0] ?? null)}
+              />
+            </label>
+            <div className="caja-pos__acciones" style={{ marginTop: "1.1rem" }}>
+              <button className="caja-btn caja-btn--primary caja-btn--lg" disabled={ocupado} onClick={() => cobrar(paso)}>
+                {subiendo ? "Subiendo voucher…" : `Confirmar cobro con ${paso}`}
+              </button>
+              <button className="caja-btn caja-btn--ghost" disabled={ocupado} onClick={() => setPaso("datos")}>
+                Volver
+              </button>
+            </div>
+          </>
+        )}
+
+        {paso === "booking" && (
+          <>
+            <p className="caja-modal__msg" style={{ marginTop: "0.6rem" }}>
+              La cuenta se carga al hotel (huésped con alimentos incluidos). NO entra
+              dinero a la caja; el administrador del hotel la paga después.
+            </p>
+            <label className="caja-field">
+              <span>Habitación o nombre del huésped (recomendado)</span>
+              <input
+                value={referencia}
+                onChange={(e) => setReferencia(e.target.value)}
+                placeholder="Ej. Hab. 12 · Familia García"
+                autoFocus
+              />
+            </label>
+            <div className="caja-pos__acciones" style={{ marginTop: "1.1rem" }}>
+              <button className="caja-btn caja-btn--primary caja-btn--lg" disabled={ocupado} onClick={() => cobrar("booking")}>
+                Cargar a booking
+              </button>
+              <button className="caja-btn caja-btn--ghost" disabled={ocupado} onClick={() => setPaso("datos")}>
+                Volver
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

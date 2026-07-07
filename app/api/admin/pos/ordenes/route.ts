@@ -2,7 +2,18 @@ import { NextResponse } from "next/server";
 import { requireRol } from "@/lib/caja/auth";
 import { createAdminClient, adminEnvReady } from "@/lib/supabase/admin";
 import { sanitizeItem, num } from "@/lib/caja/server";
+import { logMovimiento, verificarPin } from "@/lib/caja/bitacora";
 import type { OrdenItem, Orden, Receta, Insumo } from "@/lib/caja/types";
+
+/** Mapa whitelist forma de cobro → columna del turno. Cualquier otra forma se
+ * rechaza: si algo mal escrito cayera a "efectivo" inflaría el efectivo
+ * esperado del corte y generaría falsos faltantes. */
+const FORMA_A_CAMPO: Record<string, string> = {
+  efectivo: "ventas_efectivo",
+  tarjeta: "ventas_tarjeta",
+  transferencia: "ventas_transferencia",
+  booking: "ventas_booking",
+};
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -80,6 +91,15 @@ export async function PATCH(req: Request) {
   if (orden.estado !== "abierta")
     return NextResponse.json({ error: "Esa orden ya está cerrada." }, { status: 409 });
 
+  // Defensa contra cuentas cruzadas: si el cliente dice desde qué mesa opera,
+  // la orden DEBE ser de esa mesa (la UI podría traer datos viejos en caché).
+  const mesaBody = typeof body.mesa_nombre === "string" ? body.mesa_nombre.trim() : "";
+  if (mesaBody && mesaBody !== orden.mesa_nombre)
+    return NextResponse.json(
+      { error: "Esa cuenta es de otra mesa. Recarga la pantalla." },
+      { status: 409 }
+    );
+
   // Agregar un renglón. Si el mismo producto ya está y aún no se manda a
   // cocina, suma a su cantidad (en vez de duplicar el renglón).
   if (action === "agregar") {
@@ -118,12 +138,52 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ ok: true, total });
   }
 
-  // Borrar un renglón
+  // Fijar el número de personas de la mesa
+  if (action === "set_personas") {
+    const n = Math.floor(num(body.personas));
+    const personas = n > 0 ? Math.min(n, 200) : null;
+    const { error } = await sb.from("pos_ordenes").update({ personas }).eq("id", id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true, personas });
+  }
+
+  // Borrar un renglón. Si YA se mandó a cocina, es una cancelación real:
+  // pide PIN y queda en la bitácora.
   if (action === "borrar_item") {
     const itemId = typeof body.item_id === "string" ? body.item_id : "";
     if (!itemId) return NextResponse.json({ error: "Falta el renglón." }, { status: 400 });
+    const { data: itRow } = await sb
+      .from("pos_orden_items")
+      .select("*")
+      .eq("id", itemId)
+      .eq("orden_id", id)
+      .maybeSingle();
+    if (!itRow) return NextResponse.json({ error: "Renglón no encontrado." }, { status: 404 });
+    const item = itRow as OrdenItem;
+
+    if (item.enviado_cocina) {
+      const pin = await verificarPin(sb, body.pin);
+      if (pin === "sin_pin")
+        return NextResponse.json(
+          { error: "No hay PIN de cancelaciones configurado. El dueño debe crearlo en Ajustes." },
+          { status: 403 }
+        );
+      if (pin === "malo")
+        return NextResponse.json({ error: "PIN incorrecto." }, { status: 403 });
+    }
+
     await sb.from("pos_orden_items").delete().eq("id", itemId).eq("orden_id", id);
     const total = await recomputeTotal(sb, id);
+    if (item.enviado_cocina) {
+      await logMovimiento(sb, {
+        rol: auth.rol,
+        accion: "borrar_item_enviado",
+        detalle: `${orden.mesa_nombre} · ${item.cantidad}× ${item.nombre} (ya estaba en cocina)`,
+        ref_tipo: "orden",
+        ref_id: id,
+        monto: num(item.precio_unit) * num(item.cantidad),
+      });
+    }
     return NextResponse.json({ ok: true, total });
   }
 
@@ -175,15 +235,35 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  // Cancelar la orden
+  // Cancelar la orden completa: pide PIN y queda en la bitácora
   if (action === "cancelar") {
+    const pin = await verificarPin(sb, body.pin);
+    if (pin === "sin_pin")
+      return NextResponse.json(
+        { error: "No hay PIN de cancelaciones configurado. El dueño debe crearlo en Ajustes." },
+        { status: 403 }
+      );
+    if (pin === "malo")
+      return NextResponse.json({ error: "PIN incorrecto." }, { status: 403 });
+
     await sb.from("pos_ordenes").update({ estado: "cancelada" }).eq("id", id);
+    await logMovimiento(sb, {
+      rol: auth.rol,
+      accion: "cancelar_orden",
+      detalle: `${orden.mesa_nombre} · cuenta cancelada`,
+      ref_tipo: "orden",
+      ref_id: id,
+      monto: num(orden.total),
+    });
     return NextResponse.json({ ok: true });
   }
 
   // Cobrar: cierra la orden, suma al turno abierto y descuenta inventario
   if (action === "cobrar") {
-    const forma = body.forma_pago === "tarjeta" ? "tarjeta" : "efectivo";
+    const forma = typeof body.forma_pago === "string" ? body.forma_pago : "";
+    const campo = FORMA_A_CAMPO[forma];
+    if (!campo)
+      return NextResponse.json({ error: "Forma de pago no válida." }, { status: 400 });
 
     // 1) Debe haber un turno abierto para registrar la venta
     const { data: turnoRow } = await sb
@@ -204,6 +284,19 @@ export async function PATCH(req: Request) {
     if (total <= 0)
       return NextResponse.json({ error: "La orden está vacía." }, { status: 400 });
 
+    // Datos del cobro (todos opcionales)
+    const personasN = Math.floor(num(body.personas));
+    const personas = personasN > 0 ? Math.min(personasN, 200) : orden.personas;
+    const pagoRecibido = forma === "efectivo" && num(body.pago_recibido) > 0 ? num(body.pago_recibido) : null;
+    const referencia =
+      typeof body.pago_referencia === "string" && body.pago_referencia.trim()
+        ? body.pago_referencia.trim().slice(0, 120)
+        : null;
+    const comprobante =
+      typeof body.comprobante_url === "string" && body.comprobante_url.trim()
+        ? body.comprobante_url.trim()
+        : null;
+
     // 3) Cerrar la orden
     const { error: cErr } = await sb
       .from("pos_ordenes")
@@ -212,22 +305,45 @@ export async function PATCH(req: Request) {
         forma_pago: forma,
         turno_id: turnoRow.id,
         total,
+        personas,
+        pago_recibido: pagoRecibido,
+        pago_referencia: referencia,
+        comprobante_url: comprobante,
         cobrada_at: new Date().toISOString(),
       })
       .eq("id", id);
     if (cErr) return NextResponse.json({ error: cErr.message }, { status: 500 });
 
-    // 4) Sumar la venta al turno (las ventas entran solas a la caja)
-    const campo = forma === "tarjeta" ? "ventas_tarjeta" : "ventas_efectivo";
-    const nuevoCampo = num((turnoRow as Record<string, unknown>)[campo]) + total;
-    const nuevoTotal = num((turnoRow as Record<string, unknown>).total_ingresos) + total;
-    await sb
-      .from("caja_turnos")
-      .update({ [campo]: nuevoCampo, total_ingresos: nuevoTotal })
-      .eq("id", turnoRow.id);
+    // 4) Sumar la venta al turno con RPC ATÓMICO (sin carrera entre dos cajas)
+    const { error: rpcErr } = await sb.rpc("sumar_venta_turno", {
+      p_turno: turnoRow.id,
+      p_forma: forma,
+      p_monto: total,
+    });
+    if (rpcErr) {
+      // Compensación: la venta NO entró al turno → la orden vuelve a abierta
+      // para que el cobro se pueda reintentar sin dejar dinero fantasma.
+      await sb
+        .from("pos_ordenes")
+        .update({ estado: "abierta", forma_pago: null, turno_id: null, cobrada_at: null })
+        .eq("id", id);
+      return NextResponse.json(
+        { error: "No se pudo sumar al turno. ¿Ya se corrió la migración fase 5 en Supabase?" },
+        { status: 500 }
+      );
+    }
 
     // 5) Descontar inventario según las recetas
     await descontarInventario(sb, id);
+
+    await logMovimiento(sb, {
+      rol: auth.rol,
+      accion: "cobrar",
+      detalle: `${orden.mesa_nombre} · $${total} en ${forma}${personas ? ` · ${personas} personas` : ""}${referencia ? ` · ref: ${referencia}` : ""}`,
+      ref_tipo: "orden",
+      ref_id: id,
+      monto: total,
+    });
 
     return NextResponse.json({ ok: true, total });
   }

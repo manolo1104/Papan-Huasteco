@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Rol } from "@/lib/caja/auth";
-import { TURNOS, labelDe, type Turno } from "@/lib/caja/types";
+import { TURNOS, FORMAS_PAGO, labelDe, type Turno, type Gasto } from "@/lib/caja/types";
 import { mxn, mxnCorto, fechaCorta } from "@/lib/caja/format";
 import { todayISO } from "@/lib/caja/server";
 import { useFeedback } from "@/components/caja/ui/Feedback";
@@ -23,12 +23,14 @@ export default function TurnosPanel({
   rol,
   turnos,
   turnoAbierto,
-  gastosEfectivoAbierto,
+  gastosTurno,
+  gastosSinLigar,
 }: {
   rol: Rol;
   turnos: Turno[];
   turnoAbierto: Turno | null;
-  gastosEfectivoAbierto: number;
+  gastosTurno: Gasto[];
+  gastosSinLigar: Gasto[];
 }) {
   return (
     <div className="caja-page">
@@ -41,7 +43,11 @@ export default function TurnosPanel({
       </header>
 
       {turnoAbierto ? (
-        <CerrarForm turno={turnoAbierto} gastosEfectivo={gastosEfectivoAbierto} />
+        <CerrarForm
+          turno={turnoAbierto}
+          gastosTurno={gastosTurno}
+          gastosSinLigar={gastosSinLigar}
+        />
       ) : (
         <AbrirForm rol={rol} />
       )}
@@ -114,12 +120,30 @@ function AbrirForm({ rol }: { rol: Rol }) {
 }
 
 // ── Cerrar turno ──────────────────────────────────────────────
-function CerrarForm({ turno, gastosEfectivo }: { turno: Turno; gastosEfectivo: number }) {
+// Flujo: fondo inicial → ventas por método (efectivo/tarjeta/transferencia/
+// booking, pre-cargadas del POS) → ventas totales → gastos del turno (lista)
+// → efectivo entregado → corte.
+function CerrarForm({
+  turno,
+  gastosTurno,
+  gastosSinLigar,
+}: {
+  turno: Turno;
+  gastosTurno: Gasto[];
+  gastosSinLigar: Gasto[];
+}) {
   const router = useRouter();
+  const { toast } = useFeedback();
   // Si el POS ya registró ventas en este turno, vienen pre-cargadas (editables).
-  const desdePos = turno.ventas_efectivo > 0 || turno.ventas_tarjeta > 0;
+  const desdePos =
+    turno.ventas_efectivo > 0 ||
+    turno.ventas_tarjeta > 0 ||
+    (turno.ventas_transferencia ?? 0) > 0 ||
+    (turno.ventas_booking ?? 0) > 0;
   const [vef, setVef] = useState(turno.ventas_efectivo ? String(turno.ventas_efectivo) : "");
   const [vtar, setVtar] = useState(turno.ventas_tarjeta ? String(turno.ventas_tarjeta) : "");
+  const [vtransf, setVtransf] = useState(turno.ventas_transferencia ? String(turno.ventas_transferencia) : "");
+  const [vbook, setVbook] = useState(turno.ventas_booking ? String(turno.ventas_booking) : "");
   const [otros, setOtros] = useState("");
   const [otrosNota, setOtrosNota] = useState("");
   const [retiros, setRetiros] = useState("");
@@ -127,13 +151,35 @@ function CerrarForm({ turno, gastosEfectivo }: { turno: Turno; gastosEfectivo: n
   const [notas, setNotas] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [ligando, setLigando] = useState(false);
+
+  const gastosEfectivo = useMemo(
+    () => gastosTurno.filter((g) => g.forma_pago === "efectivo").reduce((a, g) => a + g.monto, 0),
+    [gastosTurno]
+  );
+  const gastosTotal = useMemo(() => gastosTurno.reduce((a, g) => a + g.monto, 0), [gastosTurno]);
 
   const esperado = useMemo(
     () => turno.fondo_inicial + n(vef) + n(otros) - gastosEfectivo - n(retiros),
     [turno.fondo_inicial, vef, otros, gastosEfectivo, retiros]
   );
   const diferencia = useMemo(() => n(contado) - esperado, [contado, esperado]);
-  const totalIngresos = n(vef) + n(vtar) + n(otros);
+  const totalIngresos = n(vef) + n(vtar) + n(vtransf) + n(vbook) + n(otros);
+  const noCaja = n(vtar) + n(vtransf) + n(vbook);
+
+  async function ligarGasto(id: string) {
+    setLigando(true);
+    const res = await fetch("/api/admin/gastos", {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id, action: "ligar_turno" }),
+    });
+    setLigando(false);
+    if (res.ok) {
+      toast.success("Gasto ligado al turno");
+      router.refresh();
+    } else toast.error("No se pudo ligar el gasto.");
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -147,6 +193,8 @@ function CerrarForm({ turno, gastosEfectivo }: { turno: Turno; gastosEfectivo: n
         action: "cerrar",
         ventas_efectivo: n(vef),
         ventas_tarjeta: n(vtar),
+        ventas_transferencia: n(vtransf),
+        ventas_booking: n(vbook),
         otros_ingresos: n(otros),
         otros_ingresos_nota: otrosNota,
         retiros: n(retiros),
@@ -169,6 +217,13 @@ function CerrarForm({ turno, gastosEfectivo }: { turno: Turno; gastosEfectivo: n
         <span className="caja-tag caja-tag--abierto">abierto</span>
       </div>
       <form className="caja-form caja-form--grid" onSubmit={submit}>
+        {/* 1 · Fondo inicial */}
+        <p className="caja-muted caja-form__full">
+          <strong>Fondo inicial: {mxn(turno.fondo_inicial)}</strong>
+          {turno.responsable ? ` · Responsable: ${turno.responsable}` : ""}
+        </p>
+
+        {/* 2 · Ventas por método */}
         {desdePos && (
           <p className="caja-muted caja-form__full">
             💡 Las ventas vienen del POS (cobros del turno). Puedes ajustarlas si cobraste algo aparte.
@@ -183,6 +238,14 @@ function CerrarForm({ turno, gastosEfectivo }: { turno: Turno; gastosEfectivo: n
           <input type="number" min="0" step="0.01" inputMode="decimal" value={vtar} onChange={(e) => setVtar(e.target.value)} placeholder="$" />
         </label>
         <label className="caja-field">
+          <span>Ventas por transferencia</span>
+          <input type="number" min="0" step="0.01" inputMode="decimal" value={vtransf} onChange={(e) => setVtransf(e.target.value)} placeholder="$" />
+        </label>
+        <label className="caja-field">
+          <span>Ventas booking (paga el hotel)</span>
+          <input type="number" min="0" step="0.01" inputMode="decimal" value={vbook} onChange={(e) => setVbook(e.target.value)} placeholder="$" />
+        </label>
+        <label className="caja-field">
           <span>Otros ingresos (efectivo)</span>
           <input type="number" min="0" step="0.01" inputMode="decimal" value={otros} onChange={(e) => setOtros(e.target.value)} placeholder="$ (opcional)" />
         </label>
@@ -190,31 +253,97 @@ function CerrarForm({ turno, gastosEfectivo }: { turno: Turno; gastosEfectivo: n
           <span>Nota de otros ingresos</span>
           <input value={otrosNota} onChange={(e) => setOtrosNota(e.target.value)} placeholder="¿De qué fue? (opcional)" />
         </label>
+
+        {/* 3 · Ventas totales */}
+        <div className="caja-corte caja-form__full" style={{ paddingBottom: "0.4rem" }}>
+          <div className="caja-corte__row caja-corte__row--big">
+            <span>Ventas totales del turno</span>
+            <strong>{mxn(totalIngresos)}</strong>
+          </div>
+        </div>
+
+        {/* 4 · Gastos del turno */}
+        <div className="caja-form__full caja-gastos-turno">
+          <span className="caja-gastos-turno__lbl">Gastos del turno</span>
+          {gastosTurno.length === 0 ? (
+            <p className="caja-muted">Sin gastos ligados a este turno.</p>
+          ) : (
+            <ul className="caja-gastos-turno__lista">
+              {gastosTurno.map((g) => (
+                <li key={g.id}>
+                  <span>
+                    {g.concepto}
+                    <em> · {labelDe([...FORMAS_PAGO], g.forma_pago)}</em>
+                  </span>
+                  <strong>{mxnCorto(g.monto)}</strong>
+                </li>
+              ))}
+              <li className="caja-gastos-turno__total">
+                <span>Total gastos ({mxnCorto(gastosEfectivo)} en efectivo)</span>
+                <strong>{mxnCorto(gastosTotal)}</strong>
+              </li>
+            </ul>
+          )}
+          {gastosSinLigar.length > 0 && (
+            <div className="caja-gastos-turno__aviso">
+              ⚠ Hay {gastosSinLigar.length} gasto{gastosSinLigar.length === 1 ? "" : "s"} de hoy SIN
+              ligar al turno (no entran al corte):
+              <ul>
+                {gastosSinLigar.map((g) => (
+                  <li key={g.id}>
+                    <span>
+                      {g.concepto} · {mxnCorto(g.monto)}
+                    </span>
+                    <button
+                      type="button"
+                      className="caja-btn caja-btn--ghost caja-btn--sm"
+                      disabled={ligando}
+                      onClick={() => ligarGasto(g.id)}
+                    >
+                      Ligar al turno
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* 5 · Retiros y efectivo entregado */}
         <label className="caja-field">
           <span>Retiros / depósitos</span>
           <input type="number" min="0" step="0.01" inputMode="decimal" value={retiros} onChange={(e) => setRetiros(e.target.value)} placeholder="$ que sacaste de caja" />
         </label>
         <label className="caja-field">
-          <span>Efectivo contado al cierre</span>
-          <input type="number" min="0" step="0.01" inputMode="decimal" value={contado} onChange={(e) => setContado(e.target.value)} placeholder="$ que hay físicamente" />
+          <span>Efectivo entregado (contado al cierre)</span>
+          <input type="number" min="0" step="0.01" inputMode="decimal" value={contado} onChange={(e) => setContado(e.target.value)} placeholder="$ que entregas físicamente" />
         </label>
 
+        {/* 6 · Corte */}
         <div className="caja-corte caja-form__full">
           <div className="caja-corte__row">
             <span>Fondo inicial</span>
             <strong>{mxn(turno.fondo_inicial)}</strong>
           </div>
           <div className="caja-corte__row">
+            <span>+ Ventas en efectivo y otros ingresos</span>
+            <strong>{mxn(n(vef) + n(otros))}</strong>
+          </div>
+          <div className="caja-corte__row">
             <span>− Gastos en efectivo del turno</span>
             <strong>{mxn(gastosEfectivo)}</strong>
           </div>
           <div className="caja-corte__row">
-            <span>Ventas totales</span>
-            <strong>{mxn(totalIngresos)}</strong>
+            <span>− Retiros</span>
+            <strong>{mxn(n(retiros))}</strong>
           </div>
           <div className="caja-corte__row caja-corte__row--big">
             <span>Efectivo esperado en caja</span>
             <strong>{mxn(esperado)}</strong>
+          </div>
+          <div className="caja-corte__row">
+            <span>Ingresos que NO entran a caja (tarjeta + transferencia + booking)</span>
+            <strong>{mxn(noCaja)}</strong>
           </div>
           <div
             className={`caja-corte__dif ${diferencia < 0 ? "neg" : diferencia > 0 ? "pos" : ""}`}
@@ -276,6 +405,8 @@ function Historial({ rol, turnos }: { rol: Rol; turnos: Turno[] }) {
                 <th>Turno</th>
                 <th className="num">Efectivo</th>
                 <th className="num">Tarjeta</th>
+                <th className="num">Transf.</th>
+                <th className="num">Booking</th>
                 <th className="num">Ingresos</th>
                 <th className="num">Diferencia</th>
                 {rol === "admin" && <th></th>}
@@ -291,6 +422,8 @@ function Historial({ rol, turnos }: { rol: Rol; turnos: Turno[] }) {
                   </td>
                   <td className="num">{t.estado === "cerrado" ? mxnCorto(t.ventas_efectivo) : "—"}</td>
                   <td className="num">{t.estado === "cerrado" ? mxnCorto(t.ventas_tarjeta) : "—"}</td>
+                  <td className="num">{t.estado === "cerrado" ? mxnCorto(t.ventas_transferencia ?? 0) : "—"}</td>
+                  <td className="num">{t.estado === "cerrado" ? mxnCorto(t.ventas_booking ?? 0) : "—"}</td>
                   <td className="num">{t.estado === "cerrado" ? mxnCorto(t.total_ingresos) : "—"}</td>
                   <td className={`num ${t.diferencia < 0 ? "neg" : t.diferencia > 0 ? "pos" : ""}`}>
                     {t.estado === "cerrado" ? mxnCorto(t.diferencia) : "—"}

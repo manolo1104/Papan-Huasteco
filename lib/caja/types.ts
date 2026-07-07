@@ -22,6 +22,20 @@ export const FORMAS_PAGO = [
   { id: "transferencia", label: "Transferencia" },
 ] as const;
 
+/**
+ * Formas de COBRO de una cuenta (ventas). "booking" = cuentas de huéspedes
+ * con alimentos incluidos en su hospedaje: el hotel las paga después, por lo
+ * que SÍ es ingreso del turno pero NO entra como efectivo a la caja.
+ */
+export const FORMAS_COBRO = [
+  { id: "efectivo", label: "Efectivo" },
+  { id: "tarjeta", label: "Tarjeta" },
+  { id: "transferencia", label: "Transferencia" },
+  { id: "booking", label: "Booking (hotel)" },
+] as const;
+
+export type FormaCobro = (typeof FORMAS_COBRO)[number]["id"];
+
 export const EVENTO_ESTADOS = [
   { id: "cotizado", label: "Cotizado", color: "#d97706" },
   { id: "confirmado", label: "Confirmado", color: "#2563eb" },
@@ -41,6 +55,8 @@ export interface Turno {
   fondo_inicial: number;
   ventas_efectivo: number;
   ventas_tarjeta: number;
+  ventas_transferencia: number;
+  ventas_booking: number;
   otros_ingresos: number;
   otros_ingresos_nota: string | null;
   retiros: number;
@@ -158,6 +174,10 @@ export interface Orden {
   total: number;
   mesero: string | null;
   notas: string | null;
+  personas: number | null;
+  pago_recibido: number | null;
+  comprobante_url: string | null;
+  pago_referencia: string | null;
   created_at: string;
   cobrada_at: string | null;
 }
@@ -195,4 +215,31 @@ export interface ProductoCosteo extends Producto {
   costo: number;
   margen: number;
   tieneReceta: boolean;
+}
+
+// ── Fase 5: bitácora de movimientos ───────────────────────────
+
+export const BITACORA_ACCIONES = [
+  { id: "cobrar", label: "Cobro de cuenta" },
+  { id: "cancelar_orden", label: "Cancelación de cuenta" },
+  { id: "borrar_item_enviado", label: "Item borrado (ya en cocina)" },
+  { id: "abrir_turno", label: "Apertura de turno" },
+  { id: "cerrar_turno", label: "Cierre de turno" },
+  { id: "editar_turno", label: "Edición de turno" },
+  { id: "gasto_creado", label: "Gasto registrado" },
+  { id: "gasto_borrado", label: "Gasto borrado" },
+  { id: "pin_cambiado", label: "PIN de cancelaciones cambiado" },
+] as const;
+
+export type BitacoraAccion = (typeof BITACORA_ACCIONES)[number]["id"];
+
+export interface Bitacora {
+  id: string;
+  created_at: string;
+  rol: string;
+  accion: string;
+  detalle: string | null;
+  ref_tipo: string | null;
+  ref_id: string | null;
+  monto: number | null;
 }

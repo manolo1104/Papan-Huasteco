@@ -8,7 +8,8 @@ import {
   calcularCorte,
   num,
 } from "@/lib/caja/server";
-import type { Turno } from "@/lib/caja/types";
+import { logMovimiento } from "@/lib/caja/bitacora";
+import { TURNOS, labelDe, type Turno } from "@/lib/caja/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -66,6 +67,14 @@ export async function POST(req: Request) {
     .select("*")
     .single();
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+  await logMovimiento(sb, {
+    rol: auth.rol,
+    accion: "abrir_turno",
+    detalle: `${labelDe([...TURNOS], data!.turno)} del ${data!.fecha} · fondo ${data!.fondo_inicial}`,
+    ref_tipo: "turno",
+    ref_id: (row as Turno).id,
+    monto: data!.fondo_inicial,
+  });
   return NextResponse.json({ ok: true, turno: row });
 }
 
@@ -109,6 +118,8 @@ export async function PATCH(req: Request) {
     const total_ingresos =
       num(campos!.ventas_efectivo) +
       num(campos!.ventas_tarjeta) +
+      num(campos!.ventas_transferencia) +
+      num(campos!.ventas_booking) +
       num(campos!.otros_ingresos);
 
     const { data: row, error } = await sb
@@ -124,6 +135,16 @@ export async function PATCH(req: Request) {
       .select("*")
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    await logMovimiento(sb, {
+      rol: auth.rol,
+      accion: "cerrar_turno",
+      detalle: `${labelDe([...TURNOS], turno.turno)} del ${turno.fecha} · ingresos ${total_ingresos} · ${
+        diferencia < 0 ? `faltante ${Math.abs(diferencia)}` : diferencia > 0 ? `sobrante ${diferencia}` : "caja exacta"
+      }`,
+      ref_tipo: "turno",
+      ref_id: id,
+      monto: total_ingresos,
+    });
     return NextResponse.json({ ok: true, turno: row });
   }
 
@@ -147,6 +168,8 @@ export async function PATCH(req: Request) {
     const total_ingresos =
       num(merged.ventas_efectivo) +
       num(merged.ventas_tarjeta) +
+      num(merged.ventas_transferencia) +
+      num(merged.ventas_booking) +
       num(merged.otros_ingresos);
 
     const { data: row, error } = await sb
@@ -156,6 +179,14 @@ export async function PATCH(req: Request) {
       .select("*")
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    await logMovimiento(sb, {
+      rol: auth.rol,
+      accion: "editar_turno",
+      detalle: `${labelDe([...TURNOS], turno.turno)} del ${turno.fecha} · editado por el dueño`,
+      ref_tipo: "turno",
+      ref_id: id,
+      monto: total_ingresos,
+    });
     return NextResponse.json({ ok: true, turno: row });
   }
 

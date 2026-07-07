@@ -10,7 +10,8 @@ const TIPOS_OK = ["image/jpeg", "image/png", "image/webp", "image/heic", "applic
 
 // Sube la foto de un ticket al bucket "tickets" y devuelve su URL pública.
 export async function POST(req: Request) {
-  const auth = await requireRol("operador");
+  // Operador sube tickets de gastos; mesero sube vouchers de cobro (Clip).
+  const auth = await requireRol("operador", "mesero");
   if (auth instanceof Response) return auth;
   if (!adminEnvReady)
     return NextResponse.json({ error: "Falta configurar Supabase." }, { status: 503 });
