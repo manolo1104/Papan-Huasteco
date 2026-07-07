@@ -8,11 +8,12 @@ export const TURNOS = [
 ] as const;
 
 export const GASTO_CATEGORIAS = [
-  { id: "insumos_proveedores", label: "Insumos / Proveedores" },
+  { id: "insumos_proveedores", label: "Insumos / Abarrotes" },
   { id: "nomina", label: "Nómina / Personal" },
   { id: "servicios", label: "Servicios (luz, gas, agua, internet)" },
-  { id: "renta", label: "Renta" },
-  { id: "mantenimiento", label: "Mantenimiento / Limpieza" },
+  { id: "transporte", label: "Transporte" },
+  { id: "mantenimiento", label: "Mantenimiento y limpieza" },
+  { id: "equipo_utensilios", label: "Equipo y utensilios" },
   { id: "otros", label: "Otros" },
 ] as const;
 
@@ -221,6 +222,7 @@ export interface ProductoCosteo extends Producto {
 
 export const BITACORA_ACCIONES = [
   { id: "cobrar", label: "Cobro de cuenta" },
+  { id: "consumo_interno", label: "Consumo interno (comida familiar)" },
   { id: "cancelar_orden", label: "Cancelación de cuenta" },
   { id: "borrar_item_enviado", label: "Item borrado (ya en cocina)" },
   { id: "abrir_turno", label: "Apertura de turno" },

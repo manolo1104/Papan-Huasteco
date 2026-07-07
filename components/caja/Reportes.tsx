@@ -118,10 +118,15 @@ export default function Reportes({
           })()}
         </div>
         <AreaChart serie={metricas.serie} id="rep" height={240} />
-        <div className="caja-kpis caja-kpis--3" style={{ marginTop: "1rem" }}>
+        <div className="caja-kpis caja-kpis--4" style={{ marginTop: "1rem" }}>
           <div className="caja-kpi">
             <span className="caja-kpi__label">Cuentas cobradas</span>
             <span className="caja-kpi__valor">{metricas.cuentas > 0 ? metricas.cuentas : "—"}</span>
+          </div>
+          <div className="caja-kpi">
+            <span className="caja-kpi__label">Comensales atendidos</span>
+            <span className="caja-kpi__valor">{metricas.personas > 0 ? metricas.personas : "—"}</span>
+            <span className="caja-kpi__pista">de cuentas con personas capturadas</span>
           </div>
           <div className="caja-kpi caja-kpi--verde">
             <span className="caja-kpi__label">Ticket por persona</span>

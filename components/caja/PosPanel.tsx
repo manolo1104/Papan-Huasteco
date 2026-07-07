@@ -293,6 +293,18 @@ function OrdenView({
     }
   }
 
+  async function consumoInterno(pin: string) {
+    if (!orden) return false;
+    const r = await call({ id: orden.id, action: "consumo_interno", pin });
+    if (r?.ok) {
+      setCobroOpen(false);
+      toast.success("Registrado como consumo interno (no suma a ventas)");
+      router.push("/admin/pos");
+      return true;
+    }
+    return false;
+  }
+
   async function confirmarCobro(datos: DatosCobro) {
     if (!orden) return;
     const r = await call({
@@ -478,6 +490,7 @@ function OrdenView({
           busy={busy}
           onClose={() => setCobroOpen(false)}
           onCobrar={confirmarCobro}
+          onConsumoInterno={consumoInterno}
           onError={(m) => setError(m)}
         />
       )}
@@ -660,6 +673,7 @@ function CobroModal({
   busy,
   onClose,
   onCobrar,
+  onConsumoInterno,
   onError,
 }: {
   total: number;
@@ -667,12 +681,14 @@ function CobroModal({
   busy: boolean;
   onClose: () => void;
   onCobrar: (datos: DatosCobro) => Promise<boolean | undefined>;
+  onConsumoInterno: (pin: string) => Promise<boolean | undefined>;
   onError: (msg: string) => void;
 }) {
-  const [paso, setPaso] = useState<"datos" | "tarjeta" | "transferencia" | "booking">("datos");
+  const [paso, setPaso] = useState<"datos" | "tarjeta" | "transferencia" | "booking" | "interno">("datos");
   const [personas, setPersonas] = useState(personasInicial ? String(personasInicial) : "");
   const [paga, setPaga] = useState("");
   const [referencia, setReferencia] = useState("");
+  const [pinInterno, setPinInterno] = useState("");
   const [voucher, setVoucher] = useState<File | null>(null);
   const [subiendo, setSubiendo] = useState(false);
   const cambio = paga === "" ? null : Number(paga) - total;
@@ -775,6 +791,9 @@ function CobroModal({
               <button className="caja-btn caja-btn--ghost caja-btn--lg" disabled={ocupado} onClick={() => setPaso("booking")}>
                 Booking (hotel)
               </button>
+              <button className="caja-btn caja-btn--ghost caja-btn--lg" disabled={ocupado} onClick={() => setPaso("interno")}>
+                Consumo interno (familia)
+              </button>
               <button className="caja-btn caja-btn--ghost" disabled={ocupado} onClick={onClose}>
                 Cancelar
               </button>
@@ -801,6 +820,41 @@ function CobroModal({
             <div className="caja-pos__acciones" style={{ marginTop: "1.1rem" }}>
               <button className="caja-btn caja-btn--primary caja-btn--lg" disabled={ocupado} onClick={() => cobrar(paso)}>
                 {subiendo ? "Subiendo voucher…" : `Confirmar cobro con ${paso}`}
+              </button>
+              <button className="caja-btn caja-btn--ghost" disabled={ocupado} onClick={() => setPaso("datos")}>
+                Volver
+              </button>
+            </div>
+          </>
+        )}
+
+        {paso === "interno" && (
+          <>
+            <p className="caja-modal__msg" style={{ marginTop: "0.6rem" }}>
+              Comida de la familia o del personal: NO cuenta como venta ni entra al
+              corte, pero sí descuenta inventario y queda en la bitácora. Requiere
+              el PIN de cancelaciones.
+            </p>
+            <label className="caja-field">
+              <span>PIN</span>
+              <input
+                type="password"
+                inputMode="numeric"
+                autoComplete="off"
+                maxLength={8}
+                value={pinInterno}
+                onChange={(e) => setPinInterno(e.target.value)}
+                placeholder="••••"
+                autoFocus
+              />
+            </label>
+            <div className="caja-pos__acciones" style={{ marginTop: "1.1rem" }}>
+              <button
+                className="caja-btn caja-btn--primary caja-btn--lg"
+                disabled={ocupado || !pinInterno.trim()}
+                onClick={() => onConsumoInterno(pinInterno.trim())}
+              >
+                Registrar consumo interno
               </button>
               <button className="caja-btn caja-btn--ghost" disabled={ocupado} onClick={() => setPaso("datos")}>
                 Volver

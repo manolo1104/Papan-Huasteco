@@ -1,9 +1,4 @@
-import {
-  GASTO_CATEGORIAS,
-  FORMAS_PAGO,
-  TURNOS,
-  EVENTO_ESTADOS,
-} from "./types";
+import { FORMAS_PAGO, TURNOS, EVENTO_ESTADOS } from "./types";
 
 // Helpers de saneo + cálculo del corte de caja. Todo esto corre SOLO en el
 // servidor (rutas /api/admin). Nunca confiar en lo que manda el navegador.
@@ -23,7 +18,6 @@ const isDate = (v: unknown): v is string =>
   typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v);
 
 const TURNO_IDS = TURNOS.map((t) => t.id) as string[];
-const CAT_IDS = GASTO_CATEGORIAS.map((c) => c.id) as string[];
 const PAGO_IDS = FORMAS_PAGO.map((p) => p.id) as string[];
 const EVENTO_IDS = EVENTO_ESTADOS.map((e) => e.id) as string[];
 
@@ -143,8 +137,11 @@ export function sanitizeGasto(
     out.monto = monto;
   }
   if (modo === "create" || "categoria" in body) {
-    const c = str(body.categoria) ?? "otros";
-    out.categoria = CAT_IDS.includes(c) ? c : "otros";
+    // Las categorías son editables en Ajustes (tabla caja_categorias), así que
+    // NO se valida contra la lista fija — cualquier id razonable se acepta.
+    // (Antes las categorías nuevas se colapsaban a "otros" por error.)
+    const c = (str(body.categoria) ?? "otros").toLowerCase().slice(0, 40);
+    out.categoria = /^[a-z0-9_]+$/.test(c) ? c : "otros";
   }
   if (modo === "create" || "forma_pago" in body) {
     const p = str(body.forma_pago) ?? "efectivo";

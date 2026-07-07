@@ -235,6 +235,51 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
+  // Consumo interno (comida familiar / personal): NO es venta — no suma al
+  // turno ni necesita turno abierto. Descuenta inventario y queda en la
+  // bitácora con su valor teórico. Pide PIN para que nadie disfrace una venta
+  // real como consumo interno.
+  if (action === "consumo_interno") {
+    const pin = await verificarPin(sb, body.pin);
+    if (pin === "sin_pin")
+      return NextResponse.json(
+        { error: "No hay PIN de cancelaciones configurado. El dueño debe crearlo en Ajustes." },
+        { status: 403 }
+      );
+    if (pin === "malo")
+      return NextResponse.json({ error: "PIN incorrecto." }, { status: 403 });
+
+    const total = await recomputeTotal(sb, id);
+    const { count } = await sb
+      .from("pos_orden_items")
+      .select("id", { count: "exact", head: true })
+      .eq("orden_id", id);
+    if (!count)
+      return NextResponse.json({ error: "La cuenta está vacía." }, { status: 400 });
+
+    const { error: uErr } = await sb
+      .from("pos_ordenes")
+      .update({
+        estado: "cancelada", // no cuenta como venta en ningún reporte
+        notas: "CONSUMO INTERNO",
+        total,
+        cobrada_at: new Date().toISOString(),
+      })
+      .eq("id", id);
+    if (uErr) return NextResponse.json({ error: uErr.message }, { status: 500 });
+
+    await descontarInventario(sb, id);
+    await logMovimiento(sb, {
+      rol: auth.rol,
+      accion: "consumo_interno",
+      detalle: `${orden.mesa_nombre} · ${count} renglón(es) · valor teórico $${total}`,
+      ref_tipo: "orden",
+      ref_id: id,
+      monto: total,
+    });
+    return NextResponse.json({ ok: true });
+  }
+
   // Cancelar la orden completa: pide PIN y queda en la bitácora
   if (action === "cancelar") {
     const pin = await verificarPin(sb, body.pin);
